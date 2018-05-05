@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <title>Admin Area</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+
+</head>
+
+<body>
+    <div class="container1">
+        <div class="backgroundimg"></div>
+        <header class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h1>
+                            <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Eventos
+                            <small></small>
+                        </h1>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!--Add new and Edit -->
+        <div class="container table1" style="margin-top: 20px;">
+            <div id="tableManager" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Nuevo</h2>
+                        </div>
+                        <div class="modal-body">
+                            <span>Cedula:</span>
+                            <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                            <br>
+                            <span>Nombre:</span>
+                            <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
+                            <br>
+                            <span>Apellido:</span>
+                            <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
+                            <br>
+                            <span>Tarjeta:</span>
+                            <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                            <input type="hidden" id="editRowID" value="0">
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/Add new and Edit -->
+
+            <!--Table Mysql -->
+            <div class="row">
+                <div class="col-md-12 col-md-offset-2" style="background-color:white ">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <td>Tarjeta</td>
+                            <td>Nombre</td>
+                            <td>Estado</td>
+                            <td>Fecha</td>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--/Table Mysql -->
+        <div class="bar">
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <a class="navbar-brand" href="dashboard.html">Control de acceso</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="swipe.html">Eventos
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gestión de Tarjetas</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                <a class="dropdown-item" href="students.html">Estudiantes</a>
+                                <a class="dropdown-item" href="professors.html">Profesores</a>
+                                <a class="dropdown-item" href="workers.html">Empleados
+
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav navbar-right ">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+
+    <!-- page script -->
+
+    <!--Script addNew -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#addNew").on('click', function () {
+                cleanModal();
+                $(".modal-title").html('Add New');
+                $("#tableManager").modal('show');
+
+            });
+        getExistingData(0, 50);
+            
+
+        });
+        function reloadTable(table){
+            
+        }
+        function deleteRow(rowID) {
+            if (confirm('Are you sure?')) {
+                $.ajax({
+                    url: 'php/ajax_swipe.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: 'deleteRow',
+                        rowID: rowID
+                    }, success: function (response) {
+                        $("#Name_" + rowID).parent().remove();
+                        alert(response);
+                    }
+                });
+            }
+        }
+        function edit(rowID) {
+            $.ajax({
+                url: 'php/ajax_swipe.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getRowData',
+                    rowID: rowID
+                }, success: function (response) {
+                    $("#editRowID").val(rowID);
+                    $("#ID").val(response.ID);
+                    $("#Name").val(response.Name);
+                    $("#CardNumber").val(response.CardNumber);
+                    $("#Apellido").val(response.Apellido);
+                    $(".modal-title").html('Editar');
+                    $("#tableManager").modal('show');
+                    $("#manageBtn").attr('value', 'Salvar cambios').attr('onclick', "manageData('updateRow')");
+                }
+            });
+        }
+
+        function getExistingData(start, limit) {
+            $.ajax({
+                url: 'php/ajax_swipe.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getExistingData',
+                    start: start,
+                    limit: limit
+                }, success: function (response) {
+                    if (response != "reachedMax") {
+                        $('tbody').append(response);
+                        start += limit;
+                        getExistingData(start, limit);
+                    } else {
+
+                        $(".table").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+
+                        });
+                    }
+
+                }
+            });
+        }
+        function manageData(key, edit) {
+            var name = $("#Name");
+            var cardNumber = $("#CardNumber");
+            var matricula = $("#ID");
+            var editRowID = $("#editRowID");
+
+            if (isNotEmpty(matricula) && isNotEmpty(name) && isNotEmpty(cardNumber)) {
+                $.ajax({
+                    url: 'php/ajax_swipe.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: key,
+                        name: name.val(),
+                        matricula: matricula.val(),
+                        cardNumber: cardNumber.val(),
+                        rowID: editRowID.val()
+                    }, success: function (response) {
+                        if (response != "success") {
+                            alert(response);
+                            $("#tableManager").modal('hide');
+                            location.reload();
+                        }
+                        else {
+
+                            $("#Name_" + editRowID.val()).html(name.val());
+                            $("#CardNumber_" + editRowID.val()).html(cardNumber.val());
+                            cleanModal();
+                            $("#tableManager").modal('hide');
+                            $("#manageBtn").attr('value', 'Add').attr('onclick', "manageData('addNew')");
+                        }
+                    }
+                });
+            }
+
+
+        }
+        function cleanModal() {
+            var name = $("#Name");
+            var cardNumber = $("#CardNumber");
+            var matricula = $("#ID");
+            name.val('');
+            matricula.val('');
+            cardNumber.val('');
+
+        }
+        function isNotEmpty(caller) {
+            if (caller.val() == '') {
+                caller.css('border', '1px solid red');
+                return false;
+            } else caller.css('border', '');
+
+            return true;
+        }
+    </script>
+
+
+</body>
+
+</html>
