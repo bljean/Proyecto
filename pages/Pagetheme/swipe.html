@@ -67,14 +67,14 @@
             <!--Table Mysql -->
             <div class="row">
                 <div class="col-md-12 col-md-offset-2" style="background-color:white ">
-                    <table class="table table-hover table-bordered">
+                    <table id="tableswipe" class="table table-hover table-bordered">
                         <thead>
                             <td>Tarjeta</td>
                             <td>Nombre</td>
                             <td>Estado</td>
                             <td>Fecha</td>
                         </thead>
-                        <tbody>
+                        <tbody class="bodyswipe">
 
                         </tbody>
                     </table>
@@ -139,13 +139,15 @@
                 $("#tableManager").modal('show');
 
             });
-        getExistingData(0, 50);
-            
+            dataindex=0;
+            getExistingData(0, 50);
+            setInterval(function () {
+                $(".bodyswipe").html('');
+                dataindex=1;
+                getExistingData(0, 50);
+            }, 30000);
 
         });
-        function reloadTable(table){
-            
-        }
         function deleteRow(rowID) {
             if (confirm('Are you sure?')) {
                 $.ajax({
@@ -184,6 +186,7 @@
         }
 
         function getExistingData(start, limit) {
+            
             $.ajax({
                 url: 'php/ajax_swipe.php',
                 method: 'POST',
@@ -198,8 +201,10 @@
                         start += limit;
                         getExistingData(start, limit);
                     } else {
-
-                        $(".table").DataTable({
+                        if(dataindex != 0){
+                            dTable.destroy();
+                        }
+                        dTable = $(".table").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -226,6 +231,7 @@
                             },
 
                         });
+
                     }
 
                 }
