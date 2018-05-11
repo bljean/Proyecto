@@ -109,17 +109,38 @@
                                                                 <h2 class="modal-title">Nuevo</h2>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <span>Matricula:</span>
-                                                                <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
-                                                                <br>
-                                                                <span>Nombre:</span>
-                                                                <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
-                                                                <br>
-                                                                <span>Apellido:</span>
-                                                                <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
-                                                                <br>
-                                                                <span>Tarjeta:</span>
-                                                                <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Matricula:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Nombre:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Apellido:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Tarjeta:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                                                                    </div>
+                                                                </div>
                                                                 <input type="hidden" id="editRowID" value="0">
                                                             </div>
                                                             <div class="modal-footer">
@@ -133,7 +154,7 @@
                                                 <!--Table Mysql -->
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <table class="table table-hover table-bordered" style="background-color:white " >
+                                                        <table class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
                                                                 <td>Matricula</td>
                                                                 <td>Nombre</td>
@@ -165,7 +186,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-        <!-- page script -->
+    <!-- page script -->
 
     <!--Script addNew -->
     <script type="text/javascript">
