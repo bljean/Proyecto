@@ -1,130 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-    <title>Admin Area</title>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Area | Asistencias</title>
     <!-- Bootstrap core CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styletest.css" rel="stylesheet">
+    <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-
 </head>
 
 <body>
-    <div class="container1">
-        <div class="backgroundimg"></div>
-        <header class="header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-10">
-                        <h1>
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Profesores
-                            <small></small>
-                        </h1>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!--Add new and Edit -->
-        <div class="container table1" style="margin-top: 20px;">
-            <div id="tableManager" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title">Nuevo</h2>
-                        </div>
-                        <div class="modal-body">
-                            <span>Usuario:</span>
-                            <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
-                            <br>
-                            <span>Nombre:</span>
-                            <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
-                            <br>
-                            <span>Apellido:</span>
-                            <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
-                            <br>
-                            <span>Tarjeta:</span>
-                            <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
-                            <input type="hidden" id="editRowID" value="0">
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--/Add new and Edit -->
 
-            <!--Table Mysql -->
-            <div class="row">
-                <div class="col-md-12 col-md-offset-2" style="background-color:white ">
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <td>Usuario</td>
-                            <td>Nombre</td>
-                            <td>Tarjeta</td>
-                            <td>Opciones</td>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!--/Table Mysql -->
-        <div class="bar">
-            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-                <a class="navbar-brand" href="dashboard.html">Control de acceso</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="swipe.html">Eventos</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gestión de Tarjetas</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="students.html">Estudiantes</a>
-                                <a class="dropdown-item active" href="professors.html">Profesores
-                                    <span class="sr-only">(current)</span>
-                                </a>
-                                <a class="dropdown-item" href="workers.html">Empleados</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav navbar-right ">
-                        <li class="nav-item">
-                            <a class="nav-link" href="../index.html">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                <a class="navbar-brand" href="dashboard.html">Control de acceso</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="swipe.html">Eventos</a>
+                    </li>
+                    <li>
+                        <div class="dropdown create">
+                            <button class="btn btn-danger" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Gestion de tarjetas
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li>
+                                    <a href="students.html">Estudiantes</a>
+                                </li>
+                                <li>
+                                    <a href="professors.html">Profesores</a>
+                                </li>
+                                <li>
+                                    <a href="workers.html">Empleados</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="login.html">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
         </div>
+    </nav>
 
-    </div>
+    <header id="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1>
+                        <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> Profesores
+                        <small></small>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="breadcrumb">
+        <div class="container-fluid">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="active">Profesores</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Website Overview -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading main-color-bg">
+                            <h3 class="panel-title">Tabla de Profesores</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="well dash-box">
+                                        <div class="panel-body">
+                                            <!--Add new and Edit -->
+                                            <div class="container-fluid">
+                                                <div id="tableManager" class="modal fade">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h2 class="modal-title">Nuevo</h2>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <span>Usuario:</span>
+                                                                <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                                                                <br>
+                                                                <span>Nombre:</span>
+                                                                <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
+                                                                <br>
+                                                                <span>Apellido:</span>
+                                                                <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
+                                                                <br>
+                                                                <span>Tarjeta:</span>
+                                                                <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                                                                <input type="hidden" id="editRowID" value="0">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--/Add new and Edit -->
+
+                                                <!--Table Mysql -->
+                                                <div class="row">
+                                                    <div class="col-md-12" style="background-color:white ">
+                                                        <table class="table table-hover table-bordered">
+                                                            <thead>
+                                                                <td>Usuario</td>
+                                                                <td>Nombre</td>
+                                                                <td>Tarjeta</td>
+                                                                <td>Opciones</td>
+                                                            </thead>
+                                                            <tbody>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/Table Mysql -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Latest Users -->
+                        </div>
+                    </div>
+                </div>
+    </section>
+    <!-- Modals -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-
     <!-- page script -->
 
     <!--Script addNew -->
@@ -279,8 +319,6 @@
             return true;
         }
     </script>
-
-
 </body>
 
 </html>

@@ -1,9 +1,16 @@
 
-
+body{
+  background:#f4f4f4;
+}
 :root{
   font-size: 16px;
 }
-
+.panelP{
+  position: absolute;
+  top: 15%;
+  
+  color:white;
+}
 .container1{
     position: absolute;
     left: 0;
@@ -17,7 +24,7 @@
     width: 100%;
     height: 100%;
     background-image: url("../assets/img/loginFont.jpg");
-    /*background:#681b1b; */
+  
      background-size: auto;
     background-repeat: no-repeat;
     background-position: center center;
@@ -26,7 +33,7 @@
 .header{
   position: absolute;
   width: 100%;
-  top: 7.1%;
+  top: 6.5%;
     background-color: #d9534f !important;
     background: #d9534f !important;
     color: white;
@@ -44,6 +51,18 @@
   left: 12%;
 
 }
+
+/* Breadcrumb */
+.breadcrumb{
+  background:#cccccc;
+  color:#333333;
+}
+
+.breadcrumb a{
+  color:#333333;
+  position: absolute;
+}
+/* navbar */
 .navbar{
     min-height: 33px !important;
     margin-bottom: 0;
