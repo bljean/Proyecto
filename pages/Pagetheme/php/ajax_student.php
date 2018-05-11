@@ -35,8 +35,12 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <td id="Name_'.$data["matricula"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
                     <td id="CardNumber_'.$data["matricula"].'">'.$data["CardNumber"].'</td>
                     <td>
+                    <div class="col-md-2">
                         <input type="button" onclick="edit('.$data["matricula"].')" value="Editar" class="btn btn-danger">
-                        <!-- <input type="button" onclick="deleteRow('.$data["matricula"].')" value="Delete" class="btn btn-danger"> -->
+                    </div>
+                    <form action="http://localhost/proyecto/pages/Pagetheme/Asistencias.html">
+                        <input type="submit" id="asisButton"  value="Asistencias" class="btn btn-danger">
+                    </form>
                     </td>
                 </tr>
                 ';
