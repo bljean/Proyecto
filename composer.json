@@ -2,6 +2,6 @@
     "require": {
         "fabpot/goutte": "^3.2",
         "guzzlehttp/guzzle": "^6.3",
-        "aws/aws-sdk-php": "^3.42"
+        "aws/aws-sdk-php": "^3.55.12"
     }
 }
