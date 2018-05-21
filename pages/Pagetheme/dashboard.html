@@ -54,7 +54,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="login.html">Logout</a>
+                        <button type="button" value="Log out" id="Logout" class="btn btn-danger btn-block">Logout</button>
                     </li>
                 </ul>
             </div>
@@ -91,6 +91,13 @@
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <!-- page script -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Logout").on('click', function () {
+                window.location= 'php/logout.php'
+            });
+        });
+    </script>
 </body>
 
 </html>
