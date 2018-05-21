@@ -47,7 +47,7 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="login.html">Logout</a>
+            <button type="button" value="Log out" id="Logout" class="btn btn-danger btn-block">Logout</button>
           </li>
         </ul>
       </div>
@@ -189,6 +189,13 @@
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $("#Logout").on('click', function () {
+            window.location= 'php/logout.php'
+        });
+    });
+</script>
 </body>
 
 </html>
