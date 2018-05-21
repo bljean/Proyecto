@@ -13,9 +13,9 @@ if(isset($_POST['login'])){
     if($data->num_rows >0){
         $_SESSION['loggedIN'] = '1';
         $_SESSION['user']= $user;
-        exit('Redireccionando...');
+        exit('1');
     }else
-        exit('Usuario o contrasena incorrectos');
+        exit('2');
 
 
 

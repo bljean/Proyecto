@@ -99,7 +99,12 @@ if(isset($_SESSION['loggedIN'])){
                                 passwordPHP: password
                             },
                             success: function (response) {
-                                location.reload();    
+                                if(response=="1"){
+                                    location.reload(); 
+                                }else if(response=="2"){
+                                    alert("Usuario o contrasena incorrectos");
+                                }
+                                   
                             },
                             dataType: 'text'
                         }
