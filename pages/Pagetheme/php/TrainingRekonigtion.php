@@ -28,15 +28,9 @@
 
     $client = new Aws\rekognition\rekognitionclient($args);
 
-    $result = $client->searchFacesByImage([
-      'CollectionId' => '20131036',
-      'FaceMatchThreshold' => 85,
-      'Image' => [
-        'Bytes' => file_get_contents("/xampp/htdocs/Proyecto/pages/Pagetheme/Img/Angenis_Garcia/Angenis_Garcia_0001.jpg"),
-      ],
-      'MaxFaces' => 3,
-  ]);
-
+    $result = $client->createCollection([
+        'CollectionId' => '20131036', // REQUIRED
+    ]);
 
     print_r($result)
 
