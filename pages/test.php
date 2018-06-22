@@ -47,9 +47,9 @@ function compareInfo($cardnumber,$Status,$DataTime){
     $status1= eraseTd1($status);
     $datatime = eraseTd($DataTime);
     
-    $sqlStudentName = connectBd()->query( "SELECT nombre, apellido FROM estudiante WHERE CardNumber='$cardN'");
-    $sqlProfessorName = connectBd()->query( "SELECT nombre, apellido FROM profesor WHERE CardNumber='$cardN'");
-    $sqlWorkersName = connectBd()->query( "SELECT nombre, apellido FROM trabajadores WHERE CardNumber='$cardN'");
+    $sqlStudentName = connectBd()->query( "SELECT nombre, apellido, matricula FROM estudiante WHERE CardNumber='$cardN'");
+    $sqlProfessorName = connectBd()->query( "SELECT nombre, apellido, usuario FROM profesor WHERE CardNumber='$cardN'");
+    $sqlWorkersName = connectBd()->query( "SELECT nombre, apellido, cedula FROM trabajadores WHERE CardNumber='$cardN'");
     $sqlDataTime = connectBd()->query( "SELECT dataTime FROM swipe WHERE dataTime='$datatime'");
 
     if($sqlStudentName->num_rows > 0 OR $sqlProfessorName->num_rows > 0 OR $sqlWorkersName->num_rows > 0)
@@ -97,6 +97,15 @@ function openDoor(){
     $form = $crawler->selectButton('Remote Open #1 Door m001-1')->form();
     $crawler = $client->submit($form);
 }
+function reconigtion($personid){
+    exec("python /PythonProject/PythonCode/takePhoto.py $personid",$output);
+    if($output[0]=="1"){
+        openDoor(); 
+        return true;
+    }else if(output[0]=="0"){
+        return false;
+    }
+}
 function eraseTd($text){
     list($td,$new) = explode('<td>', $text);
     return $new;
@@ -109,12 +118,13 @@ function eraseTd1($text){
 function swipeRecord($cardN,$sqlStudentName,$sqlProfessorName,$sqlWorkersName,$status1,$datatime,$index){
     $ID=setRowId();
     if($index== 1 AND $status1!="Reboot"){
-        openDoor(); 
+        
         if($sqlStudentName->num_rows > 0 ){
             while($data= $sqlStudentName->fetch_array()){
                 $name=$data["nombre"];
                 $apellido=$data["apellido"];
-                
+                $personid=$data["matricula"];
+               
             }
           
         }
@@ -122,16 +132,17 @@ function swipeRecord($cardN,$sqlStudentName,$sqlProfessorName,$sqlWorkersName,$s
             while($data= $sqlProfessorName->fetch_array()){
                 $name=$data["nombre"];
                 $apellido=$data["apellido"];
-                
+                $personid=$data["usuario"];
             }
         }
         if($sqlWorkersName->num_rows > 0){
             while($data= $sqlWorkersName->fetch_array()){
                 $name=$data["nombre"];
                 $apellido=$data["apellido"];
-                
+                $personid=$data["cedula"];
             }
         }
+        reconigtion($personid);
         connectBd()->query("INSERT INTO swipe (id, cardnumber,name, status, dataTime) VALUES('$ID','$cardN','$name $apellido','$status1','$datatime')");
     } else if($index == 0 AND $status1!="Reboot"){
         connectBd()->query("INSERT INTO swipe (id, cardnumber,name, status, dataTime) VALUES('$ID','$cardN','N/A','$status1','$datatime')");
