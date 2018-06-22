@@ -101,9 +101,9 @@ function reconigtion($personid){
     exec("python /PythonProject/PythonCode/takePhoto.py $personid",$output);
     if($output[0]=="1"){
         openDoor(); 
-        return true;
+        
     }else if(output[0]=="0"){
-        return false;
+        
     }
 }
 function eraseTd($text){
