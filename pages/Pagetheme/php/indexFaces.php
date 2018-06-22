@@ -29,10 +29,10 @@
     $client = new Aws\rekognition\rekognitionclient($args);
 
     $result = $client->indexFaces([
-      'CollectionId' => '20131036', // REQUIRED
+      'CollectionId' => '20131066', // REQUIRED
       'DetectionAttributes' => ['DEFAULT'],
       'Image' => [ // REQUIRED
-          'Bytes' => file_get_contents("/xampp/htdocs/Proyecto/pages/Pagetheme/Img/Jean_Luis/Jean_Luis_0005.png"),
+          'Bytes' => file_get_contents("/xampp/htdocs/Proyecto/pages/Pagetheme/Img/Angenis_Garcia/Angenis_Garcia_0008.jpg"),
       ],
   ]);
 

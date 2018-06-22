@@ -29,7 +29,7 @@
     $client = new Aws\rekognition\rekognitionclient($args);
 
     $result = $client->createCollection([
-        'CollectionId' => '20131036', // REQUIRED
+        'CollectionId' => '20131066', // REQUIRED
     ]);
 
     print_r($result)
