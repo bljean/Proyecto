@@ -16,7 +16,8 @@ function reconigtion($personid){
         echo "no funciona D:";
     }
 }
-$cardN=5852349;
+$cardN=6796045;
+//$cardN=5852349;
 $sqlStudentName = connectBd()->query( "SELECT nombre, apellido, matricula FROM estudiante WHERE CardNumber='$cardN'");
 if($sqlStudentName->num_rows > 0 ){
     while($data= $sqlStudentName->fetch_array()){

@@ -98,7 +98,7 @@ function openDoor(){
     $crawler = $client->submit($form);
 }
 function reconigtion($personid){
-    exec("python /PythonProject/PythonCode/takePhoto.py $personid",$output);
+    exec("python /xampp/htdocs/Proyecto/pages/Pagetheme/takePhoto.py $personid",$output);
     if($output[0]=="1"){
         openDoor(); 
         
