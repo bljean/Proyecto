@@ -165,21 +165,23 @@
         $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
         });
+        getExistingData(start, limit,ID);
     });
-    function getExistingData(start, limit) {
+    function getExistingData(start, limit,ID) {
             $.ajax({
-                url: 'php/ajax_Asistencias.php',
+                url: 'php/ajax_asistencias.php',
                 method: 'POST',
                 dataType: 'text',
                 data: {
                     key: 'getExistingData',
                     start: start,
-                    limit: limit
+                    limit: limit,
+                    ID: ID
                 }, success: function (response) {
                     if (response != "reachedMax") {
                         $('tbody').append(response);
                         start += limit;
-                        getExistingData(start, limit);
+                        getExistingData(start, limit,ID);
                     } else {
 
                         $(".table").DataTable({
