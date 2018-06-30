@@ -61,7 +61,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     $ID = $conn->real_escape_string($_POST['matricula']);
     $cardNumber = $conn->real_escape_string($_POST['cardNumber']);
     
-    if ($_POST['key'] == 'updateRow' or){
+    if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
     if ($_POST['key'] == 'updateRow'){
       $conn->query("UPDATE estudiante SET matricula='$ID', nombre='$name', CardNumber='$cardNumber' WHERE matricula='$rowID'");
       exit('success');
