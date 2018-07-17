@@ -1,3 +1,7 @@
+<?php
+$ID= $_POST['ID'];
+$nombre=$_POST['nombre'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,8 +12,9 @@
   <title>Admin Area | Asistencias</title>
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/styletest.css" rel="stylesheet">
-  <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
+    <link href="css/styletest.css" rel="stylesheet">
+    <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
 </head>
 
 <body>
@@ -92,12 +97,10 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4>2013-1036 Jean Luis Gonzalez ITT</h4>
-                    <ul class="nav nav-pills nav-stacked">
-                      <li class="active"><a href="#">Grupos</a></li>
-                      <li><a href="#">ST-ADM-407-T-002 Emprendimiento</a></li>
-                      <li><a href="#">ST-ADM-407-T-001 Comunicacion digital</a></li>
-                      <li><a href="#">Menu 3</a></li>
+                    <h4><?php echo $ID?> <?php echo $nombre?></h4>
+                    <h4>Grupos:</h4>
+                    <ul class="nav nav-pills nav-stacked pillsbody">
+                    
                     </ul>
                   </div>
                 </div>
@@ -110,13 +113,13 @@
                           <h4>ST-ADM-407-T-002 Emprendimiento</h4>
                         </div>
                       </div>
-                      <table class="table table-striped table-hover">
+                      <table class="table table-striped table-hover tableAsis">
                         <thead>
                           <th>Fechas</th>
                           <th>Horas presente</th>
                           <th>Opciones</th>
                         </thead>
-                        <tbody>
+                        <tbody class="tableAsisBody">
 
                         </tbody>
                       </table>
@@ -159,32 +162,57 @@
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-        $("#Logout").on('click', function () {
+      dataindex=0;
+      var ID = "<?php echo $ID; ?>";
+      getGroupData(ID);
+      $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
-        });
-        getExistingData(start, limit,ID);
+      });
     });
-    function getExistingData(start, limit,ID) {
+    function activeGroup(codigo,idestudiante){
+        $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getActiveGroup',
+                    ID: idestudiante,
+                    groupCode:codigo
+                }, success: function (response) {
+                $(".pillsbody").html('');
+                $(".pillsbody").append(response);
+                $(".tableAsisBody").html('');
+                dataindex=1;
+                getAsisData(0, 50,idestudiante, codigo);
+                }
+            });
+        
+    }
+    function getAsisData(start, limit,ID,grupID) {
             $.ajax({
-                url: 'php/ajax_asistencias.php',
+                url: 'php/ajax_Asistencias.php',
                 method: 'POST',
                 dataType: 'text',
                 data: {
                     key: 'getExistingData',
                     start: start,
                     limit: limit,
-                    ID: ID
+                    ID: ID,
+                    grupID: grupID
                 }, success: function (response) {
                     if (response != "reachedMax") {
-                        $('tbody').append(response);
+                        $("tbody").append(response);
                         start += limit;
-                        getExistingData(start, limit,ID);
+                        getAsisData(start, limit,ID,grupID);
                     } else {
-
-                        $(".table").DataTable({
+                      if(dataindex != 0){
+                            dTable.destroy();
+                        }
+                        dTable = $(".tableAsis").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -216,6 +244,22 @@
                 }
             });
         }
+function getGroupData(idestudiante){
+  $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getGroupData',
+                    ID: idestudiante
+                }, success: function (response) {
+                 $(".pillsbody").append(response);
+
+                }
+            });
+
+}
+
 </script>
 </body>
 

@@ -120,6 +120,15 @@ body{
   padding:30px;
   margin-top:30px;
 }
+/* pills background */
+.nav-pills>li.active>a,.nav-pills>li.active>a:focus,.nav-pills>li.active>a:hover {
+    background-color: #e74c3c;
+    color: black;
+}
+.nav-pills>li>a{
+  color: black;
+  background-color: #dbdbdb;
+}
 
 
 @media (max-width: 767px) {

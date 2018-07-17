@@ -7,7 +7,7 @@ import sys
 from pprint import pprint
 # variables
 client = boto3.client('rekognition')
-path = 'C:/xampp/htdocs/Proyecto/pages/Pagetheme/imgtaken'
+path = 'C:/xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/imgtaken'
 # video capture source camera (Here webcam of laptop)
 CID=sys.argv[1]
 cap = cv2.VideoCapture(0)

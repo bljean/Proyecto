@@ -6,38 +6,26 @@ $pass='';
 $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
 
-    if($_POST['key'] == 'getRowData'){
-        $rowID = $conn->real_escape_string($_POST['rowID']);
-        //$sql= $conn->query("SELECT ID,Name,CardNumber FROM student WHERE id ='$rowID'");
-        $sql = $conn->query("SELECT matricula, nombre, apellido, CardNumber FROm estudiante WHERE matricula='$rowID'");
-        $data= $sql->fetch_array();
-        $jsonArray = array(
-            'ID'=> $data['matricula'],
-            'Name'=> $data['nombre'],
-            'CardNumber'=>$data['CardNumber'],
-            'Apellido'=>$data['apellido'],
-        );
-        exit(json_encode($jsonArray));
-    }
-
     if($_POST['key'] == 'getExistingData'){
         $start = $conn->real_escape_string($_POST['start']);
         $limit = $conn->real_escape_string($_POST['limit']);
         $studentID=$conn->real_escape_string($_POST['ID']);
+        $grupID=$conn->real_escape_string($_POST['grupID']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT fecha, horasasi FROM asistencia where idestudiante='$studentID' LIMIT $start,$limit");
+        $sql = $conn->query("SELECT fecha, horasasi FROM asistencia where idestudiante='$studentID'and idgrupo='$grupID' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
                 $response .='
                 <tr>
                     <td>'.$data["fecha"].'</td>
-                    <td>'.$data["nombre"].'</td>
+                    <td>'.$data["horasasi"].'</td>
                     <td>
                     <div class="col-md-2">
-                        <input type="button" onclick="edit('.$studentID.')" value="Editar" class="btn btn-danger">
+                        <input type="button" value="Editar" class="btn btn-danger">
                     </div>
+                    </td>
                 </tr>
                 ';
             }
@@ -45,33 +33,67 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         } else
             exit('reachedMax');
     }
-  
+    if($_POST['key'] == 'getGroupData'){
+        $studentID=$conn->real_escape_string($_POST['ID']);
+        //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
+        $sql = $conn->query("SELECT idgrupo, codigo from grupo");
+        if($sql->num_rows >0){
+            $response ="";
+            $i=0;
+            while($data= $sql->fetch_array()){
 
-    if($_POST['key'] == 'deleteRow'){
-        $rowID = $conn->real_escape_string($_POST['rowID']);
-        $conn->query("DELETE FROM estudiante WHERE matricula = '$rowID'");
-        exit('The Row Has Been Deleted');
+                if($i==0){
+                $response .='
+                <li class="active"id="'.$data["idgrupo"].'"><a>'.$data["codigo"].'</a></li>
+                ';
+                }else{
+                $response .='
+                <li onclick="activeGroup('.$data["idgrupo"].',' .$studentID.')"><a>'.$data["codigo"].'</a></li>
+                ';   
+                }
+                ++$i;
+                
+            }
+            exit($response);
+        } else
+            exit('reachedMax');
     }
-    $rowID = $conn->real_escape_string($_POST['rowID']);
-    $name =$conn->real_escape_string($_POST['name']);
-    $ID = $conn->real_escape_string($_POST['matricula']);
-    $cardNumber = $conn->real_escape_string($_POST['cardNumber']);
+    if($_POST['key'] == 'getActiveGroup'){
+        $studentID=$conn->real_escape_string($_POST['ID']);
+        $groupCode=$conn->real_escape_string($_POST['groupCode']);
+        //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
+        $sql = $conn->query("SELECT idgrupo, codigo from grupo");
+
+        if($sql->num_rows >0){
+            $response ="";
+            while($data= $sql->fetch_array()){
+
+                if($data["idgrupo"]==$groupCode){
+                $response .='
+                <li class="active"><a>'.$data["codigo"].'</a></li>
+                ';
+                }else{
+                $response .='
+                <li onclick="activeGroup('.$data["idgrupo"].',' .$studentID.')"><a>'.$data["codigo"].'</a></li>
+                ';   
+                }
+               
+                
+            }
+            exit($response);
+        } else
+            exit('reachedMax');
+    }
     
     if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
+        $rowID = $conn->real_escape_string($_POST['rowID']);
+        $name =$conn->real_escape_string($_POST['name']);
+        $ID = $conn->real_escape_string($_POST['matricula']);
+        $cardNumber = $conn->real_escape_string($_POST['cardNumber']);
     if ($_POST['key'] == 'updateRow'){
       $conn->query("UPDATE estudiante SET matricula='$ID', nombre='$name', CardNumber='$cardNumber' WHERE matricula='$rowID'");
       exit('success');
      }
-    if ($_POST['key'] == 'addNew'){
-        $sql = $conn->query( "SELECT ID FROM student WHERE Name='$name'");
-        if($sql->num_rows > 0)
-            exit("Student with this name alredy exit!");
-        else{
-            $conn->query("INSERT INTO student (ID, Name , CardNumber) VALUES('$ID','$name','$cardNumber')");
-            exit('Student has benn inserted!');
-        }
-        
-    }
     }
 }
 ?>

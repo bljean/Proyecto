@@ -25,7 +25,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $limit = $conn->real_escape_string($_POST['limit']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT matricula, nombre, apellido, CardNumber FROm estudiante LIMIT $start,$limit");
+        $sql = $conn->query("SELECT matricula, nombre, apellido, CardNumber FROM estudiante LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
@@ -38,9 +38,13 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <div class="col-md-2">
                         <input type="button" onclick="edit('.$data["matricula"].')" value="Editar" class="btn btn-danger">
                     </div>
-                    <form action="http://localhost/proyecto/pages/Pagetheme/Asistencias.html">
-                        <input type="submit" id="asisButton"  value="Asistencias" class="btn btn-danger">
+                    
+                     <form method="POST" action="Asistencias.php">
+                        <input type="hidden" name="ID" value="'.$data["matricula"].'">
+                        <input type="hidden" name="nombre" value="'.$data["nombre"].' '.$data["apellido"].'">
+                        <input type="submit" value="Asistencias" class="btn btn-danger">
                     </form>
+                    
                     </td>
                 </tr>
                 ';
