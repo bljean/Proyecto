@@ -79,6 +79,7 @@ $nombre=$_POST['nombre'];
         <li>
           <a href="dashboard.html">Dashboard</a>
         </li>
+        <li><a href="students.html">Estudiantes</a></li>
         <li class="active">Asistencias</li>
       </ol>
     </div>
@@ -88,6 +89,37 @@ $nombre=$_POST['nombre'];
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+        <div id="tableManager" class="modal fade">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Editar</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Fecha:</h4>
+                    </div>
+                    <div class="col-md-10">
+                      <input type="text" class="form-control"  id="fecha" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Horas:</h4>
+                    </div>
+                    <div class="col-md-10">
+                      <input type="text" class="form-control"  id="horas" readonly="readonly">
+                    </div>
+                  </div>
+                  <input type="hidden" id="editRowID" value="0">
+                  </div>
+                  <div class="modal-footer">
+                    <input type="button" id="manageBtn" onclick="manageData('updateRow')" value="Salvar cambios" class="btn btn-danger">
+                  </div>
+                </div>
+            </div>
+          </div>
           <!-- Website Overview -->
           <div class="panel panel-default">
             <div class="panel-heading main-color-bg">
@@ -99,7 +131,7 @@ $nombre=$_POST['nombre'];
                   <div class="well dash-box"style=" text-align: center;">
                     <h4><?php echo $ID?> <?php echo $nombre?></h4>
                     <h4>Grupos:</h4>
-                    <ul class="nav nav-pills nav-stacked pillsbody">
+                    <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     
                     </ul>
                   </div>
@@ -110,7 +142,7 @@ $nombre=$_POST['nombre'];
                     <div class="panel-body">
                       <div class="row">
                         <div class="col-md-6">
-                          <h4>ST-ADM-407-T-002 Emprendimiento</h4>
+                          <h4 id="tituloGrupo"></h4>
                         </div>
                       </div>
                       <table class="table table-striped table-hover tableAsis">
@@ -172,26 +204,86 @@ $nombre=$_POST['nombre'];
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
-    });
+      $("#addNew").on('click', function () {
+                $(".modal-title").html('Add New');
+                $("#tableManager").modal('show');
+
+            });
+      });
+    function manageData(key, edit) {
+            var name = $("#Name");
+            var cardNumber = $("#CardNumber");
+            var matricula = $("#ID");
+            var editRowID = $("#editRowID");
+
+            if (isNotEmpty(matricula) && isNotEmpty(name) && isNotEmpty(cardNumber)) {
+                $.ajax({
+                    url: 'php/ajax_student.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: key,
+                        name: name.val(),
+                        matricula: matricula.val(),
+                        cardNumber: cardNumber.val(),
+                        rowID: editRowID.val()
+                    }, success: function (response) {
+                        if (response != "success") {
+                            alert(response);
+                            $("#tableManager").modal('hide');
+                            location.reload();
+                        }
+                        else {
+
+                            $("#Name_" + editRowID.val()).html(name.val());
+                            $("#CardNumber_" + editRowID.val()).html(cardNumber.val());
+                            cleanModal();
+                            $("#tableManager").modal('hide');
+                            $("#manageBtn").attr('value', 'Add').attr('onclick', "manageData('addNew')");
+                        }
+                    }
+                });
+            }
+
+
+        }
+    function edit(rowID) {
+            $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getRowData',
+                    rowID: rowID
+                }, success: function (response) {
+                    $("#fecha").val(response.fecha);
+                    $("#horas").val(response.horasasi);
+                    $("#tableManager").modal('show');
+                }
+            });
+        }
     function activeGroup(codigo,idestudiante){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
-                dataType: 'text',
+                dataType: 'json',
                 data: {
                     key: 'getActiveGroup',
                     ID: idestudiante,
                     groupCode:codigo
                 }, success: function (response) {
-                $(".pillsbody").html('');
-                $(".pillsbody").append(response);
-                $(".tableAsisBody").html('');
-                dataindex=1;
-                getAsisData(0, 50,idestudiante, codigo);
+                  if (response != "reachedMax") {
+                    $(".pillsbody").html('');
+                    $(".pillsbody").append(response.body);
+                    $("#tituloGrupo").html('');
+                    $("#tituloGrupo").append(response.groupCodigo);
+                    $(".tableAsisBody").html('');
+                    dataindex=1;
+                    getAsisData(0, 50,idestudiante,codigo);
+                  }
                 }
             });
-        
-    }
+            }
     function getAsisData(start, limit,ID,grupID) {
             $.ajax({
                 url: 'php/ajax_Asistencias.php',
@@ -205,14 +297,14 @@ $nombre=$_POST['nombre'];
                     grupID: grupID
                 }, success: function (response) {
                     if (response != "reachedMax") {
-                        $("tbody").append(response);
+                        $(".tableAsisBody").append(response);
                         start += limit;
                         getAsisData(start, limit,ID,grupID);
                     } else {
                       if(dataindex != 0){
-                            dTable.destroy();
-                        }
-                        dTable = $(".tableAsis").DataTable({
+                            
+                        }else{
+                          dTable = $(".tableAsis").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -238,27 +330,31 @@ $nombre=$_POST['nombre'];
                                 }
                             },
                             "lengthChange": false
-                        });
+                        });}
+                        
                     }
 
                 }
             });
         }
-function getGroupData(idestudiante){
-  $.ajax({
-                url: 'php/ajax_Asistencias.php',
-                method: 'POST',
-                dataType: 'text',
-                data: {
+    function getGroupData(idestudiante){
+      $.ajax({
+              url: 'php/ajax_Asistencias.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
                     key: 'getGroupData',
                     ID: idestudiante
-                }, success: function (response) {
-                 $(".pillsbody").append(response);
-
+                    }, success: function (response) {
+                        if (response != "reachedMax") {
+                          $(".pillsbody").append(response.body);
+                          $("#tituloGrupo").html('');
+                          $("#tituloGrupo").append(response.groupCodigo);
+                          getAsisData(0, 50,idestudiante,response.groupid);
+                        }
+                    }
+                });
                 }
-            });
-
-}
 
 </script>
 </body>

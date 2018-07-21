@@ -93,6 +93,7 @@ if(isset($_SESSION['loggedIN'])){
                         {
                             url: 'php/login.php',
                             method: 'POST',
+                            dataType: 'text',
                             data: {
                                 login: 1,
                                 userPHP: user,

@@ -116,7 +116,7 @@ function eraseTd1($text){
 }
 
 function swipeRecord($cardN,$sqlStudentName,$sqlProfessorName,$sqlWorkersName,$status1,$datatime,$index){
-    $ID=setRowId();
+    /*$ID=setRowId();*/
     if($index== 1 AND $status1!="Reboot"){
         
         if($sqlStudentName->num_rows > 0 ){
@@ -143,11 +143,12 @@ function swipeRecord($cardN,$sqlStudentName,$sqlProfessorName,$sqlWorkersName,$s
             }
         }
         reconigtion($personid);
-        connectBd()->query("INSERT INTO swipe (id, cardnumber,name, status, dataTime) VALUES('$ID','$cardN','$name $apellido','$status1','$datatime')");
+        connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','$name $apellido','$status1','$datatime')");
     } else if($index == 0 AND $status1!="Reboot"){
-        connectBd()->query("INSERT INTO swipe (id, cardnumber,name, status, dataTime) VALUES('$ID','$cardN','N/A','$status1','$datatime')");
+        connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','N/A','$status1','$datatime')");
     }
 }
+
 function setRowId(){
     /*$user='root';
     $pass='';

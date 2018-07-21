@@ -137,14 +137,17 @@
                                                                     <div class="col-md-2">
                                                                         <h4>Tarjeta:</h4>
                                                                     </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <input type="button" id="autoRecordCardBtn" onclick="autoRecordCard()" value="Registro Automático" class="btn btn-danger">
                                                                     </div>
                                                                 </div>
                                                                 <input type="hidden" id="editRowID" value="0">
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-danger">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -238,7 +241,23 @@
                 }
             });
         }
+        function autoRecordCard(){
+            $.ajax({
+                url: 'php/cardRecord.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getCardNumber',
+                }, success: function (response) {
+                    if(response.status=="1"){
+                        $("#CardNumber").val(response.body);
+                    }else{alert("Tarjeta en uso")}
+                    
+                      
+                }
+            });
 
+        }
         function getExistingData(start, limit) {
             $.ajax({
                 url: 'php/ajax_student.php',
