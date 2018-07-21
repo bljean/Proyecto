@@ -112,11 +112,9 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     
     if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
         $rowID = $conn->real_escape_string($_POST['rowID']);
-        $name =$conn->real_escape_string($_POST['name']);
-        $ID = $conn->real_escape_string($_POST['matricula']);
-        $cardNumber = $conn->real_escape_string($_POST['cardNumber']);
+        $horas = $conn->real_escape_string($_POST['horas']);
     if ($_POST['key'] == 'updateRow'){
-      $conn->query("UPDATE estudiante SET matricula='$ID', nombre='$name', CardNumber='$cardNumber' WHERE matricula='$rowID'");
+      $conn->query("UPDATE asistencia SET horasasi='$horas'WHERE idasistencia='$rowID'");
       exit('success');
      }
     }

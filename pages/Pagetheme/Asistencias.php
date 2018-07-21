@@ -109,13 +109,14 @@ $nombre=$_POST['nombre'];
                       <h4>Horas:</h4>
                     </div>
                     <div class="col-md-10">
-                      <input type="text" class="form-control"  id="horas" readonly="readonly">
+                      <input type="text" class="form-control"  id="horas">
                     </div>
                   </div>
                   <input type="hidden" id="editRowID" value="0">
                   </div>
                   <div class="modal-footer">
-                    <input type="button" id="manageBtn" onclick="manageData('updateRow')" value="Salvar cambios" class="btn btn-danger">
+                    <input type="hidden" id="rowid">
+                    <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-danger">
                   </div>
                 </div>
             </div>
@@ -204,49 +205,41 @@ $nombre=$_POST['nombre'];
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
-      $("#addNew").on('click', function () {
-                $(".modal-title").html('Add New');
-                $("#tableManager").modal('show');
-
-            });
       });
-    function manageData(key, edit) {
-            var name = $("#Name");
-            var cardNumber = $("#CardNumber");
-            var matricula = $("#ID");
-            var editRowID = $("#editRowID");
+    function manageData(key) {
+            var horas = $("#horas");
+            var rowid=$("#rowid");
 
-            if (isNotEmpty(matricula) && isNotEmpty(name) && isNotEmpty(cardNumber)) {
+            if (isNotEmpty(horas) && isNotEmpty(rowid)) {
                 $.ajax({
-                    url: 'php/ajax_student.php',
+                    url: 'php/ajax_Asistencias.php',
                     method: 'POST',
                     dataType: 'text',
                     data: {
-                        key: key,
-                        name: name.val(),
-                        matricula: matricula.val(),
-                        cardNumber: cardNumber.val(),
-                        rowID: editRowID.val()
+                        key: 'updateRow',
+                        horas: horas.val(),
+                        rowID: rowid.val(),
                     }, success: function (response) {
                         if (response != "success") {
-                            alert(response);
                             $("#tableManager").modal('hide');
                             location.reload();
                         }
                         else {
-
-                            $("#Name_" + editRowID.val()).html(name.val());
-                            $("#CardNumber_" + editRowID.val()).html(cardNumber.val());
                             cleanModal();
                             $("#tableManager").modal('hide');
-                            $("#manageBtn").attr('value', 'Add').attr('onclick', "manageData('addNew')");
+                            location.reload();
                         }
                     }
                 });
             }
-
-
-        }
+          }
+    function cleanModal() {
+        var name = $("#horas");
+        var cardNumber = $("#fecha");
+        var matricula = $("#rowid");
+        name.val('');
+        matricula.val('');
+        cardNumber.val('');}
     function edit(rowID) {
             $.ajax({
                 url: 'php/ajax_Asistencias.php',
@@ -258,10 +251,18 @@ $nombre=$_POST['nombre'];
                 }, success: function (response) {
                     $("#fecha").val(response.fecha);
                     $("#horas").val(response.horasasi);
+                    $("#rowid").val(rowID);
                     $("#tableManager").modal('show');
                 }
             });
         }
+    function isNotEmpty(caller) {
+      if (caller.val() == '') {
+          caller.css('border', '1px solid red');
+          return false;
+      } else caller.css('border', '');
+        return true;
+        }      
     function activeGroup(codigo,idestudiante){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
@@ -354,7 +355,7 @@ $nombre=$_POST['nombre'];
                         }
                     }
                 });
-                }
+      }
 
 </script>
 </body>
