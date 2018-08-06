@@ -35,7 +35,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <td>'.$data["horasasi"].'</td>
                     <td>
                     <div class="col-md-2">
-                    <input type="button" onclick="edit('.$data["idasistencia"].')" value="Editar" class="btn btn-danger">
+                    <input type="button" onclick="edit('.$data["idasistencia"].')" value="Editar" class="btn btn-primary">
                     </div>
                     </td>
                 </tr>

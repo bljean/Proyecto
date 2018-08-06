@@ -38,7 +38,7 @@ $nombre=$_POST['nombre'];
           </li>
           <li>
               <div class="dropdown create">
-                  <button class="btn btn-danger" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     Gestion de tarjetas
                     <span class="caret"></span>
                   </button>
@@ -52,7 +52,7 @@ $nombre=$_POST['nombre'];
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <button type="button" value="Log out" id="Logout" class="btn btn-danger btn-block">Logout</button>
+            <button type="button" value="Log out" id="Logout" class="btn btn-primary btn-block">Logout</button>
           </li>
         </ul>
       </div>
@@ -116,14 +116,14 @@ $nombre=$_POST['nombre'];
                   </div>
                   <div class="modal-footer">
                     <input type="hidden" id="rowid">
-                    <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-danger">
+                    <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-primary">
                   </div>
                 </div>
             </div>
           </div>
           <!-- Website Overview -->
           <div class="panel panel-default">
-            <div class="panel-heading main-color-bg">
+            <div class="panel-heading tabla-color-bg">
               <h3 class="panel-title">Historial de Asistencias</h3>
             </div>
             <div class="panel-body">

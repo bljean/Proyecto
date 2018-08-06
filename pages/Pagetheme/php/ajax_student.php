@@ -36,13 +36,13 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <td id="CardNumber_'.$data["matricula"].'">'.$data["CardNumber"].'</td>
                     <td>
                     <div class="col-md-2">
-                        <input type="button" onclick="edit('.$data["matricula"].')" value="Editar" class="btn btn-danger">
+                        <input type="button" onclick="edit('.$data["matricula"].')" value="Editar" class="btn btn-primary">
                     </div>
                     
                      <form method="POST" action="Asistencias.php">
                         <input type="hidden" name="ID" value="'.$data["matricula"].'">
                         <input type="hidden" name="nombre" value="'.$data["nombre"].' '.$data["apellido"].'">
-                        <input type="submit" value="Asistencias" class="btn btn-danger">
+                        <input type="submit" value="Asistencias" class="btn btn-primary">
                     </form>
                     
                     </td>

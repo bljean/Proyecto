@@ -35,8 +35,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <td id="Name_'.$data["idtrabajadores"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
                     <td id="CardNumber_'.$data["idtrabajadores"].'">'.$data["CardNumber"].'</td>
                     <td>
-                        <input type="button" onclick="edit('.$data["idtrabajadores"].')" value="Editar" class="btn btn-danger">
-                        <!-- <input type="button" onclick="deleteRow('.$data["idtrabajadores"].')" value="Delete" class="btn btn-danger"> -->
+                        <input type="button" onclick="edit('.$data["idtrabajadores"].')" value="Editar" class="btn btn-primary">
+                        <!-- <input type="button" onclick="deleteRow('.$data["idtrabajadores"].')" value="Delete" class="btn btn-primary"> -->
                     </td>
                 </tr>
                 ';
