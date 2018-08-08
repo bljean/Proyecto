@@ -9,7 +9,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     if($_POST['key'] == 'getRowData'){
         $rowID = $conn->real_escape_string($_POST['rowID']);
         //$sql= $conn->query("SELECT ID,Name,CardNumber FROM student WHERE id ='$rowID'");
-        $sql = $conn->query("SELECT usuario, nombre, apellido, CardNumber FROm profesor WHERE idprofesor='$rowID'");
+        $sql = $conn->query("SELECT usuario, nombre, apellido, CardNumber FROm profesor WHERE NumCedula='$rowID'");
         $data= $sql->fetch_array();
         $jsonArray = array(
             'ID'=> $data['usuario'],
@@ -25,17 +25,17 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $limit = $conn->real_escape_string($_POST['limit']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT idprofesor, usuario, nombre, apellido, CardNumber FROm profesor LIMIT $start,$limit");
+        $sql = $conn->query("SELECT NumCedula, usuario, nombre, apellido, CardNumber FROm profesor LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
                 $response .='
                 <tr>
                     <td>'.$data["usuario"].'</td>
-                    <td id="Name_'.$data["idprofesor"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
-                    <td id="CardNumber_'.$data["idprofesor"].'">'.$data["CardNumber"].'</td>
+                    <td id="Name_'.$data["NumCedula"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
+                    <td id="CardNumber_'.$data["NumCedula"].'">'.$data["CardNumber"].'</td>
                     <td>
-                        <input type="button" onclick="edit('.$data["idprofesor"].')" value="Editar" class="btn btn-primary">
+                        <input type="button" onclick="edit('.$data["NumCedula"].')" value="Editar" class="btn btn-primary">
                         <!-- <input type="button" onclick="deleteRow('.$data["usuario"].')" value="Delete" class="btn btn-primary"> -->
                     </td>
                 </tr>

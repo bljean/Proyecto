@@ -25,7 +25,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $grupID=$conn->real_escape_string($_POST['grupID']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT idasistencia,fecha, horasasi FROM asistencia where idestudiante='$studentID' AND idgrupo='$grupID' LIMIT $start,$limit");
+        $sql = $conn->query("SELECT idasistencia,fecha, horasasi FROM asistencia where Matricula='$studentID' AND NumGrupo='$grupID' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
