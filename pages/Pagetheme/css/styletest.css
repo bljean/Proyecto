@@ -2,6 +2,19 @@ body{
   background:#f4f4f4;
 }
 
+/* border panel y graficos */
+.panel-noticias {
+border-style: ridge;
+border-color:#c2c1c1a6;
+
+}
+
+.icono-noticias{
+  background-color: #D6EAF8  ;
+ 
+  color: #1A5276  ;
+}
+
 /* Navbar */
 .navbar{
   min-height: 33px !important;
@@ -72,6 +85,9 @@ body{
 }
 
 /* Custom */
+.panel-body-color{
+  background-color:#f5f5f5;
+}
 .main-color-bg{
   background-color: #f5f5f5 !important;
   border-color: #ddd !important;

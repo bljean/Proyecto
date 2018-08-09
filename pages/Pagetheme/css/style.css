@@ -29,6 +29,11 @@ body{
     background-repeat: no-repeat;
     background-position: center center;
 }
+/* grafica cartas */
+.card-color{
+  background-color: #d9534f !important;
+}
+
 /* header */
 .header{
   position: absolute;
@@ -51,6 +56,7 @@ body{
   left: 12%;
 
 }
+
 
 /* Breadcrumb */
 .breadcrumb{
@@ -81,6 +87,7 @@ body{
     padding-left: 20px;
     font-size: 18px !important;
 }
+
 
 .navbar .navbar-brand {
   color: #ecf0f1;
@@ -161,9 +168,6 @@ body{
 
 
 
-
-
-
 @media (max-width: 575px) {
   .navbar-expand-sm .navbar-nav .show .dropdown-menu .dropdown-item {
     color: #ecf0f1;
@@ -231,3 +235,4 @@ body{
   color: #f4dedd;
   background-color: #d9534f;
 }
+
