@@ -9,12 +9,11 @@ from pprint import pprint
 client = boto3.client('rekognition')
 path = 'C:/xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/imgtaken'
 # video capture source camera (Here webcam of laptop)
-CID=sys.argv[1]
-#CID=20131036
+#CID=sys.argv[1]
+CID=20131036
 cap = cv2.VideoCapture(0)
 p = 0
 i = 1
-a = 0
 img_Similarity =[]
 openD = 0
 
@@ -47,12 +46,11 @@ while p < 1:
     matches = compare_faces(get_image_from_file(img_name), '{}'.format(CID))
     for match in matches:
         a=float(match['Similarity'])
-        if a >85 :
+        if a > 85
             openD=1
             break
-            
     p += 1
-    
+    time.sleep(1) 
 '''    
 for imgS in img_Similarity:
     if imgS >85 :
