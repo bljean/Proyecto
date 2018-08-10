@@ -51,13 +51,7 @@ while p < 1:
             openD=1
             break
             
-    p += 1
-    
-'''    
-for imgS in img_Similarity:
-    if imgS >85 :
-     openD=1
-'''                
+    p += 1             
 pprint(openD)
 
 cap.release()
