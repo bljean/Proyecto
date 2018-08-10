@@ -96,8 +96,14 @@ border-color:#c2c1c1a6;
   
 }
 
+.a{
+  
+  text-align: center;
+  
+}
+
 .border-ppanel{
-border-style: groove;
+
 border-color: #31708f;
 
 }
@@ -126,12 +132,7 @@ border-color: #31708f;
   margin-bottom: 30px;
 }
 
-/* letras asistencia */
-.sistema{
-  
-  font-family: Arial;
 
-}
 
 
 #header .create{
