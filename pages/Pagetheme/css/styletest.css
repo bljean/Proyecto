@@ -129,7 +129,6 @@ border-color: #31708f;
   background:#105f86;
   color:#ffffff;
   padding-bottom: 25px; 
-  margin-bottom: 30px;
 }
 
 
@@ -196,3 +195,58 @@ border-color: #31708f;
     background-color: #31708f;
   }
 }
+
+
+.principal-view .panel-header {
+ text-align: center;
+}
+
+.principal-view .item-menu .panel-body {
+  background: #105f86;
+  height: 200px;
+  display: grid;
+  align-items: center;
+}
+
+.principal-view .item-menu h3,
+.principal-view .item-menu h2 {
+  color: white;
+  text-align: center;
+}
+
+.principal-view .item-menu h2 {
+  display:none;
+}
+
+.principal-view .item-menu h3:hover ~ h2 {
+  display:grid;
+}
+
+.principal-view .panel-body .material-icons,
+.principal-view .panel-body .glyphicon {
+  font-size: 100px;
+}
+
+.principal-view .item-menu a[href]:hover {
+  text-decoration: none;
+}
+
+.principal-view .item-menu .panel-body:hover {
+  background: #1a82b6;
+  cursor: pointer;
+}
+
+.principal-view {
+  height: 90vh; 
+  background: url(/Proyecto/pages/Pagetheme/Img/loginFont.jpg) no-repeat center center fixed;
+}
+
+#headerP h1[logo-principal] {
+  text-align: center;
+}
+
+.principal-view .principal-icons {
+  padding-top: 110px;
+}
+
+
