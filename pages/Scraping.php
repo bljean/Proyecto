@@ -89,23 +89,23 @@ function compareInfo($cardN,$status,$data,$time){
             {
                 $index=1;       
                 swipeRecord($cardN,$sqlStudentName,$sqlWorkersName, $status,$data,$time,$index);
-                return("Card with this number exist :$cardN ,$data,$time ");
+                return("Card with this number exist :$cardN ,$data,$time \n");
             }
             if( $sqlWorkersName->num_rows > 0 AND $sqlDataTime->num_rows == 0)
             {
                 $index=1; 
                 swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status,$data,$time,$index);
-                return("Card with this number exist :$cardN ,$data,$time ");
+                return("Card with this number exist :$cardN ,$data,$time \n");
             }
         }else{
                 if($sqlDataTime->num_rows == 0)
                 {
                     $index=0;
                     swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status,$data,$time,$index);
-                    return("This card number do not exist: $cardN, $data,$time");
+                    return("This card number do not exist: $cardN, $data,$time\n");
                 }
             }
-        return("This report exist: $cardN, $data $time");
+        return("This report exist: $cardN, $data $time\n");
     }
     
 
@@ -129,7 +129,9 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status1,$date,$time
                     $apellido=$data["apellido_1"];
                     $personid=$data["NumCedula"];
                 }
-                openDoor();
+                echo "\n $personid\n";
+                $sqlProfessorGrupo=getProfesorGroup($personid);
+                
             }
             
             //reconigtion($personid);
@@ -183,6 +185,27 @@ function getStudentGroup($matricula){
         }else echo"no fuciona\n";
         return $sqlStudentGrupo;
     }
+function getProfesorGroup($numCedula){
+        $codcampus = $GLOBALS['CodCampus'];
+        $codedif =$GLOBALS['CodEdif'];
+        $codsalon =$GLOBALS['CodSalon'];
+        $date = date('Y/m/d');
+        $time= date('H:i:s');
+        $day= getWeekday($date);
+        $sqlProfessorGrupo=connectBd()->query( "SELECT horariogrupoactivo.Codtema as Codtema FROM horariogrupoactivo INNER JOIN contratodocencia on horariogrupoactivo.Codtema=contratodocencia.Codtema AND horariogrupoactivo.CodTP=contratodocencia.CodTP AND horariogrupoactivo.NumGrupo=contratodocencia.NumGrupo AND horariogrupoactivo.CodCampus=contratodocencia.CodCampus AND horariogrupoactivo.AnoAcad=contratodocencia.AnoAcad AND horariogrupoactivo.NumPer=contratodocencia.NumPer AND contratodocencia.NumCedula=$numCedula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
+        $sqlProfessor=connectBd()->query("SELECT Codtema FROM contratodocencia WHERE NumCedula=$numCedula");
+        if($sqlProfessorGrupo->num_rows >0){
+            echo "fuciona\n";
+            openDoor();
+        }elseif($sqlProfessor->num_rows >0){
+            echo "no abrir puerta\n";
+        }else{
+            echo"abrir puerta al trabajador\n";
+            openDoor();
+        }
+
+        return  $sqlProfessorGrupo;
+        }
 function getWeekday($date) {
         return date('w', strtotime($date));
     }
