@@ -218,7 +218,11 @@ border-color: #31708f;
   display:none;
 }
 
-.principal-view .item-menu h3:hover ~ h2 {
+.principal-view .item-menu a[href]:hover > h2 {
+  display:grid;
+}
+
+.principal-view .item-menu:hover > .panel-body h2 {
   display:grid;
 }
 
