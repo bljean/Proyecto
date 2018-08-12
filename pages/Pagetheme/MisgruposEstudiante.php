@@ -31,7 +31,7 @@ $nombre=$_POST['nombre'];
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="vista-estudiante.html">Inicio</a>
+        <a class="navbar-brand" href="vista-estudiante.php">Inicio</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
@@ -67,7 +67,7 @@ $nombre=$_POST['nombre'];
     <div class="container-fluid">
       <ol class="breadcrumb">
         <li>
-          <a href="vista-estudiante.html">Dashboard</a>
+          <a href="vista-estudiante.php">Dashboard</a>
         </li>
         
         <li class="active">Mis Grupos</li>

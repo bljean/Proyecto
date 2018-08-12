@@ -33,7 +33,7 @@ session_start();
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="vista-profesor.html">Inicio</a>
+                    <a class="navbar-brand" href="vista-profesor.php">Inicio</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
