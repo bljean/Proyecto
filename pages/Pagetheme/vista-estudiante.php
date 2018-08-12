@@ -1,3 +1,7 @@
+<?php
+session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -269,7 +273,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Logout").on('click', function () {
+                <?php 
+                $_SESSION['privilegio'] ='2';
+                ?>
+                window.location = 'php/logout.php';
+                
+            });
+        });
+    </script>
+
+
+
 </body>
 
 </html>
