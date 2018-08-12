@@ -50,7 +50,6 @@ if(isset($_SESSION['loggedIN'])){
             </div>
         </div>
     </header>
-
     <section id="main">
         <div class="container">
             <div class="row">
