@@ -33,9 +33,7 @@ if(isset($_SESSION['loggedIN'])){
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="index.html">Control de acceso</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-
+            </div><div id="navbar" class="collapse navbar-collapse">
             </div>
             <!--/.nav-collapse -->
         </div>
