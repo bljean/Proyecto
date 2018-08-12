@@ -4,14 +4,14 @@ $CodCampus = "ST";
 $CodEdif = "A1";
 $CodSalon = 14;
 
-//echo getStudentGroup(20131036);
-getProfesorGroup(14785236985);
-$timezone = date_default_timezone_get();
+getStudentGroup(20131036);
+//getProfesorGroup(14785236985);
+/*$timezone = date_default_timezone_get();
 echo "\n The current server timezone is:  $timezone \n";
 $date = date('H:i:s');
 echo " probando time: $date \n";
 echo  getWeekday($date);
-
+*/
 
 
 
@@ -24,16 +24,29 @@ function connectBd(){
         $conn= new mysqli('localhost',$user, $pass, $db);
         return $conn;
     }
-function getStudentGroup($matricula,$index){
+function getStudentGroup($matricula){
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
     $codsalon =$GLOBALS['CodSalon'];
     $date = date('Y/m/d');
     $time= date('H:i:s');
     $day= getWeekday($date);
-    $sqlStudentGrupo=connectBd()->query( "SELECT horariogrupoactivo.Codtema as Codtema FROM horariogrupoactivo INNER JOIN grupoinsest on horariogrupoactivo.Codtema=grupoinsest.Codtema AND horariogrupoactivo.CodTP=grupoinsest.CodTP AND horariogrupoactivo.NumGrupo=grupoinsest.NumGrupo AND horariogrupoactivo.CodCampus=grupoinsest.CodCampus AND horariogrupoactivo.AnoAcad=grupoinsest.AnoAcad AND horariogrupoactivo.NumPer=grupoinsest.NumPer AND grupoinsest.Matricula= $matricula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
+    $sqlStudentGrupo=connectBd()->query( "SELECT horariogrupoactivo.CodTema as Codtema,horariogrupoactivo.CodTP as CodTP, horariogrupoactivo.NumGrupo as NumGrupo,horariogrupoactivo.CodCampus as CodCampus,horariogrupoactivo.AnoAcad as AnoAcad,horariogrupoactivo.NumPer as NumPer FROM horariogrupoactivo INNER JOIN grupoinsest on horariogrupoactivo.Codtema=grupoinsest.Codtema AND horariogrupoactivo.CodTP=grupoinsest.CodTP AND horariogrupoactivo.NumGrupo=grupoinsest.NumGrupo AND horariogrupoactivo.CodCampus=grupoinsest.CodCampus AND horariogrupoactivo.AnoAcad=grupoinsest.AnoAcad AND horariogrupoactivo.NumPer=grupoinsest.NumPer AND grupoinsest.Matricula= $matricula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
     if($sqlStudentGrupo->num_rows >0){
-        echo "fuciona";
+        echo "fuciona \n";
+        while($data= $sqlStudentGrupo->fetch_array()){
+            echo $matricula,"\n";
+            echo $date,"\n";
+            echo $time,"\n";
+            echo $day,"\n";
+            echo $NumGrupo=$data["NumGrupo"],"\n";
+            echo $Codtema=$data["Codtema"],"\n";
+            echo $CodTP=$data["CodTP"],"\n";
+            echo $CodCampus=$data["CodCampus"],"\n";
+            echo $AnoAcad=$data["AnoAcad"],"\n";
+            echo $NumPer=$data["NumPer"],"\n";
+        }
+        attendEstRecord($matricula,$date,$time,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer);
     }else echo"no fuciona";
         
     return $sqlStudentGrupo;
@@ -49,10 +62,14 @@ function getProfesorGroup($numCedula){
     $sqlProfessor=connectBd()->query("SELECT Codtema FROM contratodocencia WHERE NumCedula=$numCedula");
     if($sqlProfessorGrupo->num_rows >0){
         echo "fuciona";
+       
     }elseif($sqlProfessor->num_rows >0){
         echo "no abrir puerta";
     }else echo"abrir puerta al trabajador";
     return  $sqlProfessorGrupo;
+}
+function attendEstRecord($matricula,$date,$time,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
+    connectBd()->query("INSERT INTO asistencia (Matricula,Fecha,Hora,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$time','$day','P','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
 }
 function getWeekday($date) {
     return date('w', strtotime($date));
