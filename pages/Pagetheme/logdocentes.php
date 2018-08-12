@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_SESSION['loggedIN'])){
-    header('Location: dashboard.html');
+    header('Location: vista-profesor.php');
     exit();
 }
 ?>
@@ -45,7 +45,7 @@ if(isset($_SESSION['loggedIN'])){
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="text-center"> Administrador
+                    <h1 class="text-center"> Docentes
                         <small> Login</small>
                     </h1>
                 </div>
@@ -96,8 +96,10 @@ if(isset($_SESSION['loggedIN'])){
                             dataType: 'text',
                             data: {
                                 login: 1,
+                                privilegio:1,
                                 userPHP: user,
                                 passwordPHP: password
+
                             },
                             success: function (response) {
                                 if(response=="1"){

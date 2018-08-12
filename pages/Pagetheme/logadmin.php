@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_SESSION['loggedIN'])){
-    header('Location: dashboard.html');
+    header('Location: vista-administrador.php');
     exit();
 }
 ?>
@@ -95,6 +95,7 @@ if(isset($_SESSION['loggedIN'])){
                             method: 'POST',
                             dataType: 'text',
                             data: {
+                                privilegio:0,
                                 login: 1,
                                 userPHP: user,
                                 passwordPHP: password

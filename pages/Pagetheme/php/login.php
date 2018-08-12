@@ -8,8 +8,9 @@ if(isset($_POST['login'])){
 
     $user= $conn->real_escape_string($_POST['userPHP']);
     $password=md5($conn->real_escape_string($_POST['passwordPHP']));
+    $privilegio = $conn->real_escape_string($_POST['privilegio']);
 
-    $data= $conn->query("SELECT userid FROM users WHERE username='$user'AND userpassword='$password'");
+    $data= $conn->query("SELECT userid FROM users WHERE username='$user'AND userpassword='$password'AND privilegio='$privilegio'");
     if($data->num_rows >0){
         $_SESSION['loggedIN'] = '1';
         $_SESSION['user']= $user;
