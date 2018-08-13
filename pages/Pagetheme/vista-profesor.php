@@ -40,6 +40,10 @@ session_start();
                         <li>
                             <a href="MisgruposDocente.php">Mis Grupos</a>
                         </li>
+                        <li>
+                            <a href="AsistenciaDocente.php">Asistencia</a>
+                        </li>
+        
         
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

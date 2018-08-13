@@ -1,6 +1,7 @@
 <?php
 $ID= $_POST['ID'];
 $nombre=$_POST['nombre'];
+$privilegio=$_POST['privilegio'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +30,7 @@ $nombre=$_POST['nombre'];
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="dashboard.html">Control de acceso</a>
+        <a class="navbar-brand" href="vista-administrador.php">Control de acceso</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
@@ -77,9 +78,20 @@ $nombre=$_POST['nombre'];
     <div class="container-fluid">
       <ol class="breadcrumb">
         <li>
-          <a href="dashboard.html">Dashboard</a>
+          <a href="vista-administrador.php">Dashboard</a>
         </li>
-        <li><a href="students.html">Estudiantes</a></li>
+        <li>
+          <?php
+          if($privilegio==1){
+            echo '<a href="students.html">Estudiantes</a>';
+          }
+          if($privilegio==2){
+           echo '<a href="professors.html">Profesores</a>';
+        }
+          ?>
+          
+
+        </li>
         <li class="active">Asistencias</li>
       </ol>
     </div>
@@ -130,7 +142,7 @@ $nombre=$_POST['nombre'];
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4><?php echo $ID?> <?php echo $nombre?></h4>
+                    <h4> <?php echo $nombre?></h4>
                     <h4>Grupos:</h4>
                     <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     

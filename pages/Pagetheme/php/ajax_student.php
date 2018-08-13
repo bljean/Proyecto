@@ -9,12 +9,12 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     if($_POST['key'] == 'getRowData'){
         $rowID = $conn->real_escape_string($_POST['rowID']);
         //$sql= $conn->query("SELECT ID,Name,CardNumber FROM student WHERE id ='$rowID'");
-        $sql = $conn->query("SELECT matricula, nombre, apellido, CardNumber FROm estudiante WHERE matricula='$rowID'");
+        $sql = $conn->query("SELECT Matricula, nombre, apellido, NumTarjeta FROm estudiante WHERE Matricula='$rowID'");
         $data= $sql->fetch_array();
         $jsonArray = array(
-            'ID'=> $data['matricula'],
+            'ID'=> $data['Matricula'],
             'Name'=> $data['nombre'],
-            'CardNumber'=>$data['CardNumber'],
+            'CardNumber'=>$data['NumTarjeta'],
             'Apellido'=>$data['apellido'],
         );
         exit(json_encode($jsonArray));
@@ -25,24 +25,25 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $limit = $conn->real_escape_string($_POST['limit']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT matricula, nombre, apellido, CardNumber FROM estudiante LIMIT $start,$limit");
+        $sql = $conn->query("SELECT Matricula, nombre, apellido, NumTarjeta FROM estudiante LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
                 $response .='
                 <tr>
-                    <td>'.$data["matricula"].'</td>
-                    <td id="Name_'.$data["matricula"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
-                    <td id="CardNumber_'.$data["matricula"].'">'.$data["CardNumber"].'</td>
+                    <td>'.$data["Matricula"].'</td>
+                    <td id="Name_'.$data["Matricula"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
+                    <td id="CardNumber_'.$data["Matricula"].'">'.$data["NumTarjeta"].'</td>
                     <td>
                     <div class="col-md-2">
-                        <input type="button" onclick="edit('.$data["matricula"].')" value="Editar" class="btn btn-primary">
+                        <input type="button" onclick="edit('.$data["Matricula"].')" value="Editar" class="btn btn-primary">
                     </div>
                     
                      <form method="POST" action="Asistencias.php">
-                        <input type="hidden" name="ID" value="'.$data["matricula"].'">
+                        <input type="hidden" name="ID" value="'.$data["Matricula"].'">
+                        <input type="hidden" name="privilegio" value="1">
                         <input type="hidden" name="nombre" value="'.$data["nombre"].' '.$data["apellido"].'">
-                        <input type="submit" value="Asistencias" class="btn btn-primary">
+                        <input type="submit" value="Asistencias"  class="btn btn-primary">
                     </form>
                     
                     </td>
@@ -59,6 +60,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $conn->query("DELETE FROM estudiante WHERE matricula = '$rowID'");
         exit('The Row Has Been Deleted');
     }
+    
     $name =$conn->real_escape_string($_POST['name']);
     $ID = $conn->real_escape_string($_POST['matricula']);
     $cardNumber = $conn->real_escape_string($_POST['cardNumber']);

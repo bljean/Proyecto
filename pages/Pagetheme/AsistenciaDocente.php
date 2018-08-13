@@ -39,7 +39,7 @@ $nombre=$_POST['nombre'];
             <a href="MisgruposDocente.php">Mis Grupos</a>
           </li>
           <li>
-           <a href="AsistenciaDocente.php">Asistencia</a>
+             <a href="AsistenciaDocente.php">Asistencia</a>
           </li>
          
         </ul>
@@ -58,7 +58,7 @@ $nombre=$_POST['nombre'];
       <div class="row">
         <div class="col-md-10">
           <h1>
-            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Mis Grupos
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Mis Asistencia
             <small></small>
           </h1>
         </div>
@@ -73,8 +73,7 @@ $nombre=$_POST['nombre'];
           <a href="vista-profesor.php">Dashboard</a>
         </li>
         
-        
-        <li class="active">Mis Grupos</li>
+        <li class="active">Mis Asistencia</li>
       </ol>
     </div>
   </section>
@@ -124,7 +123,7 @@ $nombre=$_POST['nombre'];
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4><?php echo $ID?> <?php echo $nombre?></h4>
+                    <h4><?php echo $nombre?></h4>
                     <h4>Grupos:</h4>
                     <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     
