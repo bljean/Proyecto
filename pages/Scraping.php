@@ -8,7 +8,7 @@ date_default_timezone_set('America/Santo_Domingo');
 $CodCampus = "ST";
 $CodEdif = "A1";
 $CodSalon = 14;
-$control=0;
+
 //-------------------------------------------------------------
 //get the page: 
 $client = new Client();
@@ -184,7 +184,7 @@ function getStudentGroup($matricula){
     $sqlStudentGrupo=connectBd()->query( "SELECT horariogrupoactivo.CodTema as Codtema,horariogrupoactivo.CodTP as CodTP,horariogrupoactivo.HoraInicio as HoraInicio ,horariogrupoactivo.Horafin as Horafin,horariogrupoactivo.NumGrupo as NumGrupo,horariogrupoactivo.CodCampus as CodCampus,horariogrupoactivo.AnoAcad as AnoAcad,horariogrupoactivo.NumPer as NumPer FROM horariogrupoactivo INNER JOIN grupoinsest on horariogrupoactivo.Codtema=grupoinsest.Codtema AND horariogrupoactivo.CodTP=grupoinsest.CodTP AND horariogrupoactivo.NumGrupo=grupoinsest.NumGrupo AND horariogrupoactivo.CodCampus=grupoinsest.CodCampus AND horariogrupoactivo.AnoAcad=grupoinsest.AnoAcad AND horariogrupoactivo.NumPer=grupoinsest.NumPer AND grupoinsest.Matricula= $matricula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
     if($sqlStudentGrupo->num_rows >0){
         echo "fuciona \n";
-        openDoor();
+        
         while($data= $sqlStudentGrupo->fetch_array()){
             $horaini=$data["HoraInicio"];
             $horafin=$data["Horafin"];
@@ -211,7 +211,6 @@ function getProfesorGroup($numCedula){
     $sqlProfessor=connectBd()->query("SELECT Codtema FROM contratodocencia WHERE NumCedula=$numCedula");
     if($sqlProfessorGrupo->num_rows >0){
         echo "fuciona\n";
-        openDoor();
         while($data= $sqlProfessorGrupo->fetch_array()){
             $horaini=$data["HoraInicio"];
             $horafin=$data["Horafin"];
@@ -232,10 +231,19 @@ function getProfesorGroup($numCedula){
     return  $sqlProfessorGrupo;
         }
 function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
+    $codcampus = $GLOBALS['CodCampus'];
+    $codedif =$GLOBALS['CodEdif'];
+    $codsalon =$GLOBALS['CodSalon'];
     $sqlStudentattend = connectBd()->query( "SELECT * FROM asistencia WHERE ID='$matricula' AND Fecha='$date' AND Horaini='$horaini'");
     if($sqlStudentattend->num_rows > 0){
         echo "ya esta precente";
-    }else connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$day','P','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");        
+        openDoor();
+    }else {
+        if($time < getHorausencia($horafin)){
+            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$codcampus','$codedif','$codsalon','$day','P','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+            openDoor();
+        }else echo "LLego tarde ya le toca ausencia";
+    }        
     }
 function checkGroupTime(){
  connectBd()->query("SELECT * FROM horariogrupoactivo WHERE ");
@@ -243,4 +251,9 @@ function checkGroupTime(){
 function getWeekday($date) {
         return date('w', strtotime($date));
     }
+function getHorausencia($Horafin){
+    $Horafin = strtotime($Horafin);
+    $horadeAusencia = date('H:i:s', strtotime('-10 minutes', $Horafin));
+    return $horadeAusencia;
+}    
 ?>
