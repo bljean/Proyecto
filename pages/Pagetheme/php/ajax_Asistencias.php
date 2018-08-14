@@ -48,7 +48,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     if($_POST['key'] == 'getGroupData'){
         $studentID=$conn->real_escape_string($_POST['ID']);
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT grupo.idgrupo as idgrupo,codigo FROM grupoestudiante, grupo WHERE grupoestudiante.idestudiante='$studentID' and grupoestudiante.idgrupo=grupo.idgrupo");
+        //SELECT grupo.idgrupo as idgrupo,codigo FROM grupoestudiante, grupo WHERE grupoestudiante.idestudiante='$studentID' and grupoestudiante.idgrupo=grupo.idgrupo
+        $sql = $conn->query("SELECT* FROM grupoinsest WHERE grupoinsest.Matricula='$studentID'");
         if($sql->num_rows >0){
             $response ="";
             $i=0;

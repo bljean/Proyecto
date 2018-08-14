@@ -6,16 +6,18 @@ $pass='';
 $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
 
+    //SELECT* FROM trabajadores LEFT JOIN contratodocencia ON trabajadores.NumCedula = contratodocencia.NumCedula WHERE contratodocencia.NumCedula is NULL
+
     if($_POST['key'] == 'getRowData'){
         $rowID = $conn->real_escape_string($_POST['rowID']);
         //$sql= $conn->query("SELECT ID,Name,CardNumber FROM student WHERE id ='$rowID'");
-        $sql = $conn->query("SELECT cedula, nombre, apellido, CardNumber FROm trabajadores WHERE idtrabajadores='$rowID'");
+        $sql = $conn->query("SELECT NumCedula, nombre, apellido_1, NumTarjeta FROm trabajadores WHERE NumCedula='$rowID'");
         $data= $sql->fetch_array();
         $jsonArray = array(
-            'ID'=> $data['cedula'],
+            'ID'=> $data['NumCedula'],
             'Name'=> $data['nombre'],
-            'CardNumber'=>$data['CardNumber'],
-            'Apellido'=>$data['apellido'],
+            'CardNumber'=>$data['NumTarjeta'],
+            'Apellido'=>$data['apellido_1'],
         );
         exit(json_encode($jsonArray));
     }
@@ -25,18 +27,18 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $limit = $conn->real_escape_string($_POST['limit']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT idtrabajadores, cedula, nombre, apellido, CardNumber FROm trabajadores LIMIT $start,$limit");
+        $sql = $conn->query("SELECT trabajadores.NumCedula as NumCedula, trabajadores.nombre as nombre ,trabajadores.apellido_1 as apellido_1, trabajadores.NumTarjeta as  NumTarjeta FROM trabajadores LEFT JOIN contratodocencia ON trabajadores.NumCedula = contratodocencia.NumCedula WHERE contratodocencia.NumCedula is NULL LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
                 $response .='
                 <tr>
-                    <td>'.$data["cedula"].'</td>
-                    <td id="Name_'.$data["idtrabajadores"].'">'.$data["nombre"].' '.$data["apellido"].'</td>
-                    <td id="CardNumber_'.$data["idtrabajadores"].'">'.$data["CardNumber"].'</td>
+                    <td>'.$data["NumCedula"].'</td>
+                    <td id="Name_'.$data["NumCedula"].'">'.$data["nombre"].' '.$data["apellido_1"].'</td>
+                    <td id="CardNumber_'.$data["NumCedula"].'">'.$data["NumTarjeta"].'</td>
                     <td>
-                        <input type="button" onclick="edit('.$data["idtrabajadores"].')" value="Editar" class="btn btn-primary">
-                        <!-- <input type="button" onclick="deleteRow('.$data["idtrabajadores"].')" value="Delete" class="btn btn-primary"> -->
+                        <input type="button" onclick="edit(\''.$data["NumCedula"].'\')" value="Editar" class="btn btn-primary">
+                        <!-- <input type="button" onclick="deleteRow('.$data["NumCedula"].')" value="Delete" class="btn btn-primary"> -->
                     </td>
                 </tr>
                 ';
@@ -57,7 +59,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     
 
     if ($_POST['key'] == 'updateRow'){
-      $conn->query("UPDATE trabajadores SET CardNumber='$cardNumber' WHERE idtrabajadores='$rowID'");
+      $conn->query("UPDATE trabajadores SET NumTarjeta='$cardNumber' WHERE NumCedula='$rowID'");
       exit('success');
      }
     if ($_POST['key'] == 'addNew'){

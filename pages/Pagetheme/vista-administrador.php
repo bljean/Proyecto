@@ -33,7 +33,7 @@ session_start();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="vista-administrador.php">Control de acceso</a>
+                <a class="navbar-brand" href="vista-administrador.php">Inicio</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
@@ -119,6 +119,11 @@ session_start();
                                                         </div>
                                                     </div>
                                             </div>    
+
+                                              <div class="checkbox checkbox-success checkbox-inline">
+                                             <input type="checkbox" id="inlineCheckbox2" value="option1" checked="">
+                                             <label for="inlineCheckbox2"> Semanal </label>
+                                                </div>
 
                                         </div>
                                     
