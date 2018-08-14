@@ -83,7 +83,7 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
     $codsalon =$GLOBALS['CodSalon'];
     $sqlStudentattend = connectBd()->query( "SELECT * FROM asistencia WHERE ID='$matricula' AND Fecha='$date' AND Horaini='$horaini'");
     if($sqlStudentattend->num_rows > 0){
-        echo "ya esta precente";
+        echo "ya esta precente o ausente";
     }else connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
     
     }
@@ -111,19 +111,17 @@ function checkGroupTime(){
 
     }
 function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
-   
     $date = date('Y-m-d');
     $time= date('H:i:s');
     $horadeAusencia = getHorausencia($horafin);
-    echo "Hora para poner Ausencia $horadeAusencia \n";
     if($time>=$horadeAusencia){
         $sqlAusentes=connectBd()->query("SELECT grupoinsest.Matricula as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer WHERE grupoinsest.CodTema='ITT' AND grupoinsest.CodTP='562' AND grupoinsest.CodCampus='ST' AND grupoinsest.Numgrupo='1' AND grupoinsest.AnoAcad='2018' AND grupoinsest.NumPer='1' AND asistencia.ID is NULL");
         if($sqlAusentes->num_rows>0){
             while($data=$sqlAusentes->fetch_array()){
                 attendEstRecord($data['Matricula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'A');
             }
-        }
-        echo "tiempo de poner ausencias MUAHAHAHA!!!!\n";
+        }else echo "ya estan ausentes";
+        
     }else echo" todavia es tiempo de entrar \n";
 
     }
