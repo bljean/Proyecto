@@ -52,7 +52,7 @@ if($_POST['key'] == 'getCampusData'){
             while($data=$sqlaula->fetch_array()){
                 $response .='
                 <li>
-                <a (\''.$data["CodSalon"].','.$campus.','.$edf.'\')" >'.$data["CodSalon"].'</a>
+                <a onclick="getaula(\''.$data["CodSalon"].'\',\''.$campus.'\',\''.$edf.'\')" >'.$data["CodSalon"].'</a>
                 </li>
                 ';
     
@@ -60,6 +60,40 @@ if($_POST['key'] == 'getCampusData'){
             }
             exit ($response);
     }
+
+
+    if($_POST['key'] == 'llenartabla')
+    {   $edf = $conn->real_escape_string($_POST['edf']);
+        $campus = $conn->real_escape_string($_POST['campus']);
+        $aula = $conn->real_escape_string($_POST['aula']);
+        
+        $sqltabla=$conn->query("SELECT NumTarjeta, Nombre,Acceso,Fecha FROM swipe WHERE Sal_CodCampus='$campus' AND Sal_CodEdif='$edf' AND Sal_CodSalon='$aula'");
+        $response ="";
+        if($sqltabla->num_rows>0){
+            
+            while($data=$sqltabla->fetch_array()){
+                
+                $NumTarjeta=$data["NumTarjeta"];
+                $Nombre=$data["Nombre"];
+                $Acceso=$data["Acceso"];
+                $Fecha=$data["Fecha"];
+                $response.='
+                <tr>
+                <td>'.$NumTarjeta.'</td>
+                <td> '.$Nombre.'</td>
+                <td> '.$Acceso.'</td>
+                <td>'.$Fecha.'</td>
+                </tr>
+
+                ';
+    
+                }   
+            }
+            exit ($response);
+    }
+
+
+
 
     
 

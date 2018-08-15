@@ -98,18 +98,89 @@
                             <h3 class="panel-title">Tabla de Eventos</h3>
                         </div>
                         <div class="panel-body">
+                        <div class="panel-body">
+                        
                             <div class="row">
+                                <div id="navbar" class="collapse navbar-collapse">
+                                    <ul class="nav navbar-nav">
+                                        <li>
+                                            <div class="dropdown create">
+                                                <button class="btn btn-primary campustitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="true">
+                                                    Campus
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu bodycampus" aria-labelledby="dropdownMenu1">
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown create">
+                                                <button class="btn btn-primary edftitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    Edificio
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu bodyedf" aria-labelledby="dropdownMenu1">
+                        
+                        
+                                                </ul>
+                                            </div>
+                                        </li>
+                        
+                                        <li>
+                                            <div class="dropdown create">
+                                                <button class="btn btn-primary aulatitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    Aula
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu bodyaula " aria-labelledby="dropdownMenu1">
+                                                </ul>
+                                            </div>
+                        
+                                        </li>
+                                        <li>
+                                            <a class="navbar-brand btn btn-primary  " id="boton1" onclick="llenartabla()" disabled >Enter</a>
+                                        </li>
+                        
+                        
+                        
+                                    </ul>
+                        
+                        
+                        
+                        
+                                </div>
+                            </div>
+                        
+                        
+                        
+                        </div>
+                            <div class="row " >
                                 <div class="col-md-12">
-                                    <div class="well dash-box">
+                                    <div class="well dash-box " id="esconder">
                                         <div class="panel-body">
                                             <!--Add new and Edit -->
                                             <div class="container-fluid">
                                                 <div id="tableManager" class="modal fade">
                                                     <div class="modal-dialog">
-                                                        <div class="modal-content">
+                                                        <div class="modal-content ">
                                                                 
                                                             <div class="modal-header">
                                                                 <h2 class="modal-title">Nuevo</h2>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <span>Cedula:</span>
+                                                                <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                                                                <br>
+                                                                <span>Nombre:</span>
+                                                                <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
+                                                                <br>
+                                                                <span>Apellido:</span>
+                                                                <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
+                                                                <br>
+                                                                <span>Tarjeta:</span>
+                                                                <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber">
+                                                                <input type="hidden" id="editRowID" value="0">
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
@@ -120,59 +191,24 @@
                                                 <!--/Add new and Edit -->
 
                                                 <!--Table Mysql -->
-                                                <div class="row">
-                                                        <div class="row">
-                                                            <div id="navbar" class="collapse navbar-collapse">
-                                                                <ul class="nav navbar-nav">
-                                                                    <li>
-                                                                        <div class="dropdown create">
-                                                                            <button class="btn btn-primary campustitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                                Campus
-                                                                                <span class="caret"></span>
-                                                                            </button>
-                                                                            <ul class="dropdown-menu bodycampus" aria-labelledby="dropdownMenu1">
-                                                                            </ul>
-                                                                        </div>
-                                                                    </li>
-                                                                    <li>
-                                                                        <div class="dropdown create">
-                                                                            <button class="btn btn-primary edftitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                                Edificio
-                                                                                <span class="caret"></span>
-                                                                            </button>
-                                                                            <ul class="dropdown-menu bodyedf" aria-labelledby="dropdownMenu1">
-                                                                                
-                                                        
-                                                                            </ul>
-                                                                        </div>
-                                                                    </li>
-                                                        
-                                                                    <li>
-                                                                        <div class="dropdown create">
-                                                                            <button class="btn btn-primary aulatitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                                Aula
-                                                                                <span class="caret"></span>
-                                                                            </button>
-                                                                            <ul class="dropdown-menu bodyaula " aria-labelledby="dropdownMenu1">
-                                                                                 </ul>
-                                                                        </div>
-                                                                        
-                                                                    </li>
-                                                                    <li>
-                                                                            <a class="navbar-brand btn btn-primary " href="">Enter</a>
-                                                                    </li>
-                                                                   
-                                                                    
-                                                        
-                                                                </ul>
-                                                        
-                                                        
-                                                        
-                                                        
-                                                            </div>
-                                                        </div>
-                                        
+                                                
+
+                                                    <div class="row">
+                                                    <div class="col-md-12 " >
+                                                        <table id="tableswipe" class="table table-hover table-bordered" style="background-color:white ">
+                                                            <thead>
+                                                                <td>Tarjeta</td>
+                                                                <td>Nombre</td>
+                                                                <td>Estado</td>
+                                                                <td>Fecha</td>
+                                                            </thead>
+                                                            <tbody class="bodyeventos">
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                             <!--/Table Mysql -->
                                         </div>
@@ -198,6 +234,7 @@
     
 <script type="text/javascript"> 
 $(document).ready(function () {
+    
     getCampusData();
       });
 function getCampusData(){
@@ -208,11 +245,12 @@ function getCampusData(){
             data: {
                   key: 'getCampusData',
                   }, success: function (response) {
-                   
+                    dataindex=0;
                     $(".bodycampus").append(response);
                   }
               });
     }
+
  function getedfcampus(campus){
     $.ajax({
             url: 'php/ajax_eventos.php',
@@ -222,11 +260,15 @@ function getCampusData(){
                   key: 'getedfcampus',
                   campus: campus,
                   }, success: function (response) {
+
+                    $(".edftitulo").html('Edificio');
+                    $(".aulatitulo").html('Aula');
                     $(".campustitulo").html('');
                     $(".campustitulo").append(campus);
                     $(".bodyedf").html('');
+                    $(".bodyaula").html('');
                     $(".bodyedf").append(response);
-                    
+                    $("#boton1").attr("disabled", "disabled");
 
                   }
               });
@@ -244,36 +286,81 @@ function getCampusData(){
                   edf: edf,
                   campus: campus,
                   }, success: function (response) {
-                  
+                    $(".aulatitulo").html('Aula');
                     $(".bodyaula").html('');
                     $(".bodyaula").append(response);
                     $(".edftitulo").html('');
                     $(".edftitulo").append(edf);
+                    $("#boton1").attr("disabled", "disabled");
 
                   }
               });
     }
 
-     function getaula(edf,campus,aula){
-    $.ajax({
+     function getaula(aula,campus,edf){
+        $(".aulatitulo").html('');
+        $(".aulatitulo").append(aula);
+        $("#boton1").removeAttr("disabled");
+      //  $("#esconder").modal('show');
+       
+    }
+
+    function llenartabla(){
+        
+        $("#esconderrow").modal('show');
+         var aula= $(".aulatitulo").text();
+         var edf= $(".edftitulo").text();
+         var campus= $(".campustitulo").text();
+         $.ajax({
             url: 'php/ajax_eventos.php',
             method: 'POST',
             dataType: 'text',
             data: {
-                  key: 'getaulaedf',
+                  key: 'llenartabla',
                   edf: edf,
                   campus: campus,
                   aula: aula,
                   }, success: function (response) {
-                  
-                    $(".bodyaula").html('');
-                    $(".bodyaula").append(response);
-                    $(".edftitulo").html('');
-                    $(".edftitulo").append(edf);
-
+                        if(dataindex != 0){
+                            dTable.destroy();
+                        }
+                        $(".bodyeventos").html('');
+                        $(".bodyeventos").append(response);
+                        
+                        dataindex=1;
+                        dTable = $(".table").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });
                   }
               });
+
+
     }
+
 
 
 
