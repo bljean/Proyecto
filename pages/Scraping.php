@@ -77,11 +77,12 @@ function eraseTd($text){
         return $new;
     } 
 function compareInfo($cardN,$status,$data,$time){
-       
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
 
         $sqlStudentName = connectBd()->query( "SELECT nombre, apellido, Matricula FROM estudiante WHERE NumTarjeta='$cardN'");
         $sqlWorkersName = connectBd()->query( "SELECT nombre, apellido_1, NumCedula FROM trabajadores WHERE NumTarjeta='$cardN'");
-        $sqlDataTime = connectBd()->query( "SELECT dataTime FROM swipe WHERE dataTime='$data $time'");
+        $sqlDataTime = connectBd()->query( "SELECT * FROM swipe WHERE Fecha='$date' AND Tiempo='$time'");
     
         if($sqlStudentName->num_rows > 0 OR $sqlWorkersName->num_rows > 0)
         {
@@ -121,7 +122,7 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status1,$date,$time
                     
                 }
                 echo "\n $personid\n";
-                getStudentGroup($personid);
+                getStudentGroup($personid,$cardN,$name,$apellido);
             }
             if($sqlWorkersName->num_rows > 0){
                 while($data= $sqlWorkersName->fetch_array()){
@@ -130,14 +131,13 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status1,$date,$time
                     $personid=$data["NumCedula"];
                 }
                 echo "\n $personid\n";
-                getProfesorGroup($personid);
+                getProfesorGroup($personid,$cardN,$name,$apellido);
                 
             }
-            
             //reconigtion($personid);
-            connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','$name $apellido','Abierta','$date $time')");
+            //connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','$name $apellido','Permitido','$date $time')");
         } else if($index == 0 AND $status1!="Reboot"){
-            connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','N/A','Cerrada','$date $time')");
+            insertSwipeRecord($cardN,$Nombre,$apellido,'Denegado');
         }
     }
     
@@ -172,7 +172,7 @@ function connectBd(){
         $conn= new mysqli('localhost',$user, $pass, $db);
         return $conn;
     }
-function getStudentGroup($matricula){
+function getStudentGroup($matricula,$cardN,$name,$apellido){
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
     $codsalon =$GLOBALS['CodSalon'];
@@ -192,12 +192,13 @@ function getStudentGroup($matricula){
             $AnoAcad=$data["AnoAcad"];
             $NumPer=$data["NumPer"];
         }
-        attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P');
-    }else echo"no fuciona";
-        
-    return $sqlStudentGrupo;
+        attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido);
+    }else {
+        echo"no fuciona";
+        insertSwipeRecord($cardN,$name,$apellido,'Denegado');
     }
-function getProfesorGroup($numCedula){
+    }
+function getProfesorGroup($numCedula,$cardN,$name,$apellido){
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
     $codsalon =$GLOBALS['CodSalon'];
@@ -218,16 +219,18 @@ function getProfesorGroup($numCedula){
             $AnoAcad=$data["AnoAcad"];
             $NumPer=$data["NumPer"];
         }
-        attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P');
+        attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido);
     }elseif($sqlProfessor->num_rows >0){
         echo "no abrir puerta";
+        insertSwipeRecord($cardN,$name,$apellido,'Denegado');
     }else {
         echo"abrir puerta al trabajador";
+        insertSwipeRecord($cardN,$name,$apellido,'Permitido');
         openDoor();
     }
     return  $sqlProfessorGrupo;
         }
-function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,$Precencia){
+function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,$Precencia,$cardN,$name,$apellido){
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
     $codsalon =$GLOBALS['CodSalon'];
@@ -235,9 +238,15 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
     if($sqlStudentattend->num_rows > 0){
         echo "ya esta precente";
         openDoor();
+        insertSwipeRecord($cardN,$name,$apellido,'Permitido');
     }else {
-            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+        if($Precencia=='A' OR $Precencia=='R'){
+            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+        }else {
             openDoor();
+            insertSwipeRecord($cardN,$name,$apellido,'Permitido');
+            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+        } 
     }        
     }
 function checkGroupTime(){
@@ -267,14 +276,27 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
     $time= date('H:i:s');
     $horadeAusencia = getHorausencia($horafin);
     if($time>=$horadeAusencia){
-        $sqlAusentes=connectBd()->query("SELECT grupoinsest.Matricula as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer WHERE grupoinsest.CodTema='ITT' AND grupoinsest.CodTP='562' AND grupoinsest.CodCampus='ST' AND grupoinsest.Numgrupo='1' AND grupoinsest.AnoAcad='2018' AND grupoinsest.NumPer='1' AND asistencia.ID is NULL");
-        if($sqlAusentes->num_rows>0){
-            while($data=$sqlAusentes->fetch_array()){
-                attendEstRecord($data['Matricula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'A');
+        $sqlAusentesEst=connectBd()->query("SELECT grupoinsest.Matricula as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer WHERE grupoinsest.CodTema='$Codtema' AND grupoinsest.CodTP='$CodTP' AND grupoinsest.CodCampus='$CodCampus' AND grupoinsest.Numgrupo='$NumGrupo' AND grupoinsest.AnoAcad='$AnoAcad' AND grupoinsest.NumPer='$NumPer' AND asistencia.ID is NULL");
+        $sqlAusenteProf=connectBd()->query("SELECT contratodocencia.NumCedula as NumCedula FROM contratodocencia LEFT JOIN asistencia ON asistencia.ID=contratodocencia.NumCedula AND asistencia.CodTema=contratodocencia.CodTema AND asistencia.CodTP= contratodocencia.CodTp AND asistencia.CodCampus= contratodocencia.CodCampus AND asistencia.NumGrupo= contratodocencia.Numgrupo AND asistencia.AnoAcad=contratodocencia.AnoAcad AND asistencia.NumPer= contratodocencia.NumPer WHERE contratodocencia.CodTema='$Codtema' AND contratodocencia.CodTP='$CodTP' AND contratodocencia.CodCampus='$CodCampus' AND contratodocencia.Numgrupo='$NumGrupo' AND contratodocencia.AnoAcad='$AnoAcad' AND contratodocencia.NumPer='$NumPer' AND asistencia.ID is NULL");
+        if($sqlAusenteProf->num_rows>0){
+            while($data=$sqlAusenteProf->fetch_array()){
+                attendEstRecord($data['NumCedula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'R','1111','nada','nada');
             }
-        }else echo "ya estan ausentes";
+            if($sqlAusentesEst->num_rows>0){
+                while($data=$sqlAusentesEst->fetch_array()){
+                    attendEstRecord($data['Matricula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'R','1111','nada','nada');
+                }
+            }    
+        }else{
+            if($sqlAusentesEst->num_rows>0){
+                while($data=$sqlAusentesEst->fetch_array()){
+                    attendEstRecord($data['Matricula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'A','1111','nada','nada');
+                }
+            }
+        }
+       //else echo "ya estan ausentes";
             
-    }else echo" todavia es tiempo de entrar \n";
+    }//else echo" todavia es tiempo de entrar \n";
     }
 function getWeekday($date) {
         return date('w', strtotime($date));
@@ -283,5 +305,16 @@ function getHorausencia($Horafin){
     $Horafin = strtotime($Horafin);
     $horadeAusencia = date('H:i:s', strtotime('-10 minutes', $Horafin));
     return $horadeAusencia;
-}    
+    }  
+function insertSwipeRecord($NumTarjeta,$Nombre,$apellido,$Acceso){
+    
+    $codcampus = $GLOBALS['CodCampus'];
+    $codedif =$GLOBALS['CodEdif'];
+    $codsalon =$GLOBALS['CodSalon'];
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
+    $day= getWeekday($date);
+    echo "\n$NumTarjeta,$Nombre,$apellido,$Acceso, $codcampus,$codedif,$codsalon,$date,$time\n";
+    connectBd()->query("INSERT INTO swipe (NumTarjeta,Nombre,Acceso,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha,Tiempo) VALUES('$NumTarjeta','$Nombre $apellido','$Acceso','$codcampus','$codedif','$codsalon','$date','$time')");
+    }  
 ?>
