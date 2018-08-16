@@ -67,19 +67,20 @@ if($_POST['key'] == 'getCampusData'){
         $campus = $conn->real_escape_string($_POST['campus']);
         $aula = $conn->real_escape_string($_POST['aula']);
         
-        $sqltabla=$conn->query("SELECT NumTarjeta, Nombre,Acceso,Fecha FROM swipe WHERE Sal_CodCampus='$campus' AND Sal_CodEdif='$edf' AND Sal_CodSalon='$aula'");
+        $sqltabla=$conn->query("SELECT NumTarjeta, ID, Nombre,Acceso,Fecha FROM swipe WHERE Sal_CodCampus='$campus' AND Sal_CodEdif='$edf' AND Sal_CodSalon='$aula'");
         $response ="";
         if($sqltabla->num_rows>0){
             
             while($data=$sqltabla->fetch_array()){
-                
                 $NumTarjeta=$data["NumTarjeta"];
+                $ID=$data["ID"];
                 $Nombre=$data["Nombre"];
                 $Acceso=$data["Acceso"];
                 $Fecha=$data["Fecha"];
                 $response.='
                 <tr>
                 <td>'.$NumTarjeta.'</td>
+                <td> '.$ID.'</td>
                 <td> '.$Nombre.'</td>
                 <td> '.$Acceso.'</td>
                 <td>'.$Fecha.'</td>

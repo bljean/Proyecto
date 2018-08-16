@@ -198,6 +198,7 @@
                                                         <table id="tableswipe" class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
                                                                 <td>Tarjeta</td>
+                                                                <td>ID</td>
                                                                 <td>Nombre</td>
                                                                 <td>Estado</td>
                                                                 <td>Fecha</td>

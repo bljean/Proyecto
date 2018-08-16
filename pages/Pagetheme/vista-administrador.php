@@ -114,7 +114,7 @@ session_start();
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div class="panel panel-noticias">
+                                                        <div class="panel panel-noticias grafico1 ">
                                                             <canvas id="myChart1"></canvas>
                                                         </div>
                                                     </div>
@@ -161,6 +161,110 @@ session_start();
     <script>
 
 
+       
+    
+
+       
+    </script>
+    <!-- page script -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            semana=[];
+            diasemana();
+           
+            
+            $("#Logout").on('click', function () {
+                <?php 
+                $_SESSION['privilegio'] ='0';
+                ?>
+                window.location = 'php/logout.php';
+                
+            });
+        });
+
+
+    function diasemana(){
+                $.ajax({
+                  url: 'php/ajax_vista-administrador.php',
+                  method: 'POST',
+                  dataType: 'json',
+                   data: {
+                            key: 'diasemana',
+                            }, success: function (response) {
+                                semana =response.body;
+                                grafico();
+                                grafico1();
+                            }
+                        });
+
+    }
+
+    function grafico(){
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+        Chart.defaults.global.defaultFontColor = '#777';
+
+
+        let myChart1 = document.getElementById('myChart1').getContext('2d');
+        let massPopChart1 = new Chart(myChart1, {
+            type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: semana,
+                datasets: [{
+                    label: 'Asistencia',
+                    data: [
+                        90,
+                        50,
+                        30,
+                        28,
+                        45,
+                        70,
+                        85
+                    ],
+                    //backgroundColor:'green',
+                    backgroundColor: [
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)'
+
+                    ],
+      
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Asistencia De Los Estudiantes',
+                    fontSize: 30
+                },
+                legend: {
+                    display: false,
+                    position: 'right',
+                    labels: {
+                        fontColor: '#000'
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        bottom: 60,
+                        top: 0
+                    }
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
+        });
+
+    }
+
+    function grafico1(){
         Chart.defaults.global.defaultFontFamily = 'Lato';
         Chart.defaults.global.defaultFontSize = 18;
         Chart.defaults.global.defaultFontColor = '#777';
@@ -170,7 +274,7 @@ session_start();
         let massPopChart = new Chart(myChart, {
             type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
             data: {
-                labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+                labels: semana,
                 datasets: [{
                     label: 'Asistencia',
                     data: [
@@ -192,10 +296,7 @@ session_start();
                         'rgba(88, 214, 141, 1)',
                         'rgba(88, 214, 141, 1)'
                     ],
-                    borderWidth: 1,
-                    borderColor: '#777',
-                    hoverBorderWidth: 3,
-                    hoverBorderColor: '#000'
+                  
                 }]
             },
             options: {
@@ -225,85 +326,8 @@ session_start();
                 }
             }
         });
-    </script>
+    }
 
-    <script>
-
-        Chart.defaults.global.defaultFontFamily = 'Lato';
-        Chart.defaults.global.defaultFontSize = 18;
-        Chart.defaults.global.defaultFontColor = '#777';
-
-
-        let myChart1 = document.getElementById('myChart1').getContext('2d');
-        let massPopChart1 = new Chart(myChart1, {
-            type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-            data: {
-                labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-                datasets: [{
-                    label: 'Asistencia',
-                    data: [
-                        90,
-                        50,
-                        30,
-                        28,
-                        45,
-                        70
-                    ],
-                    //backgroundColor:'green',
-                    backgroundColor: [
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)',
-                        'rgba(195, 155, 211, 1)'
-
-                    ],
-                    borderWidth: 1,
-                    borderColor: '#777',
-                    hoverBorderWidth: 3,
-                    hoverBorderColor: '#000'
-                }]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: 'Asistencia De Los Estudiantes',
-                    fontSize: 30
-                },
-                legend: {
-                    display: false,
-                    position: 'right',
-                    labels: {
-                        fontColor: '#000'
-                    }
-                },
-                layout: {
-                    padding: {
-                        left: 50,
-                        right: 0,
-                        bottom: 60,
-                        top: 0
-                    }
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-    </script>
-    <!-- page script -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#Logout").on('click', function () {
-                <?php 
-                $_SESSION['privilegio'] ='0';
-                ?>
-                window.location = 'php/logout.php';
-                
-            });
-        });
     </script>
 
 
