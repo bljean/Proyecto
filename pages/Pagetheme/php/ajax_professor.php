@@ -36,7 +36,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $limit = $conn->real_escape_string($_POST['limit']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT trabajadores.NumCedula as NumCedula, usuario, nombre, apellido_1, NumTarjeta FROm trabajadores INNER JOIN contratodocencia on trabajadores.NumCedula=contratodocencia.NumCedula LIMIT $start,$limit");
+        $sql = $conn->query("SELECT DISTINCT trabajadores.NumCedula as NumCedula, usuario, nombre, apellido_1, NumTarjeta FROm trabajadores INNER JOIN contratodocencia on trabajadores.NumCedula=contratodocencia.NumCedula LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
