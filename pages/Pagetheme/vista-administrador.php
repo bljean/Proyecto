@@ -158,21 +158,16 @@ session_start();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-    <script>
-
-
-       
     
-
-       
-    </script>
     <!-- page script -->
     <script type="text/javascript">
         $(document).ready(function () {
             semana=[];
+            asistencia=[];
             diasemana();
+            //contargrupoactivolunes();
            
-            
+         
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='0';
@@ -192,14 +187,15 @@ session_start();
                             key: 'diasemana',
                             }, success: function (response) {
                                 semana =response.body;
+                                asistencia = response.count;
                                 grafico();
                                 grafico1();
                             }
                         });
 
-    }
-
+    }   
     function grafico(){
+        //estudiante
         Chart.defaults.global.defaultFontFamily = 'Lato';
         Chart.defaults.global.defaultFontSize = 18;
         Chart.defaults.global.defaultFontColor = '#777';
@@ -211,16 +207,8 @@ session_start();
             data: {
                 labels: semana,
                 datasets: [{
-                    label: 'Asistencia',
-                    data: [
-                        90,
-                        50,
-                        30,
-                        28,
-                        45,
-                        70,
-                        85
-                    ],
+                    label: 'Ausencia',
+                    data: asistencia,
                     //backgroundColor:'green',
                     backgroundColor: [
                         'rgba(195, 155, 211, 1)',
@@ -238,7 +226,7 @@ session_start();
             options: {
                 title: {
                     display: true,
-                    text: 'Asistencia De Los Estudiantes',
+                    text: 'Ausencia De Los Estudiantes',
                     fontSize: 30
                 },
                 legend: {
@@ -265,6 +253,7 @@ session_start();
     }
 
     function grafico1(){
+        //profesor
         Chart.defaults.global.defaultFontFamily = 'Lato';
         Chart.defaults.global.defaultFontSize = 18;
         Chart.defaults.global.defaultFontColor = '#777';
@@ -276,16 +265,8 @@ session_start();
             data: {
                 labels: semana,
                 datasets: [{
-                    label: 'Asistencia',
-                    data: [
-                        90,
-                        70,
-                        70,
-                        80,
-                        90,
-                        58
-
-                    ],
+                    label: 'Ausencia',
+                    data: asistencia,
                     //backgroundColor:'green',
                     backgroundColor: [
                         'rgba(88, 214, 141, 1)',
@@ -302,7 +283,7 @@ session_start();
             options: {
                 title: {
                     display: true,
-                    text: 'Asistencia De Los Docentes',
+                    text: 'Ausencia De Los Docentes',
                     fontSize: 30
                 },
                 legend: {
@@ -326,7 +307,8 @@ session_start();
                 }
             }
         });
-    }
+    }     
+
 
     </script>
 
