@@ -1,5 +1,6 @@
 <?php
 session_start();
+$id=$_SESSION['user'];
 
 ?>
 <!DOCTYPE html>
@@ -66,7 +67,7 @@ session_start();
         <section id="breadcrumb">
             <div class="container-fluid">
                 <ol class="breadcrumb">
-                    <li class="active"> Dashboard</a>
+                    <li class="active"> <?php echo $id ?> </a>
                     </li>
                 </ol>
             </div>
@@ -126,11 +127,33 @@ session_start();
                 </div>
             </div>
         </section>
+    
+    
+    <!-- Modals -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+                grafico();
+                grafico1();
+            $("#Logout").on('click', function () {
+                <?php 
+
+                $_SESSION['privilegio'] ='2';
+                ?>
+                window.location = 'php/logout.php';
+                
+            });
+        });
+        
+        
 
 
-        <script>
-
-
+        function grafico(){
             Chart.defaults.global.defaultFontFamily = 'Lato';
             Chart.defaults.global.defaultFontSize = 18;
             Chart.defaults.global.defaultFontColor = '#777';
@@ -162,10 +185,7 @@ session_start();
                             'rgba(88, 214, 141, 1)',
                             'rgba(88, 214, 141, 1)'
                         ],
-                        borderWidth: 1,
-                        borderColor: '#777',
-                        hoverBorderWidth: 3,
-                        hoverBorderColor: '#000'
+                       
                     }]
                 },
                 options: {
@@ -195,10 +215,10 @@ session_start();
                     }
                 }
             });
-        </script>
-        
-        <script>
+        }
 
+        function 
+        grafico1(){
             Chart.defaults.global.defaultFontFamily = 'Lato';
             Chart.defaults.global.defaultFontSize = 18;
             Chart.defaults.global.defaultFontColor = '#777';
@@ -262,27 +282,10 @@ session_start();
                     }
                 }
             });
-        </script>
 
-    
-    
-    <!-- Modals -->
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#Logout").on('click', function () {
-                <?php 
-                $_SESSION['privilegio'] ='2';
-                ?>
-                window.location = 'php/logout.php';
-                
-            });
-        });
+        }
+
+
     </script>
 
 

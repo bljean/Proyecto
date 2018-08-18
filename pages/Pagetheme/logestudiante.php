@@ -102,7 +102,9 @@ if(isset($_SESSION['loggedIN'])){
                             },
                             success: function (response) {
                                 if(response=="1"){
-                                    location.reload(); 
+                                    
+                                    location.reload();
+
                                 }else if(response=="2"){
                                     alert("Usuario o contrasena incorrectos");
                                 }
