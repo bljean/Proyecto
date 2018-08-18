@@ -187,11 +187,12 @@ session_start();
                    data: {
                             key: 'diasemana',
                             }, success: function (response) {
+                                alert(response.count);
                                 semana =response.body;
-                                asistenciap = response.count;
-                                asistenciae = response.count1;
-                                grafico();
-                                grafico1();
+                                //asistenciap = response.count;
+                                asistenciae = response.count;
+                                //grafico();
+                                //grafico1();
                             }
                         });
 
