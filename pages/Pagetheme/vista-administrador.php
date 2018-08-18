@@ -163,7 +163,8 @@ session_start();
     <script type="text/javascript">
         $(document).ready(function () {
             semana=[];
-            asistencia=[];
+            asistenciap=[];
+            asistenciae=[];
             diasemana();
             //contargrupoactivolunes();
            
@@ -187,7 +188,8 @@ session_start();
                             key: 'diasemana',
                             }, success: function (response) {
                                 semana =response.body;
-                                asistencia = response.count;
+                                asistenciap = response.count;
+                                asistenciae = response.count1;
                                 grafico();
                                 grafico1();
                             }
@@ -208,7 +210,7 @@ session_start();
                 labels: semana,
                 datasets: [{
                     label: 'Ausencia',
-                    data: asistencia,
+                    data: asistenciae,
                     //backgroundColor:'green',
                     backgroundColor: [
                         'rgba(195, 155, 211, 1)',
