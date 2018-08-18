@@ -190,7 +190,7 @@ session_start();
                                 alert(response.count);
                                 semana =response.body;
                                 asistenciap = response.count;
-                                asistenciae = response.count;
+                                asistenciae = response.count1;
                                 grafico();
                                 grafico1();
                             }

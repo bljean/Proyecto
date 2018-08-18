@@ -17,6 +17,7 @@ if($_POST['key'] == 'diasemana')
             if(getCountprofesoresDia($data["DiaSem"],$conn)!=-1){
                 $response []= $data["NombreLargo"];
                 $count []= getCountprofesoresDia($data["DiaSem"],$conn);
+                $count1 []= getCountestudiantedia($data["DiaSem"],$conn);
             }
             //echo "\n", getCountprofesoresDia($data["DiaSem"],$conn),"\n";
     
@@ -25,7 +26,7 @@ if($_POST['key'] == 'diasemana')
         $jsonArray = array(
             'body'=> $response,
             'count'=> $count,  
-            //'count1'=> $count1,   
+            'count1'=> $count1,   
         );
         exit(json_encode($jsonArray));
         
@@ -69,7 +70,7 @@ function getCountprofesoresDia($dia,$conn){
 
 
 function getCountestudiantedia($dia,$conn){
-    $sqlGDia=$conn->query("SELECT CodTema, CodTP, NumGrupo,CodCampus,AnoAcad,NumPer, FROM horariogrupoactivo WHERE DiaSem='$dia'");
+    $sqlGDia=$conn->query("SELECT CodTema, CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia'");
     $totalestudianteporgrupo=0;
     $totalasistenciaporgrupo=0;
     if($sqlGDia->num_rows>0){
@@ -80,20 +81,21 @@ function getCountestudiantedia($dia,$conn){
             $CodCampus=$data["CodCampus"];
             $AnoAcad=$data["AnoAcad"];
             $NumPer=$data["NumPer"];
-            $totalestudianteporgrupo +=contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer);
-            $totalasistenciaporgrupo +=contarasistenciaporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$dia);
-            $ausencia=((int)$totalestudianteporgrupo-(int)$totalasistenciaporgrupo);
-            $dividirl= ((int)$ausencia / (int)$totalestudianteporgrupo);
-            $calculo = ($dividirl*100);
+            $totalestudianteporgrupo +=contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$conn);
+            $totalasistenciaporgrupo +=contarasistenciaporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$dia,$conn);
+          
         
         } 
+        $ausencia=((int)$totalestudianteporgrupo-(int)$totalasistenciaporgrupo);
+        $dividirl= ((int)$ausencia / (int)$totalestudianteporgrupo);
+        $calculo = ($dividirl*100);
 
         } else{$calculo=0;
         } 
           return $calculo;     
 }
 
-function contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer){
+function contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$conn){
     
     $sqlCanESTDia=$conn->query("SELECT  COUNT(*) as contar FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Numgrupo='$NumGrupo'");
     if($sqlCanESTDia->num_rows>0){
@@ -105,8 +107,8 @@ function contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,
 
 }
 
-function contarasistenciaporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$dia){
-    $sqlasistencia=$conn->query("SELECT COUNT(*) as cont FROM asistencia INNER JOIN estudiante on estudiante.Matricula=asistencia.ID WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Diasemana='$dia' ");
+function contarasistenciaporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$dia,$conn){
+    $sqlasistencia=$conn->query("SELECT COUNT(*) as cont FROM asistencia INNER JOIN estudiante on estudiante.Matricula=asistencia.ID WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Diasemana='$dia' and Presencia='P' ");
     if($sqlasistencia->num_rows>0){
         while($data= $sqlasistencia->fetch_array())
         {
