@@ -189,10 +189,10 @@ session_start();
                             }, success: function (response) {
                                 alert(response.count);
                                 semana =response.body;
-                                //asistenciap = response.count;
+                                asistenciap = response.count;
                                 asistenciae = response.count;
-                                //grafico();
-                                //grafico1();
+                                grafico();
+                                grafico1();
                             }
                         });
 

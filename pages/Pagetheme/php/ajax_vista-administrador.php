@@ -11,7 +11,7 @@ if($_POST['key'] == 'diasemana')
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
-            //$response []= $data["NombreLargo"];
+            $response []= $data["NombreLargo"];
             $count []= getCountprofesoresDia($data["DiaSem"],$conn);
             //echo "\n", getCountprofesoresDia($data["DiaSem"],$conn),"\n";
     
