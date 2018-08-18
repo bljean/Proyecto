@@ -250,10 +250,7 @@ $id=$_SESSION['user'];
                             'rgba(195, 155, 211, 1)'
 
                         ],
-                        borderWidth: 1,
-                        borderColor: '#777',
-                        hoverBorderWidth: 3,
-                        hoverBorderColor: '#000'
+                    
                     }]
                 },
                 options: {

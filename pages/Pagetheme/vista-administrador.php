@@ -38,7 +38,7 @@ session_start();
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="swipe.html">Eventos</a>
+                        <a href="eventos.php">Eventos</a>
                     </li>
                     <li>
                         <div class="dropdown create">
@@ -187,7 +187,7 @@ session_start();
                    data: {
                             key: 'diasemana',
                             }, success: function (response) {
-                                alert(response.count);
+                                //alert(response.count);
                                 semana =response.body;
                                 asistenciap = response.count;
                                 asistenciae = response.count1;
