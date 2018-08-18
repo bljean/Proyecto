@@ -11,8 +11,13 @@ if($_POST['key'] == 'diasemana')
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
-            $response []= $data["NombreLargo"];
-            $count []= getCountprofesoresDia($data["DiaSem"],$conn);
+           
+           
+            
+            if(getCountprofesoresDia($data["DiaSem"],$conn)!=-1){
+                $response []= $data["NombreLargo"];
+                $count []= getCountprofesoresDia($data["DiaSem"],$conn);
+            }
             //echo "\n", getCountprofesoresDia($data["DiaSem"],$conn),"\n";
     
             }    
@@ -59,7 +64,7 @@ function getCountprofesoresDia($dia,$conn){
        
         
         return $multiplicarl;
-        }else{return $multiplicarl=0;}       
+        }else{return $multiplicarl=-1;}       
 }
 
 

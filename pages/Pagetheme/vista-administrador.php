@@ -269,7 +269,7 @@ session_start();
                 labels: semana,
                 datasets: [{
                     label: 'Ausencia',
-                    data: asistencia,
+                    data: asistenciap,
                     //backgroundColor:'green',
                     backgroundColor: [
                         'rgba(88, 214, 141, 1)',
