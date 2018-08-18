@@ -164,7 +164,7 @@ $privilegio=$_POST['privilegio'];
                           <th>Dia de Semana</th>
                           <th>Hora Inicio</th>
                           <th>Hora Termino</th>
-                          <th>Hora Entrada</th>
+                          <th>Hora Llegada</th>
                           <th>Asistencia</th>
                           <th>Opciones</th>
                         </thead>
@@ -217,24 +217,46 @@ $privilegio=$_POST['privilegio'];
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
-      getGroupData(ID);
+      var privilegio = "<?php echo $privilegio; ?>";
+      if(privilegio=="1"){
+        getEstGroupData(ID);
+      }else if(privilegio=="2"){
+        getProfGroupData(ID);
+      }
+     
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
       });
-    function getGroupData(studentID){
+    function getEstGroupData(studentID){
       $.ajax({
               url: 'php/ajax_Asistencias.php',
               method: 'POST',
               dataType: 'json',
               data: {
-                    key: 'getGroupData',
+                    key: 'getEstGroupData',
                     studentID: studentID,
                     }, success: function (response) {
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
                           getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                    }
+                });
+      }
+    function getProfGroupData(ProfID){
+      $.ajax({
+              url: 'php/ajax_Asistencias.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getProfGroupData',
+                    ProfID: ProfID,
+                    }, success: function (response) {
+                          $(".pillsbody").append(response.body);
+                          $("#tituloGrupo").html('');
+                          $("#tituloGrupo").append(response.groupCodigo);
+                          getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                     }
                 });
       }
@@ -324,6 +346,34 @@ $privilegio=$_POST['privilegio'];
                 }
             });
         }
+    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+        $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'activeProfGroup',
+                    ProfID: ProfID,
+                    NumGrupo: NumGrupo,
+                    CodTema:CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    NumPer: NumPer,
+                   
+                }, success: function (response) {
+                  
+                  $(".pillsbody").html('');
+                  $(".pillsbody").append(response.body);
+                  $("#tituloGrupo").html('');
+                  $("#tituloGrupo").append(response.groupCodigo);
+                  $(".tableAsisBody").html('');
+                  dataindex=1;
+                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  
+                }
+            });
+        }      
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");
