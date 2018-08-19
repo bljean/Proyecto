@@ -1,5 +1,6 @@
 <?php
-
+session_start();
+ $ID= $_SESSION['user'];
 
 ?>
 <!DOCTYPE html>
@@ -19,46 +20,34 @@
 
 <body>
 
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-          aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="vista-administrador.php">Control de acceso</a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li>
-            <a href="swipe.html">Eventos</a>
-          </li>
-          <li>
-              <div class="dropdown create">
-                  <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Gestion de tarjetas
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="students.html">Estudiantes</a></li>
-                    <li><a href="professors.html">Profesores</a></li>
-                    <li><a href="workers.html">Empleados</a></li>
-                  </ul>
+   <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="vista-estudiante.php">Inicio</a>
                 </div>
-          </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <button type="button" value="Log out" id="Logout" class="btn btn-primary btn-block">Logout</button>
-          </li>
-        </ul>
-      </div>
-      <!--/.nav-collapse -->
-    </div>
-  </nav>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="MisgruposEstudiante.php">Mis Grupos</a>
+                        </li>
+        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <button type="button" value="Log out" id="Logout" class="btn btn-primary btn-block">Logout</button>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+      </nav>
 
   <header id="header">
     <div class="container-fluid">
@@ -77,13 +66,9 @@
     <div class="container-fluid">
       <ol class="breadcrumb">
         <li>
-          <a href="vista-administrador.php">Dashboard</a>
+          <a href="vista-estudiante.php">Dashboard</a>
         </li>
-        <li>
-        <a href="students.html">Estudiantes</a>
-          
-
-        </li>
+        
         <li class="active">Asistencias</li>
       </ol>
     </div>
@@ -134,7 +119,7 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4> <?php echo $nombre?></h4>
+                    <h4> <?php echo $ID?></h4>
                     <h4>Grupos:</h4>
                     <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     
@@ -203,22 +188,21 @@
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
-      var privilegio = "<?php echo $privilegio; ?>";
-      if(privilegio=="1"){
-        getEstGroupData(ID);
-      }else if(privilegio=="2"){
-        getProfGroupData(ID);
-      }
-     
+      getEstGroupData(ID);
       $("#Logout").on('click', function () {
-            window.location= 'php/logout.php'
-      });
+                <?php 
+
+                $_SESSION['privilegio'] ='2';
+                ?>
+                window.location = 'php/logout.php';
+                
+            });
       });
     function getEstGroupData(studentID){
       $.ajax({
@@ -232,7 +216,7 @@
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                          getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                          //getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer, 2);
                     }
                 });
       }
@@ -252,7 +236,7 @@
                     }
                 });
       }
-    function getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) {
+    function getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio) {
             $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -268,11 +252,12 @@
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio: privilegio,
                 }, success: function (response) {
                     if (response != "reachedMax") {
                         $(".tableAsisBody").append(response);
                         start += limit;
-                        getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer);
+                        getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
                     } else {
                       if(dataindex != 0){
                             
@@ -333,7 +318,7 @@
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
                   
                 }
             });
@@ -361,7 +346,7 @@
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
                   
                 }
             });

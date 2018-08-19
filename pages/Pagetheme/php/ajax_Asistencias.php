@@ -7,6 +7,7 @@ $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
 if($_POST['key'] == 'getEstGroupData'){
     $studentID=$conn->real_escape_string($_POST['studentID']);
+    $privilegio=$conn->real_escape_string($_POST['privilegio']);
     //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
     //SELECT grupo.idgrupo as idgrupo,codigo FROM grupoestudiante, grupo WHERE grupoestudiante.idestudiante='$studentID' and grupoestudiante.idgrupo=grupo.idgrupo
     $sql = $conn->query("SELECT CodTema,CodTP,Numgrupo,CodCampus,AnoAcad,NumPer FROM grupoinsest WHERE grupoinsest.Matricula='$studentID'");
@@ -32,7 +33,7 @@ if($_POST['key'] == 'getEstGroupData'){
             
             }else{
             $response .='
-            <li onclick="activeGroup(\''.$studentID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
+            <li onclick="activeGroup(\''.$studentID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\',\''.$privilegio.'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
             ';   
             }
             ++$i;
@@ -53,6 +54,7 @@ if($_POST['key'] == 'getEstGroupData'){
     }
 if($_POST['key'] == 'getProfGroupData'){
         $ProfID=$conn->real_escape_string($_POST['ProfID']);
+        //$privilegio=$conn->real_escape_string($_POST['privilegio']);
         $sql = $conn->query("SELECT CodTema,CodTP,Numgrupo,CodCampus,AnoAcad,NumPer FROM contratodocencia WHERE contratodocencia.NumCedula='$ProfID'");
         if($sql->num_rows >0){
             $response ="";
@@ -105,28 +107,45 @@ if($_POST['key'] == 'getAsisData'){
         $CodCampus=$conn->real_escape_string($_POST['CodCampus']);
         $AnoAcad=$conn->real_escape_string($_POST['AnoAcad']);
         $NumPer=$conn->real_escape_string($_POST['NumPer']);
+        $privilegio=$conn->real_escape_string($_POST['privilegio']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
         $sql = $conn->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='$studentID' AND NumGrupo='$NumGrupo' AND CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus' AND  AnoAcad='$AnoAcad' AND NumPer='$NumPer' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
-            while($data= $sql->fetch_array()){
-                $response .='
-                <tr>
-                    <td>'.$data["Fecha"].'</td>
-                    <td>'.$data["Diasemana"].'</td>
-                    <td>'.$data["Horaini"].'</td>
-                    <td>'.$data["Horafin"].'</td>
-                    <td>'.$data["Horaentrada"].'</td>
-                    <td>'.$data["Presencia"].'</td>
-                    <td>
-                    <div class="col-md-2">
-                    <input type="button" onclick="edit('.$data["Fecha"].')" value="Editar" class="btn btn-primary">
-                    </div>
-                    </td>
-                </tr>
-                ';
+            if($privilegio!=0){
+                while($data= $sql->fetch_array()){
+                    $response .='
+                    <tr>
+                        <td>'.$data["Fecha"].'</td>
+                        <td>'.$data["Diasemana"].'</td>
+                        <td>'.$data["Horaini"].'</td>
+                        <td>'.$data["Horafin"].'</td>
+                        <td>'.$data["Horaentrada"].'</td>
+                        <td>'.$data["Presencia"].'</td>
+                    </tr>
+                    ';
+                }
+            }else{
+                while($data= $sql->fetch_array()){
+                    $response .='
+                    <tr>
+                        <td>'.$data["Fecha"].'</td>
+                        <td>'.$data["Diasemana"].'</td>
+                        <td>'.$data["Horaini"].'</td>
+                        <td>'.$data["Horafin"].'</td>
+                        <td>'.$data["Horaentrada"].'</td>
+                        <td>'.$data["Presencia"].'</td>
+                        <td>
+                        <div class="col-md-2">
+                        <input type="button" onclick="edit('.$data["Fecha"].')" value="Editar" class="btn btn-primary">
+                        </div>
+                        </td>
+                    </tr>
+                    ';
+                }
             }
+            
             exit($response);
         } else
             exit('reachedMax');
@@ -139,6 +158,7 @@ if($_POST['key'] == 'getActiveGroup'){
         $CodCampus=$conn->real_escape_string($_POST['CodCampus']);
         $AnoAcad=$conn->real_escape_string($_POST['AnoAcad']);
         $NumPer=$conn->real_escape_string($_POST['NumPer']);
+        $privilegio=$conn->real_escape_string($_POST['privilegio']);
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
         $sql = $conn->query("SELECT CodTema,CodTP,Numgrupo,CodCampus,AnoAcad,NumPer FROM grupoinsest WHERE grupoinsest.Matricula='$studentID'");
         if($sql->num_rows >0){
@@ -163,7 +183,7 @@ if($_POST['key'] == 'getActiveGroup'){
                    
                 }else{
                     $response .='
-                    <li onclick="activeGroup(\''.$studentID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
+                    <li onclick="activeGroup(\''.$studentID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\',\''.$privilegio.'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
                     ';   
                     }
                     
@@ -192,6 +212,7 @@ if($_POST['key'] == 'activeProfGroup'){
         $CodCampus=$conn->real_escape_string($_POST['CodCampus']);
         $AnoAcad=$conn->real_escape_string($_POST['AnoAcad']);
         $NumPer=$conn->real_escape_string($_POST['NumPer']);
+        $privilegio=$conn->real_escape_string($_POST['privilegio']);
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
         $sql = $conn->query("SELECT CodTema,CodTP,Numgrupo,CodCampus,AnoAcad,NumPer FROM contratodocencia WHERE contratodocencia.NumCedula='$ProfID'");
         if($sql->num_rows >0){
@@ -216,7 +237,7 @@ if($_POST['key'] == 'activeProfGroup'){
                    
                 }else{
                     $response .='
-                    <li onclick="activeProfGroup(\''.$ProfID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
+                    <li onclick="activeProfGroup(\''.$ProfID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\',\''.$privilegio.'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
                     ';   
                     }
                     
