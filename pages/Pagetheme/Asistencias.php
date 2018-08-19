@@ -1,7 +1,9 @@
 <?php
+session_start();
 $ID= $_POST['ID'];
 $nombre=$_POST['nombre'];
-$privilegio=$_POST['privilegio'];
+$privilegio1=$_POST['privilegio'];
+$privilegio= $_SESSION['privilegio'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -217,18 +219,19 @@ $privilegio=$_POST['privilegio'];
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
+      var privilegio1 = "<?php echo $privilegio1; ?>";
       var privilegio = "<?php echo $privilegio; ?>";
-      if(privilegio=="1"){
-        getEstGroupData(ID);
-      }else if(privilegio=="2"){
-        getProfGroupData(ID);
+      if(privilegio1=="1"){
+        getEstGroupData(ID,privilegio);
+      }else if(privilegio1=="2"){
+        getProfGroupData(ID,privilegio);
       }
      
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
       });
-    function getEstGroupData(studentID){
+    function getEstGroupData(studentID,privilegio){
       $.ajax({
               url: 'php/ajax_Asistencias.php',
               method: 'POST',
@@ -236,15 +239,16 @@ $privilegio=$_POST['privilegio'];
               data: {
                     key: 'getEstGroupData',
                     studentID: studentID,
+                    privilegio:privilegio,
                     }, success: function (response) {
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                          getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                          getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer, privilegio);
                     }
                 });
       }
-    function getProfGroupData(ProfID){
+    function getProfGroupData(ProfID,privilegio){
       $.ajax({
               url: 'php/ajax_Asistencias.php',
               method: 'POST',
@@ -252,15 +256,16 @@ $privilegio=$_POST['privilegio'];
               data: {
                     key: 'getProfGroupData',
                     ProfID: ProfID,
+                    privilegio: privilegio,
                     }, success: function (response) {
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                          getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                     }
                 });
       }
-    function getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) {
+    function getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio) {
             $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -276,11 +281,12 @@ $privilegio=$_POST['privilegio'];
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio: privilegio,
                 }, success: function (response) {
                     if (response != "reachedMax") {
                         $(".tableAsisBody").append(response);
                         start += limit;
-                        getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer);
+                        getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
                     } else {
                       if(dataindex != 0){
                             
@@ -318,7 +324,7 @@ $privilegio=$_POST['privilegio'];
                 }
             });
         }
-    function activeGroup(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+    function activeGroup(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -332,6 +338,7 @@ $privilegio=$_POST['privilegio'];
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio:privilegio,
                    
                 }, success: function (response) {
                   
@@ -341,12 +348,12 @@ $privilegio=$_POST['privilegio'];
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
             });
         }
-    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -360,6 +367,7 @@ $privilegio=$_POST['privilegio'];
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio:privilegio,
                    
                 }, success: function (response) {
                   
@@ -369,11 +377,11 @@ $privilegio=$_POST['privilegio'];
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
             });
-        }      
+        }        
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");

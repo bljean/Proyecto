@@ -10,10 +10,16 @@ if(isset($_POST['login'])){
     $password=md5($conn->real_escape_string($_POST['passwordPHP']));
     $privilegio = $conn->real_escape_string($_POST['privilegio']);
 
-    $data= $conn->query("SELECT userid FROM users WHERE username='$user'AND userpassword='$password'AND privilegio='$privilegio'");
-    if($data->num_rows >0){
+    $sql= $conn->query("SELECT userid,	NumCedula,privilegio FROM users WHERE username='$user'AND userpassword='$password'AND privilegio='$privilegio'");
+    if($sql->num_rows >0){
+        while($data=$sql->fetch_array()){
+            $NumCedula=$data["NumCedula"];
+            $privilegio=$data["privilegio"];
+        }
         $_SESSION['loggedIN'] = '1';
         $_SESSION['user']= $user;
+        $_SESSION['NumCedula']=$NumCedula;
+        //$_SESSION['privilegio']=$privilegio;
         exit('1');
     }else
         exit('2');

@@ -2,6 +2,9 @@
 session_start();
  $ID= $_SESSION['user'];
  $privilegio=$_SESSION['privilegio'];
+ if($privilegio==1){
+ $NumCedula =$_SESSION['NumCedula'];
+ }
 
 ?>
 <!DOCTYPE html>
@@ -124,7 +127,7 @@ session_start();
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4> <?php echo $ID,$privilegio;?></h4>
+                    <h4> <?php echo $ID;?></h4>
                     <h4>Grupos:</h4>
                     <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     
@@ -199,8 +202,9 @@ session_start();
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
+      var NumCedula = "<?php echo $NumCedula; ?>";
       var privilegio = "<?php echo $privilegio; ?>";
-      getProfGroupData(ID, privilegio);
+      getProfGroupData(NumCedula,privilegio);
       $("#Logout").on('click', function () {
                 <?php 
 
@@ -240,7 +244,7 @@ session_start();
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                         // getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                     }
                 });
       }
@@ -361,6 +365,7 @@ session_start();
                 }
             });
         }      
+    
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");

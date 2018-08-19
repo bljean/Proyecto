@@ -1,6 +1,7 @@
 <?php
 session_start();
  $ID= $_SESSION['user'];
+ $privilegio= $_SESSION['privilegio'];
 
 ?>
 <!DOCTYPE html>
@@ -194,7 +195,8 @@ session_start();
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
-      getEstGroupData(ID);
+      var privilegio = "<?php echo $privilegio; ?>";
+      getEstGroupData(ID,privilegio);
       $("#Logout").on('click', function () {
                 <?php 
 
@@ -204,7 +206,7 @@ session_start();
                 
             });
       });
-    function getEstGroupData(studentID){
+    function getEstGroupData(studentID,privilegio){
       $.ajax({
               url: 'php/ajax_Asistencias.php',
               method: 'POST',
@@ -212,15 +214,16 @@ session_start();
               data: {
                     key: 'getEstGroupData',
                     studentID: studentID,
+                    privilegio:privilegio,
                     }, success: function (response) {
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                          //getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer, 2);
+                          getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer, privilegio);
                     }
                 });
       }
-    function getProfGroupData(ProfID){
+    function getProfGroupData(ProfID,privilegio){
       $.ajax({
               url: 'php/ajax_Asistencias.php',
               method: 'POST',
@@ -228,11 +231,12 @@ session_start();
               data: {
                     key: 'getProfGroupData',
                     ProfID: ProfID,
+                    privilegio: privilegio,
                     }, success: function (response) {
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                          getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                     }
                 });
       }
@@ -295,7 +299,7 @@ session_start();
                 }
             });
         }
-    function activeGroup(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+    function activeGroup(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -309,6 +313,7 @@ session_start();
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio:privilegio,
                    
                 }, success: function (response) {
                   
@@ -318,12 +323,12 @@ session_start();
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
+                  getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
             });
         }
-    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -337,6 +342,7 @@ session_start();
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
+                    privilegio:privilegio,
                    
                 }, success: function (response) {
                   
@@ -346,11 +352,11 @@ session_start();
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
                   dataindex=1;
-                  //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
+                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
             });
-        }      
+        }     
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");

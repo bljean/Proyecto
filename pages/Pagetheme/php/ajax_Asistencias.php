@@ -53,12 +53,13 @@ if($_POST['key'] == 'getEstGroupData'){
     exit(json_encode($jsonArray));
     }
 if($_POST['key'] == 'getProfGroupData'){
+        $response ="";
+        $groupCodigo="";
         $ProfID=$conn->real_escape_string($_POST['ProfID']);
-        //$privilegio=$conn->real_escape_string($_POST['privilegio']);
+        $privilegio=$conn->real_escape_string($_POST['privilegio']);
         $sql = $conn->query("SELECT CodTema,CodTP,Numgrupo,CodCampus,AnoAcad,NumPer FROM contratodocencia WHERE contratodocencia.NumCedula='$ProfID'");
         if($sql->num_rows >0){
-            $response ="";
-            $groupCodigo="";
+            
             $i=0;
             while($data= $sql->fetch_array()){
     
@@ -78,7 +79,7 @@ if($_POST['key'] == 'getProfGroupData'){
                 
                 }else{
                 $response .='
-                <li onclick="activeProfGroup(\''.$ProfID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
+                <li onclick="activeProfGroup(\''.$ProfID.'\',\''.$data["Numgrupo"].'\',\''.$data["CodTema"].'\',\''.$data["CodTP"].'\',\''.$data["CodCampus"].'\',\''.$data["AnoAcad"].'\',\''.$data["NumPer"].'\',\''.$privilegio.'\')"><a>'.$data["CodTema"].'-'.$data["CodTP"].'-'.$data["Numgrupo"].'</a></li>
                 ';   
                 }
                 ++$i;
