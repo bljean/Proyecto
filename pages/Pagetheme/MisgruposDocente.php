@@ -153,8 +153,6 @@ if(isset($_SESSION['loggedIN'])){
                         <thead>
                           <th>Matricula</th>
                           <th>Nombre</th>
-                          <th>Asistencia</th>
-                          <th>Opciones</th>
                         </thead>
                         <tbody class="tableAsisBody">
 
@@ -300,7 +298,7 @@ if(isset($_SESSION['loggedIN'])){
                   $(".tableAsisBody").html('');
                   dataindex=1;
                   //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
-                    getestgrupo(response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
+                  getestgrupo(response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                 }
             });
         }      
