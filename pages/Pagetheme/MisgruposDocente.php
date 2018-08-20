@@ -210,7 +210,8 @@ if(isset($_SESSION['loggedIN'])){
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                         //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                        getestgrupo(response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                     }
                 });
       }
@@ -299,15 +300,15 @@ if(isset($_SESSION['loggedIN'])){
                   $(".tableAsisBody").html('');
                   dataindex=1;
                   //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
-                    getestgrupo(NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer);
+                    getestgrupo(response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                 }
             });
         }      
     function getestgrupo(NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
       $.ajax({
-                url: 'php/ajax_Asistencias.php',
+                url: 'php/ajax_misgruposdocentes.php',
                 method: 'POST',
-                dataType: 'json',
+                dataType: 'text',
                 data: {
                     key: 'getestgrupo',
                     NumGrupo: NumGrupo,
@@ -318,10 +319,37 @@ if(isset($_SESSION['loggedIN'])){
                     NumPer: NumPer,
                    
                 }, success: function (response) {
-                 
-                  $(".tableAsisBody").html('');
-                  
-                  dataindex=1;    
+                  $(".tableAsisBody").append(response);
+                  if(dataindex != 0){
+                            
+                          }else{
+                            dTable = $(".tableAsis").DataTable({
+                              "language": {
+                                  "sProcessing": "Procesando...",
+                                  "sLengthMenu": "Mostrar _MENU_ registros",
+                                  "sZeroRecords": "No se encontraron resultados",
+                                  "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                  "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                  "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                  "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                  "sInfoPostFix": "",
+                                  "sSearch": "Buscar:",
+                                  "sUrl": "",
+                                  "sInfoThousands": ",",
+                                  "sLoadingRecords": "Cargando...",
+                                  "oPaginate": {
+                                      "sFirst": "Primero",
+                                      "sLast": "Último",
+                                      "sNext": "Siguiente",
+                                      "sPrevious": "Anterior"
+                                  },
+                                  "oAria": {
+                                      "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                  }
+                              },
+                              "lengthChange": false
+                          });}   
                 }
             });
 

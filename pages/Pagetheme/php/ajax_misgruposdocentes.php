@@ -13,34 +13,25 @@ if($_POST['key'] == 'getestgrupo'){
     $CodCampus=$conn->real_escape_string($_POST['CodCampus']);
     $AnoAcad=$conn->real_escape_string($_POST['AnoAcad']);
     $NumPer=$conn->real_escape_string($_POST['NumPer']);
+    $response ="";
     //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-    $sql = $conn->query("SELECT Matricula FROM   ");
+    $sql = $conn->query("SELECT grupoinsest.Matricula,estudiante.nombre,estudiante.apellido FROM grupoinsest INNER JOIN estudiante on estudiante.Matricula=grupoinsest.Matricula WHERE CodTema='$CodTema' and CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer'");
     if($sql->num_rows >0){
         $response ="";
             while($data= $sql->fetch_array()){
                 $response .='
                 <tr>
-                    <td>'.$data["Fecha"].'</td>
-                    <td>'.$data["Diasemana"].'</td>
-                    <td>'.$data["Horaini"].'</td>
-                    <td>'.$data["Horafin"].'</td>
-                    <td>'.$data["Horaentrada"].'</td>
-                    <td>'.$data["Presencia"].'</td>
-                    <td>
-                    <div class="col-md-2">
-                    <input type="button" onclick="edit('.$data["Fecha"].')" value="Editar" class="btn btn-primary">
-                    </div>
-                    </td>
+                    <td>'.$data["Matricula"].'</td>
+                    <td>'.$data["nombre"].''.$data["apellido"].'</td>
                 </tr>
                 ';
             }
         }
         
         exit($response);
-    } else
-        exit('reachedMax');
+   
 }
 
-
 }
+
 ?>
