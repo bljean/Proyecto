@@ -32,12 +32,12 @@ $privilegio= $_SESSION['privilegio'];
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="vista-administrador.php">Control de acceso</a>
+        <a class="navbar-brand" href="vista-administrador.php">Inicio</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
           <li>
-            <a href="swipe.html">Eventos</a>
+            <a href="eventos.php">Eventos</a>
           </li>
           <li>
               <div class="dropdown create">

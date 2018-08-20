@@ -116,6 +116,7 @@ if($_POST['key'] == 'getAsisData'){
             $response ="";
             if($privilegio!=0){
                 while($data= $sql->fetch_array()){
+
                     $response .='
                     <tr>
                         <td>'.$data["Fecha"].'</td>
@@ -278,5 +279,10 @@ if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
         exit('success');
         }
     }
+}
+function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
+    $time1 = strtotime('08:00:00');
+    $time2 = strtotime('09:30:00');
+    $difference = round(abs($time2 - $time1) / 3600,2);  
 }
 ?>

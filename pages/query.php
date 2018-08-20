@@ -6,18 +6,44 @@ $CodSalon = 14;
 
 //getStudentGroup(20131066);
 //getProfesorGroup(14785236985);
-checkGroupTime();
+//checkGroupTime();
 /*$timezone = date_default_timezone_get();
 echo "\n The current server timezone is:  $timezone \n";
 $date = date('H:i:s');
 echo " probando time: $date \n";
 echo  getWeekday($date);
 */
+$sql = connectBd()->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='20131036'");
+while($data= $sql->fetch_array()){
+    echo "Horaini: ",$data["Horaini"],"\n";
+    echo "Horafin: ",$data["Horafin"],"\n";
+    echo "Horaentrada: ",$data["Horaentrada"],"\n";
+    echo "Presencia: ",$data["Presencia"],"\n";
+    echo totalHorasAsistencia($data["Horaini"],$data["Horafin"],$data["Horaentrada"],$data["Presencia"]),"\n";
+}
 
 
 
-
-
+function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
+    $time1 = strtotime($horaIni);
+    $time2 = strtotime($horaFin);
+    $time3 = strtotime($horaEntrada);
+    echo "Total de horas: ",$totalHoras = round(abs($time2 - $time1) / 3600,2),"\n";
+    if($precencia=="P"){
+        echo "Total de Horas Presente: ",$totalHorasPresente = round(abs($time2 - $time3) / 3600,2),"\n";
+        $whole = floor($totalHorasPresente);      
+        $fraction = $totalHorasPresente - $whole;
+       if($fraction < 0.7){
+        $totalHorasPresente= intval($totalHorasPresente);
+       }else if($fraction >= 0.7){
+        $totalHorasPresente += 0.5;
+        $totalHorasPresente= intval($totalHorasPresente);
+       } 
+       return $totalHorasPresente;
+    }
+    return intval($totalHoras);
+   
+}
 function connectBd(){
         $user='root';
         $pass='';
