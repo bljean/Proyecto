@@ -13,7 +13,7 @@ $date = date('H:i:s');
 echo " probando time: $date \n";
 echo  getWeekday($date);
 */
-$sql = connectBd()->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='20131036'");
+$sql = connectBd()->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='20140945'");
 while($data= $sql->fetch_array()){
     echo "Horaini: ",$data["Horaini"],"\n";
     echo "Horafin: ",$data["Horafin"],"\n";
@@ -41,8 +41,20 @@ function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
        } 
        return $totalHorasPresente;
     }
-    return intval($totalHoras);
+    return totalhorasgrupo($time1,$time2);
    
+}
+function totalhorasgrupo($time1,$time2){
+    $totalHoras = round(abs($time2 - $time1) / 3600,2);
+    $t = $totalHoras;
+    $whole = floor($t);      
+    $fraction = $t - $whole;
+    $minute = ($fraction * 0.6)*100;
+    echo intval($t),"h", $minute,"\n";
+    $thorastime=mktime(intval($t),$minute ); 
+    $horas=date("h:i", $thorastime);
+    
+    return $horas;
 }
 function connectBd(){
         $user='root';

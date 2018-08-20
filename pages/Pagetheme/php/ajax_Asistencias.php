@@ -130,6 +130,8 @@ if($_POST['key'] == 'getAsisData'){
                 }
             }else{
                 while($data= $sql->fetch_array()){
+                    $totalHorasasistencia=totalHorasAsistencia($data["Horaini"],$data["Horafin"],$data["Horaentrada"],$data["Presencia"]);
+                    $totalHoras=totalhorasgrupo($data["Horaini"],$data["Horafin"]);
                     $response .='
                     <tr>
                         <td>'.$data["Fecha"].'</td>
@@ -137,6 +139,8 @@ if($_POST['key'] == 'getAsisData'){
                         <td>'.$data["Horaini"].'</td>
                         <td>'.$data["Horafin"].'</td>
                         <td>'.$data["Horaentrada"].'</td>
+                        <td>'.$totalHoras.'</td>
+                        <td>'.$totalHorasasistencia.'</td>
                         <td>'.$data["Presencia"].'</td>
                         <td>
                         <div class="col-md-2">
@@ -281,8 +285,37 @@ if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
     }
 }
 function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
-    $time1 = strtotime('08:00:00');
-    $time2 = strtotime('09:30:00');
-    $difference = round(abs($time2 - $time1) / 3600,2);  
+    $time1 = strtotime($horaIni);
+    $time2 = strtotime($horaFin);
+    $time3 = strtotime($horaEntrada);
+    echo "Total de horas: ",$totalHoras = round(abs($time2 - $time1) / 3600,2),"\n";
+    if($precencia=="P"){
+        echo "Total de Horas Presente: ",$totalHorasPresente = round(abs($time2 - $time3) / 3600,2),"\n";
+        $whole = floor($totalHorasPresente);      
+        $fraction = $totalHorasPresente - $whole;
+       if($fraction < 0.7){
+        $totalHorasPresente= intval($totalHorasPresente);
+       }else if($fraction >= 0.7){
+        $totalHorasPresente += 0.5;
+        $totalHorasPresente= intval($totalHorasPresente);
+       } 
+       return $totalHorasPresente;
+    }
+    return 0;
+   
+}
+function totalhorasgrupo($horaIni,$horaFin){
+    $time1 = strtotime($horaIni);
+    $time2 = strtotime($horaFin);
+    $totalHoras = round(abs($time2 - $time1) / 3600,2);
+    $t = $totalHoras;
+    $whole = floor($t);      
+    $fraction = $t - $whole;
+    $minute = ($fraction * 0.6)*100;
+    echo intval($t),"h", $minute,"\n";
+    $thorastime=mktime(intval($t),$minute ); 
+    $horas=date("h:i", $thorastime);
+    
+    return $horas;
 }
 ?>
