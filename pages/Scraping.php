@@ -160,9 +160,10 @@ function reconigtion($personid){
         if($output[0]=="1"){
             echo "Eres: $personid\n";
             openDoor(); 
-            
+            return 1;
         }else if($output[0]=="0"){
             echo "No eres:$personid\n";
+            return 0;
         }
     }    
 function connectBd(){
@@ -234,18 +235,21 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
     $codsalon =$GLOBALS['CodSalon'];
+    $horasPresente=totalHorasAsistencia($horaini,$horafin,$time,$Precencia);
     $sqlStudentattend = connectBd()->query( "SELECT * FROM asistencia WHERE ID='$matricula' AND Fecha='$date' AND Horaini='$horaini'");
     if($sqlStudentattend->num_rows > 0){
         echo "ya esta precente";
-        openDoor();
+        reconigtion($matricula);
         insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
     }else {
         if($Precencia=='A' OR $Precencia=='R'){
-            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
         }else {
-            openDoor();
+            if(reconigtion($matricula)==1){
+                connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+            }
             insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
-            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+            
         } 
     }        
     }
@@ -325,5 +329,25 @@ function insertSwipeRecord($NumTarjeta,$ID,$Nombre,$apellido,$Acceso){
     $day= getWeekday($date);
     echo "\n$NumTarjeta,$Nombre,$apellido,$Acceso, $codcampus,$codedif,$codsalon,$date,$time\n";
     connectBd()->query("INSERT INTO swipe (NumTarjeta,ID,Nombre,Acceso,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha,Tiempo) VALUES('$NumTarjeta','$ID','$Nombre $apellido','$Acceso','$codcampus','$codedif','$codsalon','$date','$time')");
-    }  
+    } 
+function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
+        $time1 = strtotime($horaIni);
+        $time2 = strtotime($horaFin);
+        $time3 = strtotime($horaEntrada);
+        $totalHoras = round(abs($time2 - $time1) / 3600,2);
+        if($precencia=="P"){
+            $totalHorasPresente = round(abs($time2 - $time3) / 3600,2);
+            $whole = floor($totalHorasPresente);      
+            $fraction = $totalHorasPresente - $whole;
+           if($fraction < 0.7){
+            $totalHorasPresente= intval($totalHorasPresente);
+           }else if($fraction >= 0.7){
+            $totalHorasPresente += 0.5;
+            $totalHorasPresente= intval($totalHorasPresente);
+           } 
+           return $totalHorasPresente;
+        }
+        return totalhorasgrupo($time1,$time2);
+       
+    } 
 ?>

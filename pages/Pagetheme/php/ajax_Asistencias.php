@@ -111,7 +111,7 @@ if($_POST['key'] == 'getAsisData'){
         $privilegio=$conn->real_escape_string($_POST['privilegio']);
 
         //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-        $sql = $conn->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='$studentID' AND NumGrupo='$NumGrupo' AND CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus' AND  AnoAcad='$AnoAcad' AND NumPer='$NumPer' LIMIT $start,$limit");
+        $sql = $conn->query("SELECT Fecha,Horaini,Horafin,Horaentrada,HorasPresente,Diasemana,Presencia FROM asistencia where ID='$studentID' AND NumGrupo='$NumGrupo' AND CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus' AND  AnoAcad='$AnoAcad' AND NumPer='$NumPer' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             if($privilegio!=0){
@@ -124,14 +124,13 @@ if($_POST['key'] == 'getAsisData'){
                         <td>'.$data["Horaini"].'</td>
                         <td>'.$data["Horafin"].'</td>
                         <td>'.$data["Horaentrada"].'</td>
+                        <td>'.$data["HorasPresente"].'</td>
                         <td>'.$data["Presencia"].'</td>
                     </tr>
                     ';
                 }
             }else{
                 while($data= $sql->fetch_array()){
-                    $totalHorasasistencia=totalHorasAsistencia($data["Horaini"],$data["Horafin"],$data["Horaentrada"],$data["Presencia"]);
-                    $totalHoras=totalhorasgrupo($data["Horaini"],$data["Horafin"]);
                     $response .='
                     <tr>
                         <td>'.$data["Fecha"].'</td>
@@ -139,8 +138,7 @@ if($_POST['key'] == 'getAsisData'){
                         <td>'.$data["Horaini"].'</td>
                         <td>'.$data["Horafin"].'</td>
                         <td>'.$data["Horaentrada"].'</td>
-                        <td>'.$totalHoras.'</td>
-                        <td>'.$totalHorasasistencia.'</td>
+                        <td>'.$data["HorasPresente"].'</td>
                         <td>'.$data["Presencia"].'</td>
                         <td>
                         <div class="col-md-2">
@@ -288,9 +286,9 @@ function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
     $time1 = strtotime($horaIni);
     $time2 = strtotime($horaFin);
     $time3 = strtotime($horaEntrada);
-    echo "Total de horas: ",$totalHoras = round(abs($time2 - $time1) / 3600,2),"\n";
+    $totalHoras = round(abs($time2 - $time1) / 3600,2);
     if($precencia=="P"){
-        echo "Total de Horas Presente: ",$totalHorasPresente = round(abs($time2 - $time3) / 3600,2),"\n";
+        $totalHorasPresente = round(abs($time2 - $time3) / 3600,2);
         $whole = floor($totalHorasPresente);      
         $fraction = $totalHorasPresente - $whole;
        if($fraction < 0.7){

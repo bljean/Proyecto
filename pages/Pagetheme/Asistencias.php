@@ -142,7 +142,7 @@ $privilegio= $_SESSION['privilegio'];
             </div>
             <div class="panel-body">
               <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <div class="well dash-box"style=" text-align: center;">
                     <h4> <?php echo $nombre?></h4>
                     <h4>Grupos:</h4>
@@ -152,7 +152,7 @@ $privilegio= $_SESSION['privilegio'];
                   </div>
                 </div>
                 <!-- table asistencias-->
-                <div class="col-md-8">
+                <div class="col-md-10">
                   <div class="well dash-box" style=" text-align: center;" >
                     <div class="panel-body">
                       <div class="row">
@@ -167,6 +167,7 @@ $privilegio= $_SESSION['privilegio'];
                           <th>Hora Inicio</th>
                           <th>Hora Termino</th>
                           <th>Hora Llegada</th>
+                          <th>Horas Presente</th>
                           <th>Asistencia</th>
                           <th>Opciones</th>
                         </thead>
