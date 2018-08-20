@@ -1,9 +1,18 @@
-<!--
 <?php
-$ID= $_POST['ID'];
-$nombre=$_POST['nombre'];
+session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logdocentes.php');
+  exit();
+}
+ $ID= $_SESSION['user'];
+ $privilegio=$_SESSION['privilegio'];
+ if($privilegio==1){
+ $NumCedula =$_SESSION['NumCedula'];
+ }
+
 ?>
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,36 +31,37 @@ $nombre=$_POST['nombre'];
 <body>
 
   <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-          aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="vista-profesor.php">Inicio</a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li>
-            <a href="MisgruposDocente.php">Mis Grupos</a>
-          </li>
-          <li>
-           <a href="AsistenciaDocente.php">Asistencia</a>
-          </li>
-         
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <button type="button" value="Log out" id="Logout" class="btn btn-primary btn-block">Logout</button>
-          </li>
-        </ul>
-      </div>
-      <!--/.nav-collapse -->
-    </div>
-  </nav>
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="vista-profesor.php">Inicio</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="MisgruposDocente.php">Mis Grupos</a>
+                        </li>
+                        <li>
+                            <a href="AsistenciaDocente.php">Asistencia</a>
+                        </li>
+        
+        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <button type="button" value="Log out" id="Logout" class="btn btn-primary btn-block">Logout</button>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+      </nav>
 
   <header id="header">
     <div class="container-fluid">
@@ -72,7 +82,6 @@ $nombre=$_POST['nombre'];
         <li>
           <a href="vista-profesor.php">Dashboard</a>
         </li>
-        
         
         <li class="active">Mis Grupos</li>
       </ol>
@@ -124,7 +133,7 @@ $nombre=$_POST['nombre'];
               <div class="row">
                 <div class="col-md-4">
                   <div class="well dash-box"style=" text-align: center;">
-                    <h4><?php echo $ID?> <?php echo $nombre?></h4>
+                    <h4> <?php echo $ID;?></h4>
                     <h4>Grupos:</h4>
                     <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
                     
@@ -132,7 +141,7 @@ $nombre=$_POST['nombre'];
                   </div>
                 </div>
                 <!-- table asistencias-->
-                <div class="col-md-8">
+                 <div class="col-md-8">
                   <div class="well dash-box" style=" text-align: center;" >
                     <div class="panel-body">
                       <div class="row">
@@ -142,8 +151,9 @@ $nombre=$_POST['nombre'];
                       </div>
                       <table class="table table-striped table-hover tableAsis">
                         <thead>
-                          <th>Fechas</th>
-                          <th>Horas presente</th>
+                          <th>Matricula</th>
+                          <th>Nombre</th>
+                          <th>Asistencia</th>
                           <th>Opciones</th>
                         </thead>
                         <tbody class="tableAsisBody">
@@ -154,29 +164,8 @@ $nombre=$_POST['nombre'];
                   </div>
                   <!--/table asistencias-->
                    <!-- estadisticas-->
-                  <div class="well dash-box" style=" text-align: left;">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <h4>Horas presente:</h4>
-                      </div>
-                      <div class="col-md-2">
-                        <h4>6/70</h4>
-                      </div>
-                      <div class="col-md-2">
-                          <h4>Horas faltadas:</h4>
-                        </div>
-                        <div class="col-md-2">
-                          <h4>3/16</h4>
-                        </div>
-                        <div class="col-md-2">
-                            <h4>Excusas:</h4>
-                          </div>
-                          <div class="col-md-2">
-                            <h4>1/3</h4>
-                          </div>
-                    </div>
-                  </div>
-                </div>
+                  
+                 </div>
               </div>
 
               <!-- Latest Users -->
@@ -189,17 +178,156 @@ $nombre=$_POST['nombre'];
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
-      getGroupData(ID);
+      var NumCedula = "<?php echo $NumCedula; ?>";
+      var privilegio = "<?php echo $privilegio; ?>";
+      getProfGroupData(NumCedula,privilegio);
       $("#Logout").on('click', function () {
-            window.location= 'php/logout.php'
+                <?php 
+
+                $_SESSION['privilegio'] ='1';
+                ?>
+                window.location = 'php/logout.php';
+                
+            });
       });
-      });
+  
+    function getProfGroupData(ProfID,privilegio){
+      $.ajax({
+              url: 'php/ajax_Asistencias.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getProfGroupData',
+                    ProfID: ProfID,
+                    privilegio: privilegio,
+                    }, success: function (response) {
+                          $(".pillsbody").append(response.body);
+                          $("#tituloGrupo").html('');
+                          $("#tituloGrupo").append(response.groupCodigo);
+                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                    }
+                });
+      }
+    function getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio) {
+            $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getAsisData',
+                    start: start,
+                    limit: limit,
+                    studentID: studentID,
+                    NumGrupo: NumGrupo,
+                    CodTema: CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    NumPer: NumPer,
+                    privilegio: privilegio,
+                }, success: function (response) {
+                    if (response != "reachedMax") {
+                        $(".tableAsisBody").append(response);
+                        start += limit;
+                        getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
+                    } else {
+                      if(dataindex != 0){
+                            
+                        }else{
+                          dTable = $(".tableAsis").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });}
+                        
+                    }
+
+                }
+            });
+        }
+ 
+    function activeProfGroup(ProfID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
+        $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'activeProfGroup',
+                    ProfID: ProfID,
+                    NumGrupo: NumGrupo,
+                    CodTema:CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    NumPer: NumPer,
+                    privilegio:privilegio,
+                   
+                }, success: function (response) {
+                  
+                  $(".pillsbody").html('');
+                  $(".pillsbody").append(response.body);
+                  $("#tituloGrupo").html('');
+                  $("#tituloGrupo").append(response.groupCodigo);
+                  $(".tableAsisBody").html('');
+                  dataindex=1;
+                  //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                    getestgrupo(NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer);
+                }
+            });
+        }      
+    function getestgrupo(NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+      $.ajax({
+                url: 'php/ajax_Asistencias.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getestgrupo',
+                    NumGrupo: NumGrupo,
+                    CodTema:CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    NumPer: NumPer,
+                   
+                }, success: function (response) {
+                 
+                  $(".tableAsisBody").html('');
+                  
+                  dataindex=1;    
+                }
+            });
+
+
+    }
+    
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");
@@ -257,99 +385,10 @@ $nombre=$_POST['nombre'];
       } else caller.css('border', '');
         return true;
         }      
-    function activeGroup(codigo,idestudiante){
-        $.ajax({
-                url: 'php/ajax_Asistencias.php',
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    key: 'getActiveGroup',
-                    ID: idestudiante,
-                    groupCode:codigo
-                }, success: function (response) {
-                  if (response != "reachedMax") {
-                    $(".pillsbody").html('');
-                    $(".pillsbody").append(response.body);
-                    $("#tituloGrupo").html('');
-                    $("#tituloGrupo").append(response.groupCodigo);
-                    $(".tableAsisBody").html('');
-                    dataindex=1;
-                    getAsisData(0, 50,idestudiante,codigo);
-                  }
-                }
-            });
-            }
-    function getAsisData(start, limit,ID,grupID) {
-            $.ajax({
-                url: 'php/ajax_Asistencias.php',
-                method: 'POST',
-                dataType: 'text',
-                data: {
-                    key: 'getExistingData',
-                    start: start,
-                    limit: limit,
-                    ID: ID,
-                    grupID: grupID
-                }, success: function (response) {
-                    if (response != "reachedMax") {
-                        $(".tableAsisBody").append(response);
-                        start += limit;
-                        getAsisData(start, limit,ID,grupID);
-                    } else {
-                      if(dataindex != 0){
-                            
-                        }else{
-                          dTable = $(".tableAsis").DataTable({
-                            "language": {
-                                "sProcessing": "Procesando...",
-                                "sLengthMenu": "Mostrar _MENU_ registros",
-                                "sZeroRecords": "No se encontraron resultados",
-                                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                                "sInfoPostFix": "",
-                                "sSearch": "Buscar:",
-                                "sUrl": "",
-                                "sInfoThousands": ",",
-                                "sLoadingRecords": "Cargando...",
-                                "oPaginate": {
-                                    "sFirst": "Primero",
-                                    "sLast": "Último",
-                                    "sNext": "Siguiente",
-                                    "sPrevious": "Anterior"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                                }
-                            },
-                            "lengthChange": false
-                        });}
-                        
-                    }
+    
+   
+   
 
-                }
-            });
-        }
-    function getGroupData(idestudiante){
-      $.ajax({
-              url: 'php/ajax_Asistencias.php',
-              method: 'POST',
-              dataType: 'json',
-              data: {
-                    key: 'getGroupData',
-                    ID: idestudiante
-                    }, success: function (response) {
-                        if (response != "reachedMax") {
-                          $(".pillsbody").append(response.body);
-                          $("#tituloGrupo").html('');
-                          $("#tituloGrupo").append(response.groupCodigo);
-                          getAsisData(0, 50,idestudiante,response.groupid);
-                        }
-                    }
-                });
-      }
 
 </script>
 </body>
