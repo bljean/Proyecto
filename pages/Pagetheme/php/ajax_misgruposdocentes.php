@@ -23,8 +23,8 @@ if($_POST['key'] == 'getestgrupo'){
                 <tr>
                     <td>'.$data["Matricula"].'</td>
                     <td>'.$data["nombre"].''.$data["apellido"].'</td>
-                    <td><input type="button" onclick="asistencia(\''.$data["Matricula"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\')" value="Asistencia" class="btn btn-primary" id="asistencia">
-                
+                    <td>
+                    <input type="button" onclick="asistencia(\''.$data["Matricula"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\')" value="Asistencia" class="btn btn-primary" id="asistencia">
                     </td>
                 </tr>
                 ';

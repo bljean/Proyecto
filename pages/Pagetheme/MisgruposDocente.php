@@ -93,10 +93,10 @@ if(isset($_SESSION['loggedIN'])){
       <div class="row">
         <div class="col-md-12">
           <div id="tableManager" class="modal fade">
-            <div class="modal-dialog">
+            <div class="modal-dialog" style="width:1250px;" >
               <div class="modal-content">
                 <div class="modal-header">
-                  <h2 class="modal-title">Editar</h2>
+                  <h2 class="modal-title">Asistencia</h2>
                 </div>
                 <div class="modal-body">
                     <div class="well dash-box" style=" text-align: center;" >
@@ -115,7 +115,7 @@ if(isset($_SESSION['loggedIN'])){
                             <th>Hora Llegada</th>
                             <th>Horas Presente</th>
                             <th>Asistencia</th>
-                            <th>Opciones</th>
+                            
                           </thead>
                           <tbody class="tableAsistenciaBody">
 
@@ -192,7 +192,8 @@ if(isset($_SESSION['loggedIN'])){
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      dataindex = 0;
+      dataindex = 0; 
+      dataindex1 = 0;
       var ID = "<?php echo $ID; ?>";
       var NumCedula = "<?php echo $NumCedula; ?>";
       var privilegio = "<?php echo $privilegio; ?>";
@@ -248,7 +249,7 @@ if(isset($_SESSION['loggedIN'])){
             start += limit;
             getAsisData(start, limit, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, privilegio);
           } else {
-            if (dataindex != 0) {
+            if (dataindex1 != 0) {
 
             } else {
               dTable = $(".tableAsistencia").DataTable({
@@ -279,7 +280,7 @@ if(isset($_SESSION['loggedIN'])){
                 "lengthChange": false
               });
             }
-
+            dataindex1 = 1;
           }
 
         }
@@ -427,7 +428,11 @@ if(isset($_SESSION['loggedIN'])){
       return true;
     }
     function asistencia(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer){
-      //getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
+      if(dataindex1!=0){
+        $(".tableAsistenciaBody").html("");
+      }
+      getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
+
       $("#tableManager").modal('show');
     }
 
