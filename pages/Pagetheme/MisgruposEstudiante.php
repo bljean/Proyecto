@@ -143,8 +143,8 @@ session_start();
                           <th>Hora Inicio</th>
                           <th>Hora Termino</th>
                           <th>Hora Llegada</th>
+                          <th>Horas Presente</th>
                           <th>Asistencia</th>
-                          <th>Opciones</th>
                         </thead>
                         <tbody class="tableAsisBody">
 
