@@ -249,10 +249,7 @@ if(isset($_SESSION['loggedIN'])){
             start += limit;
             getAsisData(start, limit, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, privilegio);
           } else {
-            if (dataindex1 != 0) {
-
-            } else {
-              dTable = $(".tableAsistencia").DataTable({
+              dTable1 = $(".tableAsistencia").DataTable({
                 "language": {
                   "sProcessing": "Procesando...",
                   "sLengthMenu": "Mostrar _MENU_ registros",
@@ -279,8 +276,8 @@ if(isset($_SESSION['loggedIN'])){
                 },
                 "lengthChange": false
               });
-            }
-            dataindex1 = 1;
+            
+            
           }
 
         }
@@ -309,9 +306,8 @@ if(isset($_SESSION['loggedIN'])){
           $(".pillsbody").append(response.body);
           $("#tituloGrupo").html('');
           $("#tituloGrupo").append(response.groupCodigo);
-          $(".tableAsisBody").html('');
-          dataindex = 1;
-          //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+          //$(".tableAsisBody").html('');
+          cleartable(dTable);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
         }
       });
@@ -332,9 +328,6 @@ if(isset($_SESSION['loggedIN'])){
 
         }, success: function (response) {
           $(".tableAsisBody").append(response);
-          if (dataindex != 0) {
-
-          } else {
             dTable = $(".tableAsis").DataTable({
               "language": {
                 "sProcessing": "Procesando...",
@@ -362,7 +355,7 @@ if(isset($_SESSION['loggedIN'])){
               },
               "lengthChange": false
             });
-          }
+          
         }
       });
 
@@ -395,6 +388,10 @@ if(isset($_SESSION['loggedIN'])){
           }
         });
       }
+    }
+    function cleartable(table){
+      table.clear().draw();
+      table.destroy();
     }
     function cleanModal() {
       var name = $("#horas");
@@ -429,8 +426,10 @@ if(isset($_SESSION['loggedIN'])){
     }
     function asistencia(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer){
       if(dataindex1!=0){
-        $(".tableAsistenciaBody").html("");
+        //$(".tableAsistenciaBody").html("");
+        cleartable(dTable1);
       }
+      dataindex1 = 1;
       getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
 
       $("#tableManager").modal('show');
