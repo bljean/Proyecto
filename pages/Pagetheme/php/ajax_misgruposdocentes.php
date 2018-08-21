@@ -23,6 +23,9 @@ if($_POST['key'] == 'getestgrupo'){
                 <tr>
                     <td>'.$data["Matricula"].'</td>
                     <td>'.$data["nombre"].''.$data["apellido"].'</td>
+                    <td><input type="button" onclick="asistencia(\''.$data["Matricula"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\')" value="Asistencia" class="btn btn-primary" id="asistencia">
+                
+                    </td>
                 </tr>
                 ';
             }
@@ -31,6 +34,25 @@ if($_POST['key'] == 'getestgrupo'){
         exit($response);
    
 }
+
+if($_POST['key'] == 'asistencia'){
+
+    //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
+    $sql = $conn->query("SELECT");
+    if($sql->num_rows >0){
+        $response ="";
+            while($data= $sql->fetch_array()){
+                $response .='
+             
+                ';
+            }
+        }
+        
+        exit($response);
+   
+}
+
+
 
 }
 
