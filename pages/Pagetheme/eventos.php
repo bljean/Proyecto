@@ -252,7 +252,7 @@ function getCampusData(){
               });
     }
 
- function getedfcampus(campus){
+function getedfcampus(campus){
     $.ajax({
             url: 'php/ajax_eventos.php',
             method: 'POST',
@@ -277,7 +277,7 @@ function getCampusData(){
 
  }
 
- function getaulaedf(edf,campus){
+function getaulaedf(edf,campus){
     $.ajax({
             url: 'php/ajax_eventos.php',
             method: 'POST',
@@ -298,7 +298,7 @@ function getCampusData(){
               });
     }
 
-     function getaula(aula,campus,edf){
+function getaula(aula,campus,edf){
         $(".aulatitulo").html('');
         $(".aulatitulo").append(aula);
         $("#boton1").removeAttr("disabled");
@@ -306,7 +306,7 @@ function getCampusData(){
        
     }
 
-    function llenartabla(){
+function llenartabla(){
         
         $("#esconderrow").modal('show');
          var aula= $(".aulatitulo").text();
