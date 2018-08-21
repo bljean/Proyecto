@@ -1,7 +1,7 @@
 <?php
 session_start();
 $id=$_SESSION['user'];
-
+//$privilegio= $_SESSION['privilegio'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,8 +138,12 @@ $id=$_SESSION['user'];
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-                grafico();
-                grafico1();
+            semana=[];
+            asistenciap=[];
+            asistenciae=[];
+            var ID = "<?php echo $id; ?>";
+            
+            getEstGroupData(ID);
             $("#Logout").on('click', function () {
                 <?php 
 
@@ -150,8 +154,24 @@ $id=$_SESSION['user'];
             });
         });
         
-        
 
+        function getEstGroupData(ID){
+            $.ajax({
+              url: 'php/ajax_vista-estudiante.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getEstGroupData',
+                    ID: ID,
+                    }, success: function (response) {
+                        
+                        semana =response.body;
+                        asistenciae = response.count1;
+                        grafico();
+                        grafico1();
+                    }
+                });
+        }
 
         function grafico(){
             Chart.defaults.global.defaultFontFamily = 'Lato';
@@ -163,18 +183,10 @@ $id=$_SESSION['user'];
             let massPopChart = new Chart(myChart, {
                 type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
                 data: {
-                    labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+                    labels: semana,
                     datasets: [{
-                        label: 'Asistencia',
-                        data: [
-                            90,
-                            70,
-                            70,
-                            80,
-                            90,
-                            58
-
-                        ],
+                        label: 'Ausencia',
+                        data: asistenciae ,
                         //backgroundColor:'green',
                         backgroundColor: [
                             'rgba(88, 214, 141, 1)',
@@ -217,8 +229,7 @@ $id=$_SESSION['user'];
             });
         }
 
-        function 
-        grafico1(){
+        function grafico1(){
             Chart.defaults.global.defaultFontFamily = 'Lato';
             Chart.defaults.global.defaultFontSize = 18;
             Chart.defaults.global.defaultFontColor = '#777';
@@ -228,17 +239,10 @@ $id=$_SESSION['user'];
             let massPopChart1 = new Chart(myChart1, {
                 type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
                 data: {
-                    labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+                    labels: semana,
                     datasets: [{
                         label: 'Asistencia',
-                        data: [
-                            90,
-                            50,
-                            30,
-                            28,
-                            45,
-                            70
-                        ],
+                        data: asistenciae,
                         //backgroundColor:'green',
                         backgroundColor: [
                             'rgba(195, 155, 211, 1)',
@@ -281,6 +285,7 @@ $id=$_SESSION['user'];
             });
 
         }
+
 
 
     </script>
