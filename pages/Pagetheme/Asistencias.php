@@ -289,9 +289,6 @@ $privilegio= $_SESSION['privilegio'];
                         start += limit;
                         getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
                     } else {
-                      if(dataindex != 0){
-                            
-                        }else{
                           dTable = $(".tableAsis").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
@@ -318,7 +315,7 @@ $privilegio= $_SESSION['privilegio'];
                                 }
                             },
                             "lengthChange": false
-                        });}
+                        });
                         
                     }
 
@@ -347,8 +344,8 @@ $privilegio= $_SESSION['privilegio'];
                   $(".pillsbody").append(response.body);
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
-                  $(".tableAsisBody").html('');
-                  dataindex=1;
+                  //$(".tableAsisBody").html('');
+                  cleartable(dTable);
                   getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
@@ -376,8 +373,8 @@ $privilegio= $_SESSION['privilegio'];
                   $(".pillsbody").append(response.body);
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
-                  $(".tableAsisBody").html('');
-                  dataindex=1;
+                  //$(".tableAsisBody").html('');
+                  cleartable(dTable);
                   getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
@@ -417,6 +414,10 @@ $privilegio= $_SESSION['privilegio'];
         name.val('');
         matricula.val('');
         cardNumber.val('');}
+    function cleartable(table){
+      table.clear().draw();
+      table.destroy();
+    }
     function edit(rowID) {
             $.ajax({
                 url: 'php/ajax_Asistencias.php',
