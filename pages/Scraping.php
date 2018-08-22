@@ -246,6 +246,7 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
         insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
     }else {
         if($Precencia=='A' OR $Precencia=='R'){
+            reconigtion($matricula);
             connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
         }else {
             if(reconigtion($matricula)==1){
@@ -281,8 +282,8 @@ function checkGroupTime(){
 function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
     $date = date('Y-m-d');
     $time= date('H:i:s');
-    $horadeAusencia = getHorausencia($horafin);
-    if($time>=$horadeAusencia){
+    $horadeAusencia = getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer);
+    if($time > $horadeAusencia){
         $sqlAusentesEst=connectBd()->query("SELECT grupoinsest.Matricula as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer AND asistencia.Fecha= '$date' WHERE grupoinsest.CodTema='$Codtema' AND grupoinsest.CodTP='$CodTP' AND grupoinsest.CodCampus='$CodCampus' AND grupoinsest.Numgrupo='$NumGrupo' AND grupoinsest.AnoAcad='$AnoAcad' AND grupoinsest.NumPer='$NumPer' AND asistencia.ID is NULL");
         $sqlAusenteProf=connectBd()->query("SELECT contratodocencia.NumCedula as NumCedula FROM contratodocencia LEFT JOIN asistencia ON asistencia.ID=contratodocencia.NumCedula AND asistencia.CodTema=contratodocencia.CodTema AND asistencia.CodTP= contratodocencia.CodTp AND asistencia.CodCampus= contratodocencia.CodCampus AND asistencia.NumGrupo= contratodocencia.Numgrupo AND asistencia.AnoAcad=contratodocencia.AnoAcad AND asistencia.NumPer= contratodocencia.NumPer AND asistencia.Fecha= '$date' WHERE contratodocencia.CodTema='$Codtema' AND contratodocencia.CodTP='$CodTP' AND contratodocencia.CodCampus='$CodCampus' AND contratodocencia.Numgrupo='$NumGrupo' AND contratodocencia.AnoAcad='$AnoAcad' AND contratodocencia.NumPer='$NumPer' AND asistencia.ID is NULL");
         if($sqlAusenteProf->num_rows>0){
@@ -323,8 +324,22 @@ function getHorausencia($Horafin){
     return $horadeAusencia;
     }
 function getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
+        $time1 = strtotime($horaini);
+        $time2 = strtotime($horafin);
+        $sqltiempolimite= connectBd()->query("SELECT PTLimiteH FROM configuraciongrupo WHERE CodTema='$Codtema'AND CodTp='$CodTP' AND NumGrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' ");
+        if($sqltiempolimite->num_rows >0){
+            while($data=$sqltiempolimite->fetch_array()){
+                $tiempolimite=$data["PTLimiteH"];
+            }
     
-}
+        }
+        $totalHoras = round(abs($time2 - $time1) / 3600,2);
+        $whole = floor($totalHoras);
+        $tiempolimite*=$whole;
+        $horadeAusencia = date('H:i:s', strtotime('+'.$tiempolimite.' minutes', $time1));
+        return $horadeAusencia;
+    
+    }
 function insertSwipeRecord($NumTarjeta,$ID,$Nombre,$apellido,$Acceso){
     
     $codcampus = $GLOBALS['CodCampus'];
@@ -356,4 +371,16 @@ function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
         return totalhorasgrupo($time1,$time2);
        
     } 
+function totalhorasgrupo($time1,$time2){
+        $totalHoras = round(abs($time2 - $time1) / 3600,2);
+        $t = $totalHoras;
+        $whole = floor($t);      
+        $fraction = $t - $whole;
+        $minute = ($fraction * 0.6)*100;
+        echo intval($t),"h", $minute,"\n";
+        $thorastime=mktime(intval($t),$minute ); 
+        $horas=date("h:i", $thorastime);
+        
+        return $horas;
+    }
 ?>

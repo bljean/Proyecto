@@ -13,14 +13,16 @@ $date = date('H:i:s');
 echo " probando time: $date \n";
 echo  getWeekday($date);
 */
-$sql = connectBd()->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='20140945'");
+/*$sql = connectBd()->query("SELECT Fecha,Horaini,Horafin,Horaentrada,Diasemana,Presencia FROM asistencia where ID='20140945'");
 while($data= $sql->fetch_array()){
     echo "Horaini: ",$data["Horaini"],"\n";
     echo "Horafin: ",$data["Horafin"],"\n";
     echo "Horaentrada: ",$data["Horaentrada"],"\n";
     echo "Presencia: ",$data["Presencia"],"\n";
     echo totalHorasAsistencia($data["Horaini"],$data["Horafin"],$data["Horaentrada"],$data["Presencia"]),"\n";
-}
+    
+}*/
+getHorapresencia("16:00:00","18:00:00","ITT",562,"ST",1,2018,1);
 
 
 
@@ -171,6 +173,22 @@ function getHorausencia($Horafin){
     $horadeAusencia = date('H:i:s', strtotime('-10 minutes', $Horafin));
     return $horadeAusencia;
     }    
-
+function getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
+        $time1 = strtotime($horaini);
+        $time2 = strtotime($horafin);
+        $sqltiempolimite= connectBd()->query("SELECT PTLimiteH FROM configuraciongrupo WHERE CodTema='$Codtema'AND CodTp='$CodTP' AND NumGrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' ");
+        if($sqltiempolimite->num_rows >0){
+            while($data=$sqltiempolimite->fetch_array()){
+                $tiempolimite=$data["PTLimiteH"];
+            }
+    
+        }
+        $totalHoras = round(abs($time2 - $time1) / 3600,2);
+        $whole = floor($totalHoras);
+        $tiempolimite*=$whole;
+        $horadeAusencia = date('H:i:s', strtotime('+'.$tiempolimite.' minutes', $time1));
+        echo " de esta hora en adelante se pondra la ausencia:$horadeAusencia";
+    
+    }
 
 ?>
