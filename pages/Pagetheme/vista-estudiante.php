@@ -169,6 +169,7 @@ $id=$_SESSION['user'];
                         semana =response.body;
                         asistenciae = response.semestral;
                         asistenciassemanal=response.semanal;
+                        
                         grafico();
                         grafico1();
                     }

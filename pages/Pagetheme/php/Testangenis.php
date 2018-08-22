@@ -22,7 +22,7 @@ foreach(getsemanagraf() as $fecha)
     $diasemana[]=getWeekday($fecha);
     $diaadia[]=nomecaigatra($fecha,"20131066",$conn);
 
-    }
+     }
 }
 print_r($diasemana);
 print_r($diaadia);
