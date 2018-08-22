@@ -46,9 +46,9 @@ $privilegio= $_SESSION['privilegio'];
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="students.html">Estudiantes</a></li>
-                    <li><a href="professors.html">Profesores</a></li>
-                    <li><a href="workers.html">Empleados</a></li>
+                    <li><a href="students.php">Estudiantes</a></li>
+                    <li><a href="professors.php">Profesores</a></li>
+                    <li><a href="workers.php">Empleados</a></li>
                   </ul>
                 </div>
           </li>

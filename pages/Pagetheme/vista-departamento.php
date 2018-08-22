@@ -174,6 +174,13 @@ session_start();
                         text: 'Asistencia Semanal',
                         fontSize: 30
                     },
+                    scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            },
                     legend: {
                         display: false,
 

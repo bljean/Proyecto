@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logestudiante.php');
+  exit();
+}
 $id=$_SESSION['user'];
 //$privilegio= $_SESSION['privilegio'];
 ?>
@@ -208,7 +214,15 @@ $id=$_SESSION['user'];
                         display: true,
                         text: 'Ausencia Semanal',
                         fontSize: 30
-                    },
+                    } ,
+                    scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            }
+                    ,
                     legend: {
                         display: false,
 
@@ -265,7 +279,15 @@ $id=$_SESSION['user'];
                         display: true,
                         text: 'Ausencia Mensual',
                         fontSize: 30
-                    },
+                    }, scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            }
+                    
+                    ,
                     legend: {
                         display: false,
                         position: 'right',

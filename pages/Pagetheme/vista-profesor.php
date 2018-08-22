@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logdocentes.php');
+  exit();
+}
 
 ?>
 <!DOCTYPE html>

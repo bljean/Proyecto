@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logestudiante.php');
+  exit();
+}
  $ID= $_SESSION['user'];
  $privilegio= $_SESSION['privilegio'];
 

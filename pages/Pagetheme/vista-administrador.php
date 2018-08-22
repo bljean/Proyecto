@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logadmin.php');
+  exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -48,13 +54,13 @@ session_start();
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <li>
-                                    <a href="students.html">Estudiantes</a>
+                                    <a href="students.php">Estudiantes</a>
                                 </li>
                                 <li>
-                                    <a href="professors.html">Profesores</a>
+                                    <a href="professors.php">Profesores</a>
                                 </li>
                                 <li>
-                                    <a href="workers.html">Empleados</a>
+                                    <a href="workers.php">Empleados</a>
                                 </li>
                             </ul>
                         </div>
@@ -231,7 +237,13 @@ session_start();
                     display: true,
                     text: 'Ausencia De Los Estudiantes',
                     fontSize: 30
-                },
+                }, scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            },
                 legend: {
                     display: false,
                     position: 'right',
@@ -288,7 +300,13 @@ session_start();
                     display: true,
                     text: 'Ausencia De Los Docentes',
                     fontSize: 30
-                },
+                }, scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            },
                 legend: {
                     display: false,
 
