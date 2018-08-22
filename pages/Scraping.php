@@ -237,6 +237,9 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
     $codsalon =$GLOBALS['CodSalon'];
     $horasPresente=totalHorasAsistencia($horaini,$horafin,$time,$Precencia);
     $sqlStudentattend = connectBd()->query( "SELECT * FROM asistencia WHERE ID='$matricula' AND Fecha='$date' AND Horaini='$horaini'");
+    //if(){
+
+    //}
     if($sqlStudentattend->num_rows > 0){
         echo "ya esta precente";
         reconigtion($matricula);
@@ -318,7 +321,10 @@ function getHorausencia($Horafin){
     $Horafin = strtotime($Horafin);
     $horadeAusencia = date('H:i:s', strtotime('-10 minutes', $Horafin));
     return $horadeAusencia;
-    }  
+    }
+function getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer){
+    
+}
 function insertSwipeRecord($NumTarjeta,$ID,$Nombre,$apellido,$Acceso){
     
     $codcampus = $GLOBALS['CodCampus'];
