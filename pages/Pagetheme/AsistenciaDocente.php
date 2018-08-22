@@ -271,9 +271,6 @@ session_start();
                         start += limit;
                         getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
                     } else {
-                      if(dataindex != 0){
-                            
-                        }else{
                           dTable = $(".tableAsis").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
@@ -300,7 +297,7 @@ session_start();
                                 }
                             },
                             "lengthChange": false
-                        });}
+                        });
                         
                     }
 
@@ -329,7 +326,8 @@ session_start();
                   $(".pillsbody").append(response.body);
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
-                  $(".tableAsisBody").html('');
+                  //$(".tableAsisBody").html('');
+                  cleartable(dTable);
                   dataindex=1;
                   getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
@@ -358,14 +356,18 @@ session_start();
                   $(".pillsbody").append(response.body);
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
-                  $(".tableAsisBody").html('');
+                  //$(".tableAsisBody").html('');
+                  cleartable(dTable);
                   dataindex=1;
                   getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
             });
         }      
-    
+    function cleartable(table){
+      table.clear().draw();
+      table.destroy();
+    }
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");
