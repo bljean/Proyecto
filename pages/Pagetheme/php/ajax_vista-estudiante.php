@@ -16,15 +16,25 @@ if($_POST['key'] == 'getEstGroupData'){
         while($data=$sqlsemana->fetch_array()){
             if(getCountprofesoresDia($data["DiaSem"],$conn)!=-1){
             $response []= $data["NombreLargo"];
-            //echo contarausencia($data["DiaSem"],$ID,$conn),"\n";
-            $count1 []= contarausencia($data["DiaSem"],$ID,$conn);
+            $semestral []= contarausencia($data["DiaSem"],$ID,$conn);
+            
+
         }
 
         }
-    }
+    }       
+        foreach(getsemanagraf() as $fecha){  
+         if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
+        $diasemana[]=getWeekday($fecha);
+        $semanal[]=getestdiadia($fecha,$ID,$conn);
+    
+        }
+        }
+
     $jsonArray = array(
         'body'=> $response,  
-        'count1'=> $count1,   
+        'semestral'=> $semestral,
+        'semanal'=> $semanal,   
     );
     exit(json_encode($jsonArray));
    
@@ -97,6 +107,65 @@ function getCountprofesoresDia($dia,$conn){
         }else{return $multiplicarl=-1;}       
 }
 
+
+function getsemanagraf(){
+    $date=date('Y-m-d');
+   // $date="2018-8-16";
+ $diasemana= getWeekday($date); 
+ $cuenta=0;
+ $hola=0;
+    while($diasemana!=0)
+    {   $guardar[]=$diasemana;
+        $cuenta++;
+
+        $diasemana--;
+    }
+    while($hola!=$cuenta)
+    {   $fechas[]=$date;
+        $nuevafecha = strtotime ( '-1 day' , strtotime ( $date ) ) ;
+        $nuevafecha = date ( 'Y-m-j' , $nuevafecha );
+        $date=$nuevafecha;
+        $hola++;
+    }
+  // print_r($fechas) ;
+    return $fechas;
+}
+
+function getWeekday($date) {
+    return date('w', strtotime($date));
+            
+}
+
+function getestdiadia($fecha,$ID,$conn){
+    
+    $diasemana=getWeekday($fecha);
+    $sqlest=$conn->query("SELECT grupoinsest.CodTema as CodTema , grupoinsest.CodTP as CodTP , grupoinsest.Numgrupo as Numgrupo  , grupoinsest.CodCampus as CodCampus, grupoinsest.AnoAcad as AnoAcad, grupoinsest.NumPer as NumPer FROM grupoinsest INNER JOIN horariogrupoactivo ON grupoinsest.CodTema=horariogrupoactivo.CodTema AND grupoinsest.CodTP=horariogrupoactivo.CodTP AND grupoinsest.Numgrupo=horariogrupoactivo.NumGrupo AND grupoinsest.CodCampus= horariogrupoactivo.CodCampus AND grupoinsest.AnoAcad=horariogrupoactivo.AnoAcad AND grupoinsest.NumPer=horariogrupoactivo.NumPer AND horariogrupoactivo.DiaSem='$diasemana' WHERE grupoinsest.Matricula='$ID'");
+    $count1=0;
+    $count=0;
+    $calculo=0;
+    if($sqlest->num_rows >0){
+        while($data= $sqlest->fetch_array()){
+            $NumGrupo   = $data["Numgrupo"];
+            $CodTema    = $data["CodTema"];
+            $CodTP      = $data["CodTP"];
+            $CodCampus  = $data["CodCampus"];
+            $AnoAcad    = $data["AnoAcad"];
+            $NumPer     = $data["NumPer"]; 
+            $count+=1;
+            $sqlasistencia=$conn->query("SELECT COUNT(*) as cont from asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Fecha='$fecha' and Presencia='P' and ID='$ID' ");
+            if($sqlasistencia->num_rows>0){
+                while($data= $sqlasistencia->fetch_array())
+                {
+                    $count1+=$data["cont"];
+                }
+            } 
+        }
+        $ausencia=((int)$count-(int)$count1);
+    $dividirl= ((int)$ausencia / (int)$count);
+    $calculo = ($dividirl*100);
+    } return $calculo;
+
+}
 
 
 

@@ -3,6 +3,7 @@ $user='root';
 $pass='';
 $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
+date_default_timezone_set('America/Santo_Domingo');
 /*
 $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
 if($sqlsemana->num_rows>0){ 
@@ -15,7 +16,80 @@ if($sqlsemana->num_rows>0){
         }
         }    
 }*/
+print_r(getsemanagraf());
+foreach(getsemanagraf() as $fecha)
+{   if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
+    $diasemana[]=getWeekday($fecha);
+    $diaadia[]=nomecaigatra($fecha,"20131066",$conn);
 
+    }
+}
+print_r($diasemana);
+print_r($diaadia);
+
+
+function getsemanagraf(){
+    $date=date('Y-m-d');
+   // $date="2018-8-16";
+ $diasemana= getWeekday($date); 
+ $cuenta=0;
+ $hola=0;
+    while($diasemana!=0)
+    {   $guardar[]=$diasemana;
+        $cuenta++;
+
+        $diasemana--;
+    }
+    while($hola!=$cuenta)
+    {   $fechas[]=$date;
+        $nuevafecha = strtotime ( '-1 day' , strtotime ( $date ) ) ;
+        $nuevafecha = date ( 'Y-m-j' , $nuevafecha );
+        $date=$nuevafecha;
+        $hola++;
+    }
+  // print_r($fechas) ;
+    return $fechas;
+}
+
+
+function getWeekday($date) {
+    return date('w', strtotime($date));
+            
+}
+
+function nomecaigatra($fecha,$ID,$conn){
+    
+    $diasemana=getWeekday($fecha);
+    $sqlest=$conn->query("SELECT grupoinsest.CodTema as CodTema , grupoinsest.CodTP as CodTP , grupoinsest.Numgrupo as Numgrupo  , grupoinsest.CodCampus as CodCampus, grupoinsest.AnoAcad as AnoAcad, grupoinsest.NumPer as NumPer FROM grupoinsest INNER JOIN horariogrupoactivo ON grupoinsest.CodTema=horariogrupoactivo.CodTema AND grupoinsest.CodTP=horariogrupoactivo.CodTP AND grupoinsest.Numgrupo=horariogrupoactivo.NumGrupo AND grupoinsest.CodCampus= horariogrupoactivo.CodCampus AND grupoinsest.AnoAcad=horariogrupoactivo.AnoAcad AND grupoinsest.NumPer=horariogrupoactivo.NumPer AND horariogrupoactivo.DiaSem='$diasemana' WHERE grupoinsest.Matricula='$ID'");
+    $count1=0;
+    $count=0;
+    $calculo=0;
+    if($sqlest->num_rows >0){
+        while($data= $sqlest->fetch_array()){
+            $NumGrupo   = $data["Numgrupo"];
+            $CodTema    = $data["CodTema"];
+            $CodTP      = $data["CodTP"];
+            $CodCampus  = $data["CodCampus"];
+            $AnoAcad    = $data["AnoAcad"];
+            $NumPer     = $data["NumPer"]; 
+            $count+=1;
+            $sqlasistencia=$conn->query("SELECT COUNT(*) as cont from asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Fecha='$fecha' and Presencia='P' and ID='$ID' ");
+            if($sqlasistencia->num_rows>0){
+                while($data= $sqlasistencia->fetch_array())
+                {
+                    $count1+=$data["cont"];
+                }
+            } 
+        }
+        $ausencia=((int)$count-(int)$count1);
+    $dividirl= ((int)$ausencia / (int)$count);
+    $calculo = ($dividirl*100);
+    } return $calculo;
+
+}
+
+
+/*
         //$ID=$conn->real_escape_string($_POST['ID']);
         $ID=20131066;
         $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
@@ -31,7 +105,7 @@ if($sqlsemana->num_rows>0){
             }
         }
         
-       
+       */
     
     
     
@@ -40,6 +114,8 @@ if($sqlsemana->num_rows>0){
     
     
 function contarausencia($DiaSem,$ID,$conn){
+
+
         $sqlest=$conn->query("SELECT grupoinsest.CodTema as CodTema , grupoinsest.CodTP as CodTP , grupoinsest.Numgrupo as Numgrupo  , grupoinsest.CodCampus as CodCampus, grupoinsest.AnoAcad as AnoAcad, grupoinsest.NumPer as NumPer FROM grupoinsest INNER JOIN horariogrupoactivo ON grupoinsest.CodTema=horariogrupoactivo.CodTema AND grupoinsest.CodTP=horariogrupoactivo.CodTP AND grupoinsest.Numgrupo=horariogrupoactivo.NumGrupo AND grupoinsest.CodCampus= horariogrupoactivo.CodCampus AND grupoinsest.AnoAcad=horariogrupoactivo.AnoAcad AND grupoinsest.NumPer=horariogrupoactivo.NumPer AND horariogrupoactivo.DiaSem='$DiaSem' WHERE grupoinsest.Matricula='$ID'");
         $count1=0;
         $count=0;

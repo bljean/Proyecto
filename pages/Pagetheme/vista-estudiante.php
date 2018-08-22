@@ -139,7 +139,7 @@ $id=$_SESSION['user'];
     <script type="text/javascript">
         $(document).ready(function () {
             semana=[];
-            asistenciap=[];
+            asistenciassemanal=[];
             asistenciae=[];
             var ID = "<?php echo $id; ?>";
             
@@ -155,6 +155,7 @@ $id=$_SESSION['user'];
         });
         
 
+
         function getEstGroupData(ID){
             $.ajax({
               url: 'php/ajax_vista-estudiante.php',
@@ -166,7 +167,8 @@ $id=$_SESSION['user'];
                     }, success: function (response) {
                         
                         semana =response.body;
-                        asistenciae = response.count1;
+                        asistenciae = response.semestral;
+                        asistenciassemanal=response.semanal;
                         grafico();
                         grafico1();
                     }
@@ -186,7 +188,7 @@ $id=$_SESSION['user'];
                     labels: semana,
                     datasets: [{
                         label: 'Ausencia',
-                        data: asistenciae ,
+                        data: asistenciassemanal ,
                         //backgroundColor:'green',
                         backgroundColor: [
                             'rgba(88, 214, 141, 1)',
@@ -203,7 +205,7 @@ $id=$_SESSION['user'];
                 options: {
                     title: {
                         display: true,
-                        text: 'Asistencia Semanal',
+                        text: 'Ausencia Semanal',
                         fontSize: 30
                     },
                     legend: {
@@ -260,7 +262,7 @@ $id=$_SESSION['user'];
                 options: {
                     title: {
                         display: true,
-                        text: 'Asistencia Mensual',
+                        text: 'Ausencia Mensual',
                         fontSize: 30
                     },
                     legend: {
@@ -285,7 +287,10 @@ $id=$_SESSION['user'];
             });
 
         }
-
+        
+        
+        
+        
 
 
     </script>
