@@ -10,7 +10,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
 if($_POST['key'] == 'getprofGroupData'){
     
     $ID=$conn->real_escape_string($_POST['ID']);
-    /*
+    
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
@@ -22,15 +22,22 @@ if($_POST['key'] == 'getprofGroupData'){
         }
 
         }
-    }      
+    }      /*
         foreach(getsemanagraf() as $fecha){  
          if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
         $diasemana[]=getWeekday($fecha);
         $semanal[]=getestdiadia($fecha,$ID,$conn);
     
         }
-        }
-        */
+        }*/
+        
+        foreach(getsemanagraf() as $fecha){  
+            if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
+           $diasemana[]=getWeekday($fecha);
+           $semanal[]=asistenciapormateriaprof($fecha,$ID,$conn);
+       
+           }
+           }
 
 
         $materias1=getprofmateriasdiadia($ID,$conn);
@@ -38,7 +45,7 @@ if($_POST['key'] == 'getprofGroupData'){
     $jsonArray = array(
         //'body'=> $response,  
         //'semestral'=> $semestral,
-        //'semanal'=> $semanal, 
+        'semanal'=> $semanal, 
         'materias1'=> $materias1,  
     );
     exit(json_encode($jsonArray));
