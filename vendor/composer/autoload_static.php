@@ -13,6 +13,7 @@ class ComposerStaticInit41466ec3c5223d472fa28e522fb3a2c5
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
+        '3109cb1a231dcd04bee1f9f620d46975' => __DIR__ . '/..' . '/paragonie/sodium_compat/autoload.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
     );
 
@@ -27,6 +28,8 @@ class ComposerStaticInit41466ec3c5223d472fa28e522fb3a2c5
         ),
         'P' => 
         array (
+            'Pusher\\' => 7,
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
         ),
         'J' => 
@@ -66,6 +69,14 @@ class ComposerStaticInit41466ec3c5223d472fa28e522fb3a2c5
         'Symfony\\Component\\BrowserKit\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/browser-kit',
+        ),
+        'Pusher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pusher/pusher-php-server/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Psr\\Http\\Message\\' => 
         array (
