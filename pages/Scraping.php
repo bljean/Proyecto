@@ -246,7 +246,7 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
         insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
     }else {
         if($Precencia=='A' OR $Precencia=='R'){
-            reconigtion($matricula);
+            //reconigtion($matricula);
             connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
         }else {
             if(reconigtion($matricula)==1){
