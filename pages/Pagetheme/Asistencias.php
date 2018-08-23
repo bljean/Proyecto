@@ -40,6 +40,9 @@ $privilegio= $_SESSION['privilegio'];
             <a href="eventos.php">Eventos</a>
           </li>
           <li>
+          <a href="ConfiguracionGrupo.php">Grupos</a>
+                    </li>
+          <li>
               <div class="dropdown create">
                   <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     Gestion de tarjetas

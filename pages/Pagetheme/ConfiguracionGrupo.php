@@ -79,7 +79,7 @@ if(isset($_SESSION['loggedIN'])){
             <div class="row">
                 <div class="col-md-10">
                     <h1>
-                        <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Estudiantes
+                        <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Grupos
                         <small></small>
                     </h1>
                 </div>
@@ -93,7 +93,7 @@ if(isset($_SESSION['loggedIN'])){
                 <li>
                     <a href="vista-administrador.php">Dashboard</a>
                 </li>
-                <li class="active">Estudiantes</li>
+                <li class="active">Grupos</li>
             </ol>
         </div>
     </section>
@@ -105,7 +105,7 @@ if(isset($_SESSION['loggedIN'])){
                     <!-- Website Overview -->
                     <div class="panel panel-default">
                         <div class="panel-heading tabla-color-bg">
-                            <h3 class="panel-title">Tabla de Estudiantes</h3>
+                            <h3 class="panel-title">Grupos</h3>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -118,48 +118,38 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h2 class="modal-title">Nuevo</h2>
+                                                                <h2 class="modal-title">Configuracion</h2>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <h4>Matricula:</h4>
+                                                                        <h4>Grupo:</h4>
                                                                     </div>
-                                                                    <div class="col-md-10">
+                                                                    <div class="col-md-6">
                                                                         <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <h4>Nombre:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Apellido:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Tarjeta:</h4>
+                                                                        <h4>Tardanza:</h4>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <input type="button" id="autoRecordCardBtn" onclick="autoRecordCard()" value="Registro Automático" class="btn btn-primary">
+                                                                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownhora" >
+                                                                    <select id="tiempo" class="btn btn-primary" type="button">
+                                                                        <option selected="selected" value="val2" >Tiempo</option>
+                                                                        <option value="5">5</option>
+                                                                        <option value="10">10</option>
+                                                                        <option value="15">15</option>
+                                                                        <option value="20">20</option>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
-                                                                <input type="hidden" id="editRowID" value="0">
+                                                                
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                                <input type="button" id="manageBtn" onclick="findDay()" value="Save" class="btn btn-primary">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -171,9 +161,11 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="col-md-12">
                                                         <table class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
-                                                                <td>Matricula</td>
+                                                                <td>Grupo</td>
                                                                 <td>Nombre</td>
-                                                                <td>Tarjeta</td>
+                                                                <td>Cred</td>
+                                                                <td>Profesor</td>
+                                                                <td>Periodo</td>
                                                                 <td>Opciones</td>
                                                             </thead>
                                                             <tbody>
@@ -216,31 +208,65 @@ if(isset($_SESSION['loggedIN'])){
 
             });
             getExistingData(0, 50);
+            
         });
        
-        function edit(rowID) {
+        function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
+             
+            var eID = document.getElementById("tiempo");
+            var dayVal = eID.options[eID.selectedIndex].value;
+            var daytxt = eID.options[eID.selectedIndex].text;
+            //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+            
+            if(dayVal=='Tiempo'){
+                alert("Seleccione un tiempo");
+            }else{
             $.ajax({
-                url: 'php/ajax_student.php',
+                url: 'php/ajax_ConfiguracionGrupo.php',
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    key: 'getRowData',
-                    rowID: rowID
+                    key:'findDay',
+                    dayVal:dayVal,
+                    CodCampus:CodCampus,
+                    CodTema:CodTema,
+                    CodTP:CodTP,
+                    Numgrupo:Numgrupo,
+                    AnoAcad:AnoAcad,
+                    Numper:Numper,
+                }, success: function (response) {  
+                    $("#tableManager").modal('hide');
+                    $("div.Tiempo1 select").val("val2")
+                }
+            });}
+            }
+
+        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+            $.ajax({
+                url: 'php/ajax_ConfiguracionGrupo.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'edit',
+                    CodCampus:CodCampus,
+                    CodTema:CodTema,
+                    CodTP:CodTP,
+                    Numgrupo:Numgrupo,
+                    AnoAcad:AnoAcad,
+                    Numper:Numper,
                 }, success: function (response) {
-                    $("#editRowID").val(rowID);
-                    $("#ID").val(response.ID);
-                    $("#Name").val(response.Name);
-                    $("#CardNumber").val(response.CardNumber);
-                    $("#Apellido").val(response.Apellido);
-                    $(".modal-title").html('Editar');
-                    $("#tableManager").modal('show');
-                    $("#manageBtn").attr('value', 'Salvar cambios').attr('onclick', "manageData('updateRow')");
+                    $("#ID").val(response.Grupo);
+                    $("#CardNumber").val(response.Tardanza);
+                    //alert('findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                    $("#manageBtn").attr('onclick','findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                    $("div.Tiempo1 select").val("val2")
+                    $("#tableManager").modal('show'); 
                 }
             });
         }
         function getExistingData(start, limit) {
             $.ajax({
-                url: 'php/ajax_student.php',
+                url: 'php/ajax_ConfiguracionGrupo.php',
                 method: 'POST',
                 dataType: 'text',
                 data: {
@@ -286,60 +312,9 @@ if(isset($_SESSION['loggedIN'])){
                 }
             });
         }
-        function manageData(key, edit) {
-            var name = $("#Name");
-            var cardNumber = $("#CardNumber");
-            var matricula = $("#ID");
-            var editRowID = $("#editRowID");
-
-            if (isNotEmpty(matricula) && isNotEmpty(name) && isNotEmpty(cardNumber)) {
-                $.ajax({
-                    url: 'php/ajax_student.php',
-                    method: 'POST',
-                    dataType: 'text',
-                    data: {
-                        key: key,
-                        name: name.val(),
-                        matricula: matricula.val(),
-                        cardNumber: cardNumber.val(),
-                        rowID: editRowID.val()
-                    }, success: function (response) {
-                        if (response != "success") {
-                            alert(response);
-                            $("#tableManager").modal('hide');
-                            location.reload();
-                        }
-                        else {
-
-                            $("#Name_" + editRowID.val()).html(name.val());
-                            $("#CardNumber_" + editRowID.val()).html(cardNumber.val());
-                            cleanModal();
-                            $("#tableManager").modal('hide');
-                            $("#manageBtn").attr('value', 'Add').attr('onclick', "manageData('addNew')");
-                        }
-                    }
-                });
-            }
-
-
-        }
-        function cleanModal() {
-            var name = $("#Name");
-            var cardNumber = $("#CardNumber");
-            var matricula = $("#ID");
-            name.val('');
-            matricula.val('');
-            cardNumber.val('');
-
-        }
-        function isNotEmpty(caller) {
-            if (caller.val() == '') {
-                caller.css('border', '1px solid red');
-                return false;
-            } else caller.css('border', '');
-
-            return true;
-        }
+        
+        
+    
     </script>
 </body>
 
