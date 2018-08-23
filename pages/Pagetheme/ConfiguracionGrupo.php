@@ -79,7 +79,7 @@ if(isset($_SESSION['loggedIN'])){
             <div class="row">
                 <div class="col-md-10">
                     <h1>
-                        <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Estudiantes
+                        <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Grupos
                         <small></small>
                     </h1>
                 </div>
@@ -93,7 +93,7 @@ if(isset($_SESSION['loggedIN'])){
                 <li>
                     <a href="vista-administrador.php">Dashboard</a>
                 </li>
-                <li class="active">Estudiantes</li>
+                <li class="active">Grupos</li>
             </ol>
         </div>
     </section>
@@ -105,7 +105,7 @@ if(isset($_SESSION['loggedIN'])){
                     <!-- Website Overview -->
                     <div class="panel panel-default">
                         <div class="panel-heading tabla-color-bg">
-                            <h3 class="panel-title">Tabla de Estudiantes</h3>
+                            <h3 class="panel-title">Grupos</h3>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -171,10 +171,11 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="col-md-12">
                                                         <table class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
-                                                                <td>Matricula</td>
+                                                                <td>Grupo</td>
                                                                 <td>Nombre</td>
-                                                                <td>Tarjeta</td>
-                                                                <td>Opciones</td>
+                                                                <td>Cred</td>
+                                                                <td>Profesor</td>
+                                                                <td>Periodo</td>
                                                             </thead>
                                                             <tbody>
 
@@ -218,29 +219,10 @@ if(isset($_SESSION['loggedIN'])){
             getExistingData(0, 50);
         });
        
-        function edit(rowID) {
-            $.ajax({
-                url: 'php/ajax_student.php',
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    key: 'getRowData',
-                    rowID: rowID
-                }, success: function (response) {
-                    $("#editRowID").val(rowID);
-                    $("#ID").val(response.ID);
-                    $("#Name").val(response.Name);
-                    $("#CardNumber").val(response.CardNumber);
-                    $("#Apellido").val(response.Apellido);
-                    $(".modal-title").html('Editar');
-                    $("#tableManager").modal('show');
-                    $("#manageBtn").attr('value', 'Salvar cambios').attr('onclick', "manageData('updateRow')");
-                }
-            });
-        }
+       
         function getExistingData(start, limit) {
             $.ajax({
-                url: 'php/ajax_student.php',
+                url: 'php/ajax_ConfiguracionGrupo.php',
                 method: 'POST',
                 dataType: 'text',
                 data: {
@@ -286,60 +268,9 @@ if(isset($_SESSION['loggedIN'])){
                 }
             });
         }
-        function manageData(key, edit) {
-            var name = $("#Name");
-            var cardNumber = $("#CardNumber");
-            var matricula = $("#ID");
-            var editRowID = $("#editRowID");
-
-            if (isNotEmpty(matricula) && isNotEmpty(name) && isNotEmpty(cardNumber)) {
-                $.ajax({
-                    url: 'php/ajax_student.php',
-                    method: 'POST',
-                    dataType: 'text',
-                    data: {
-                        key: key,
-                        name: name.val(),
-                        matricula: matricula.val(),
-                        cardNumber: cardNumber.val(),
-                        rowID: editRowID.val()
-                    }, success: function (response) {
-                        if (response != "success") {
-                            alert(response);
-                            $("#tableManager").modal('hide');
-                            location.reload();
-                        }
-                        else {
-
-                            $("#Name_" + editRowID.val()).html(name.val());
-                            $("#CardNumber_" + editRowID.val()).html(cardNumber.val());
-                            cleanModal();
-                            $("#tableManager").modal('hide');
-                            $("#manageBtn").attr('value', 'Add').attr('onclick', "manageData('addNew')");
-                        }
-                    }
-                });
-            }
-
-
-        }
-        function cleanModal() {
-            var name = $("#Name");
-            var cardNumber = $("#CardNumber");
-            var matricula = $("#ID");
-            name.val('');
-            matricula.val('');
-            cardNumber.val('');
-
-        }
-        function isNotEmpty(caller) {
-            if (caller.val() == '') {
-                caller.css('border', '1px solid red');
-                return false;
-            } else caller.css('border', '');
-
-            return true;
-        }
+        
+        
+    
     </script>
 </body>
 
