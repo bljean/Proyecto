@@ -180,8 +180,21 @@ function getStudentGroup($matricula,$cardN,$name,$apellido){
     $date = date('Y-m-d');
     $time= date('H:i:s');
     $day= getWeekday($date);
+    $sqlRecoveryGrupo=connectBd()->query( "SELECT gruporecuperarhoras.CodTema as Codtema,gruporecuperarhoras.CodTP as CodTP,gruporecuperarhoras.HoraInicio as HoraInicio ,gruporecuperarhoras.Horafin as Horafin,gruporecuperarhoras.NumGrupo as NumGrupo,gruporecuperarhoras.CodCampus as CodCampus,gruporecuperarhoras.AnoAcad as AnoAcad,gruporecuperarhoras.NumPer as NumPer,Fecha_Recuperar FROM gruporecuperarhoras INNER JOIN grupoinsest on gruporecuperarhoras.Codtema=grupoinsest.Codtema AND gruporecuperarhoras.CodTP=grupoinsest.CodTP AND gruporecuperarhoras.NumGrupo=grupoinsest.NumGrupo AND gruporecuperarhoras.CodCampus=grupoinsest.CodCampus AND gruporecuperarhoras.AnoAcad=grupoinsest.AnoAcad AND gruporecuperarhoras.NumPer=grupoinsest.NumPer AND grupoinsest.Matricula=$matricula AND gruporecuperarhoras.Sal_CodCampus='$codcampus' AND gruporecuperarhoras.Sal_CodEdif='$codedif' AND gruporecuperarhoras.Sal_CodSalon=$codsalon AND gruporecuperarhoras.HoraInicio<='$time' AND gruporecuperarhoras.Horafin >= '$time' AND gruporecuperarhoras.DiaSem='$day'");
     $sqlStudentGrupo=connectBd()->query( "SELECT horariogrupoactivo.CodTema as Codtema,horariogrupoactivo.CodTP as CodTP,horariogrupoactivo.HoraInicio as HoraInicio ,horariogrupoactivo.Horafin as Horafin,horariogrupoactivo.NumGrupo as NumGrupo,horariogrupoactivo.CodCampus as CodCampus,horariogrupoactivo.AnoAcad as AnoAcad,horariogrupoactivo.NumPer as NumPer FROM horariogrupoactivo INNER JOIN grupoinsest on horariogrupoactivo.Codtema=grupoinsest.Codtema AND horariogrupoactivo.CodTP=grupoinsest.CodTP AND horariogrupoactivo.NumGrupo=grupoinsest.NumGrupo AND horariogrupoactivo.CodCampus=grupoinsest.CodCampus AND horariogrupoactivo.AnoAcad=grupoinsest.AnoAcad AND horariogrupoactivo.NumPer=grupoinsest.NumPer AND grupoinsest.Matricula= $matricula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
-    if($sqlStudentGrupo->num_rows >0){
+    if($sqlRecoveryGrupo->num_rows >0){
+        while($data= $sqlRecoveryGrupo->fetch_array()){
+            $horaini=$data["HoraInicio"];
+            $horafin=$data["Horafin"];
+            $NumGrupo=$data["NumGrupo"];
+            $Codtema=$data["Codtema"];
+            $CodTP=$data["CodTP"];
+            $CodCampus=$data["CodCampus"];
+            $AnoAcad=$data["AnoAcad"];
+            $NumPer=$data["NumPer"];
+            attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido);
+        }
+    }elseif($sqlStudentGrupo->num_rows >0){
         echo "fuciona \n";
         while($data= $sqlStudentGrupo->fetch_array()){
             $horaini=$data["HoraInicio"];
@@ -206,9 +219,22 @@ function getProfesorGroup($numCedula,$cardN,$name,$apellido){
     $date = date('Y/m/d');
     $time= date('H:i:s');
     $day= getWeekday($date);
+    $sqlRecoveryGrupo=connectBd()->query( "SELECT gruporecuperarhoras.CodTema as Codtema,gruporecuperarhoras.CodTP as CodTP,gruporecuperarhoras.HoraInicio as HoraInicio ,gruporecuperarhoras.Horafin as Horafin,gruporecuperarhoras.NumGrupo as NumGrupo,gruporecuperarhoras.CodCampus as CodCampus,gruporecuperarhoras.AnoAcad as AnoAcad,gruporecuperarhoras.NumPer as NumPer,Fecha_Recuperar FROM gruporecuperarhoras INNER JOIN contratodocencia on gruporecuperarhoras.Codtema=contratodocencia.Codtema AND gruporecuperarhoras.CodTP=contratodocencia.CodTP AND gruporecuperarhoras.NumGrupo=contratodocencia.NumGrupo AND gruporecuperarhoras.CodCampus=contratodocencia.CodCampus AND gruporecuperarhoras.AnoAcad=contratodocencia.AnoAcad AND gruporecuperarhoras.NumPer=contratodocencia.NumPer AND contratodocencia.NumCedula=$numCedula AND gruporecuperarhoras.Sal_CodCampus='$codcampus' AND gruporecuperarhoras.Sal_CodEdif='$codedif' AND gruporecuperarhoras.Sal_CodSalon=$codsalon AND gruporecuperarhoras.HoraInicio<='$time' AND gruporecuperarhoras.Horafin >= '$time' AND gruporecuperarhoras.DiaSem='$day'");
     $sqlProfessorGrupo=connectBd()->query( "SELECT horariogrupoactivo.CodTema as Codtema,horariogrupoactivo.CodTP as CodTP,horariogrupoactivo.HoraInicio as HoraInicio ,horariogrupoactivo.Horafin as Horafin,horariogrupoactivo.NumGrupo as NumGrupo,horariogrupoactivo.CodCampus as CodCampus,horariogrupoactivo.AnoAcad as AnoAcad,horariogrupoactivo.NumPer as NumPer FROM horariogrupoactivo INNER JOIN contratodocencia on horariogrupoactivo.Codtema=contratodocencia.Codtema AND horariogrupoactivo.CodTP=contratodocencia.CodTP AND horariogrupoactivo.NumGrupo=contratodocencia.NumGrupo AND horariogrupoactivo.CodCampus=contratodocencia.CodCampus AND horariogrupoactivo.AnoAcad=contratodocencia.AnoAcad AND horariogrupoactivo.NumPer=contratodocencia.NumPer AND contratodocencia.NumCedula=$numCedula AND horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon=$codsalon AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
     $sqlProfessor=connectBd()->query("SELECT Codtema FROM contratodocencia WHERE NumCedula=$numCedula");
-    if($sqlProfessorGrupo->num_rows >0){
+    if($sqlRecoveryGrupo->num_rows >0){
+        while($data= $sqlRecoveryGrupo->fetch_array()){
+            $horaini=$data["HoraInicio"];
+            $horafin=$data["Horafin"];
+            $NumGrupo=$data["NumGrupo"];
+            $Codtema=$data["Codtema"];
+            $CodTP=$data["CodTP"];
+            $CodCampus=$data["CodCampus"];
+            $AnoAcad=$data["AnoAcad"];
+            $NumPer=$data["NumPer"];
+            attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido);
+        }
+    }elseif($sqlProfessorGrupo->num_rows >0){
         echo "fuciona\n";
         while($data= $sqlProfessorGrupo->fetch_array()){
             $horaini=$data["HoraInicio"];
@@ -224,13 +250,29 @@ function getProfesorGroup($numCedula,$cardN,$name,$apellido){
     }elseif($sqlProfessor->num_rows >0){
         echo "no abrir puerta";
         insertSwipeRecord($cardN,$numCedula,$name,$apellido,'Denegado');
-    }else {
+    }else{
         echo"abrir puerta al trabajador";
         insertSwipeRecord($cardN,$numCedula,$name,$apellido,'Permitido');
         openDoor();
     }
     return  $sqlProfessorGrupo;
         }
+function getRecoveryGroup(){
+    $sqlRecoveryGrupo=connectBd()->query( "SELECT gruporecuperarhoras.CodTema as Codtema,gruporecuperarhoras.CodTP as CodTP,gruporecuperarhoras.HoraInicio as HoraInicio ,gruporecuperarhoras.Horafin as Horafin,gruporecuperarhoras.NumGrupo as NumGrupo,gruporecuperarhoras.CodCampus as CodCampus,gruporecuperarhoras.AnoAcad as AnoAcad,gruporecuperarhoras.NumPer as NumPer,Fecha_Recuperar FROM gruporecuperarhoras INNER JOIN contratodocencia on gruporecuperarhoras.Codtema=contratodocencia.Codtema AND gruporecuperarhoras.CodTP=contratodocencia.CodTP AND gruporecuperarhoras.NumGrupo=contratodocencia.NumGrupo AND gruporecuperarhoras.CodCampus=contratodocencia.CodCampus AND gruporecuperarhoras.AnoAcad=contratodocencia.AnoAcad AND gruporecuperarhoras.NumPer=contratodocencia.NumPer AND contratodocencia.NumCedula=$numCedula AND gruporecuperarhoras.Sal_CodCampus='$codcampus' AND gruporecuperarhoras.Sal_CodEdif='$codedif' AND gruporecuperarhoras.Sal_CodSalon=$codsalon AND gruporecuperarhoras.HoraInicio<='$time' AND gruporecuperarhoras.Horafin >= '$time' AND gruporecuperarhoras.DiaSem='$day'");
+    if($sqlRecoveryGrupo->num_rows >0){
+        while($data= $sqlRecoveryGrupo->fetch_array()){
+            $horaini=$data["HoraInicio"];
+            $horafin=$data["Horafin"];
+            $NumGrupo=$data["NumGrupo"];
+            $Codtema=$data["Codtema"];
+            $CodTP=$data["CodTP"];
+            $CodCampus=$data["CodCampus"];
+            $AnoAcad=$data["AnoAcad"];
+            $NumPer=$data["NumPer"];
+            attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido);
+        }
+    }
+}
 function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,$Precencia,$cardN,$name,$apellido){
     $codcampus = $GLOBALS['CodCampus'];
     $codedif =$GLOBALS['CodEdif'];
@@ -264,8 +306,21 @@ function checkGroupTime(){
     $date = date('Y/m/d');
     $time= date('H:i:s');
     $day= getWeekday($date);
+    $sqlhorarioRecoverytime=connectBd()->query("SELECT Codtema, CodTP,HoraInicio , Horafin, NumGrupo, CodCampus, AnoAcad, NumPer FROM gruporecuperarhoras WHERE Sal_CodCampus='$codcampus' AND Sal_CodEdif='$codedif' AND Sal_CodSalon='$codsalon' AND HoraInicio<='$time' AND Horafin >= '$time' AND DiaSem='$day'");
     $sqlHorariogrupotime= connectBd()->query("SELECT Codtema, CodTP,HoraInicio , Horafin, NumGrupo, CodCampus, AnoAcad, NumPer FROM horariogrupoactivo WHERE horariogrupoactivo.Sal_CodCampus='$codcampus' AND horariogrupoactivo.Sal_CodEdif='$codedif' AND horariogrupoactivo.Sal_CodSalon='$codsalon' AND horariogrupoactivo.HoraInicio<='$time' AND horariogrupoactivo.Horafin >= '$time' AND horariogrupoactivo.DiaSem='$day'");
-       if($sqlHorariogrupotime->num_rows >0){
+    if($sqlHorariogrupotime->num_rows >0){
+        while($data= $sqlHorariogrupotime->fetch_array()){
+            $HoraInicio=$data['HoraInicio'];
+            $Horafin=$data['Horafin'];
+            $NumGrupo=$data["NumGrupo"];
+            $Codtema=$data["Codtema"];
+            $CodTP=$data["CodTP"];
+            $CodCampus=$data["CodCampus"];
+            $AnoAcad=$data["AnoAcad"];
+            $NumPer=$data["NumPer"];
+        }
+        ausencia($HoraInicio,$Horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer);
+       }elseif($sqlHorariogrupotime->num_rows >0){
         while($data= $sqlHorariogrupotime->fetch_array()){
             $HoraInicio=$data['HoraInicio'];
             $Horafin=$data['Horafin'];
@@ -295,7 +350,7 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
             if($sqlPresentesEst->num_rows>0){
                 while($data=$sqlPresentesEst->fetch_array()){
                     $matricula=$data['Matricula'];
-                    connectBd()->query("UPDATE asistencia SET Presencia = 'R' WHERE asistencia.ID = '$matricula' AND asistencia.Fecha = '$date' AND asistencia.Horaini = '$horaini' AND asistencia.NumGrupo =$NumGrupo AND asistencia.CodTema = '$Codtema' AND asistencia.CodTP = $CodTP AND asistencia.CodCampus = '$CodCampus' AND asistencia.AnoAcad = $AnoAcad AND asistencia.NumPer = $NumPer");
+                    connectBd()->query("UPDATE asistencia SET Presencia = 'R', HorasPresente='0' WHERE asistencia.ID = '$matricula' AND asistencia.Fecha = '$date' AND asistencia.Horaini = '$horaini' AND asistencia.NumGrupo =$NumGrupo AND asistencia.CodTema = '$Codtema' AND asistencia.CodTP = $CodTP AND asistencia.CodCampus = '$CodCampus' AND asistencia.AnoAcad = $AnoAcad AND asistencia.NumPer = $NumPer");
                 }
                 
             }
