@@ -99,12 +99,12 @@ $NumCedula =$_SESSION['NumCedula'];
                                         <div class="panel-body">
         
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-5">
                                                     <div class="panel panel-noticias">
                                                         <canvas id="myChart"></canvas>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-5">
                                                     <div class="panel panel-noticias">
                                                         <canvas id="myChart1"></canvas>
                                                     </div>
@@ -149,8 +149,8 @@ $NumCedula =$_SESSION['NumCedula'];
         $(document).ready(function () {
             var ID= "<?php echo $NumCedula;  ?>";
             materias=[];
-            asistenciap=[];
-            asistenciae=[];
+            semanal=[];
+            
             getprofGroupData(ID);
 
             $("#Logout").on('click', function () {
@@ -171,8 +171,9 @@ $NumCedula =$_SESSION['NumCedula'];
                     key: 'getprofGroupData',
                     ID: ID,
                     }, success: function (response) {
-                        alert("hola");
+                        
                         materias=response.materias1;
+                        semanal=response.semanal;
                         grafico();
                         grafico1();
                     }
@@ -257,7 +258,7 @@ $NumCedula =$_SESSION['NumCedula'];
                 labels: materias,
                 datasets: [{
                     label: 'Ausencia',
-                    data: [1,2,3,4,5],
+                    data: semanal,
                     //backgroundColor:'green',
                     backgroundColor: [
                         'rgba(88, 214, 141, 1)',
