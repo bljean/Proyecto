@@ -118,48 +118,38 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h2 class="modal-title">Nuevo</h2>
+                                                                <h2 class="modal-title">Configuracion</h2>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <h4>Matricula:</h4>
+                                                                        <h4>Grupo:</h4>
                                                                     </div>
-                                                                    <div class="col-md-10">
+                                                                    <div class="col-md-6">
                                                                         <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <h4>Nombre:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Apellido:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Tarjeta:</h4>
+                                                                        <h4>Tardanza:</h4>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <input type="button" id="autoRecordCardBtn" onclick="autoRecordCard()" value="Registro Automático" class="btn btn-primary">
+                                                                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownhora" >
+                                                                    <select id="tiempo" class="btn btn-primary" type="button">
+                                                                        <option selected="selected" value="val2" >Tiempo</option>
+                                                                        <option value="5">5</option>
+                                                                        <option value="10">10</option>
+                                                                        <option value="15">15</option>
+                                                                        <option value="20">20</option>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
-                                                                <input type="hidden" id="editRowID" value="0">
+                                                                
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                                <input type="button" id="manageBtn" onclick="findDay()" value="Save" class="btn btn-primary">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -176,6 +166,7 @@ if(isset($_SESSION['loggedIN'])){
                                                                 <td>Cred</td>
                                                                 <td>Profesor</td>
                                                                 <td>Periodo</td>
+                                                                <td>Opciones</td>
                                                             </thead>
                                                             <tbody>
 
@@ -217,9 +208,62 @@ if(isset($_SESSION['loggedIN'])){
 
             });
             getExistingData(0, 50);
+            
         });
        
-       
+        function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
+             
+            var eID = document.getElementById("tiempo");
+            var dayVal = eID.options[eID.selectedIndex].value;
+            var daytxt = eID.options[eID.selectedIndex].text;
+            //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+            
+            if(dayVal=='Tiempo'){
+                alert("Seleccione un tiempo");
+            }else{
+            $.ajax({
+                url: 'php/ajax_ConfiguracionGrupo.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key:'findDay',
+                    dayVal:dayVal,
+                    CodCampus:CodCampus,
+                    CodTema:CodTema,
+                    CodTP:CodTP,
+                    Numgrupo:Numgrupo,
+                    AnoAcad:AnoAcad,
+                    Numper:Numper,
+                }, success: function (response) {  
+                    $("#tableManager").modal('hide');
+                    $("div.Tiempo1 select").val("val2")
+                }
+            });}
+            }
+
+        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+            $.ajax({
+                url: 'php/ajax_ConfiguracionGrupo.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'edit',
+                    CodCampus:CodCampus,
+                    CodTema:CodTema,
+                    CodTP:CodTP,
+                    Numgrupo:Numgrupo,
+                    AnoAcad:AnoAcad,
+                    Numper:Numper,
+                }, success: function (response) {
+                    $("#ID").val(response.Grupo);
+                    $("#CardNumber").val(response.Tardanza);
+                    //alert('findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                    $("#manageBtn").attr('onclick','findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                    $("div.Tiempo1 select").val("val2")
+                    $("#tableManager").modal('show'); 
+                }
+            });
+        }
         function getExistingData(start, limit) {
             $.ajax({
                 url: 'php/ajax_ConfiguracionGrupo.php',

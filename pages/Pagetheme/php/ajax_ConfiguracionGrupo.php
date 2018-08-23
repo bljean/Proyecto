@@ -45,6 +45,11 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 <td>'. $NumCreditos.'</td>
                 <td>'.$nombreprof.' '.$apellido.'</td>
                 <td>'.$AnoAcad.'/'.$Numper.'</td>
+                <td>
+                <div class="col-md-12">
+                <input type="button" onclick="edit(\''.$CodCampus.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$Numgrupo.'\',\''.$AnoAcad.'\',\''.$Numper.'\')" value="Configuracion" class="btn btn-primary">
+                </div> 
+                </td>
                 </tr>
                  
                 ';
@@ -54,7 +59,44 @@ $conn= new mysqli('localhost',$user, $pass, $db);
             exit('reachedMax');
     }
     
+    if($_POST['key'] == 'edit'){
+        $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
+        $CodTema = $conn->real_escape_string($_POST['CodTema']);
+        $CodTP = $conn->real_escape_string($_POST['CodTP']);
+        $Numgrupo = $conn->real_escape_string($_POST['Numgrupo']);
+        $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
+        $Numper = $conn->real_escape_string($_POST['Numper']);
+        $sql = $conn->query("SELECT PTLimiteH FROM configuraciongrupo WHERE CodTema='$CodTema' AND CodTp='$CodTP' AND NumGrupo='$Numgrupo' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+        $tiempo=0;
+        if($sql->num_rows >0){
+            while($data= $sql->fetch_array()){
+                $tiempo= $data['PTLimiteH'];
+            }
+        }
+        $grupo=''.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'';
+        $jsonArray = array(
+            'Grupo'=>$grupo,
+            'Tardanza'=>$tiempo ,
+        );
+        exit(json_encode($jsonArray));
+    }
     
+    if($_POST['key'] == 'findDay'){
+        $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
+        $CodTema = $conn->real_escape_string($_POST['CodTema']);
+        $CodTP = $conn->real_escape_string($_POST['CodTP']);
+        $Numgrupo = $conn->real_escape_string($_POST['Numgrupo']);
+        $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
+        $Numper = $conn->real_escape_string($_POST['Numper']);
+        $dayVal = $conn->real_escape_string($_POST['dayVal']);
+        $sql = $conn->query("UPDATE configuraciongrupo SET PTLimiteH ='$dayVal' WHERE CodTema ='$CodTema' AND CodTp ='$CodTP' AND NumGrupo='$Numgrupo' AND CodCampus = '$CodCampus' AND AnoAcad ='$AnoAcad' AND NumPer ='$Numper'");
+        
+        $jsonArray = array(
+            'Grupo'=>"hola",
+            
+        );
+        exit(json_encode($jsonArray));
+    }
 
   
 }
