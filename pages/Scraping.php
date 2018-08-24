@@ -362,6 +362,7 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
     $time= date('H:i:s');
     $day= getWeekday($date);
     $horadeAusencia = getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer);
+    $horas=totalhorasgrupo($horaini,$horafin);
     echo"$horadeAusencia";
     if($time > $horadeAusencia){
         $sqlhorarioRecoverytime=connectBd()->query("SELECT Codtema, CodTP,HoraInicio , Horafin, NumGrupo, CodCampus, AnoAcad, NumPer FROM gruporecuperarhoras WHERE Sal_CodCampus='$codcampus' AND Sal_CodEdif='$codedif' AND Sal_CodSalon='$codsalon' AND HoraInicio<='$time' AND Horafin >= '$time' AND DiaSem='$day'");
@@ -399,7 +400,7 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
         }else{
             if($sqlAusenteProf->num_rows>0){
                 $sqlPresentesEst=connectBd()->query("SELECT asistencia.ID as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer AND asistencia.Fecha= '$date' WHERE grupoinsest.CodTema='$Codtema' AND grupoinsest.CodTP='$CodTP' AND grupoinsest.CodCampus='$CodCampus' AND grupoinsest.Numgrupo='$NumGrupo' AND grupoinsest.AnoAcad='$AnoAcad' AND grupoinsest.NumPer='$NumPer' AND asistencia.Presencia='P' ");
-                connectBd()->query("INSERT INTO gruporecuperar (CodTema, CodTp, NumGrupo, CodCampus, AnoAcad, NumPer, PR_o_R, Fecha_Recuperar) VALUES ('$Codtema', '$CodTP', '$NumGrupo', '$CodCampus', '$AnoAcad', '$NumPer', 'PR', '$date')");
+                connectBd()->query("INSERT INTO gruporecuperar (CodTema, CodTp, NumGrupo, CodCampus, AnoAcad, NumPer, PR_o_R, Fecha_Recuperar,Horas) VALUES ('$Codtema', '$CodTP', '$NumGrupo', '$CodCampus', '$AnoAcad', '$NumPer', 'PR', '$date','$horas')");
                 while($data=$sqlAusenteProf->fetch_array()){
                     attendEstRecord($data['NumCedula'],$date,$horaini,$time,$horafin,getWeekday($date),$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'PR','1111','nada','nada');
                 }
