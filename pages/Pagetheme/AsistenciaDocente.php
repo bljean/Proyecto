@@ -50,7 +50,9 @@ if(isset($_SESSION['loggedIN'])){
                         <li>
                             <a href="AsistenciaDocente.php">Asistencia</a>
                         </li>
-        
+                        <li>
+                            <a href="RecuperacionDocentes.php">Recuperacion</a>
+                        </li>
         
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -167,28 +169,7 @@ if(isset($_SESSION['loggedIN'])){
                   </div>
                   <!--/table asistencias-->
                    <!-- estadisticas-->
-                  <div class="well dash-box" style=" text-align: left;">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <h4>Horas presente:</h4>
-                      </div>
-                      <div class="col-md-2">
-                        <h4>6/70</h4>
-                      </div>
-                      <div class="col-md-2">
-                          <h4>Horas faltadas:</h4>
-                        </div>
-                        <div class="col-md-2">
-                          <h4>3/16</h4>
-                        </div>
-                        <div class="col-md-2">
-                            <h4>Excusas:</h4>
-                          </div>
-                          <div class="col-md-2">
-                            <h4>1/3</h4>
-                          </div>
-                    </div>
-                  </div>
+                
                 </div>
               </div>
 

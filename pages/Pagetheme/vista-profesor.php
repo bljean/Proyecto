@@ -50,6 +50,9 @@ $NumCedula =$_SESSION['NumCedula'];
                         <li>
                             <a href="AsistenciaDocente.php">Asistencia</a>
                         </li>
+                        <li>
+                            <a href="RecuperacionDocentes.php">Recuperacion</a>
+                        </li>
         
         
                     </ul>
