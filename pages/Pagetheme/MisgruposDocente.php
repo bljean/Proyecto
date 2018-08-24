@@ -93,40 +93,77 @@ if(isset($_SESSION['loggedIN'])){
       <div class="row">
         <div class="col-md-12">
           <div id="tableManager" class="modal fade">
-            <div class="modal-dialog" style="width:1250px;" >
+            <div class="modal-dialog" style="width:1250px;">
               <div class="modal-content">
                 <div class="modal-header">
                   <h2 class="modal-title">Asistencia</h2>
                 </div>
                 <div class="modal-body">
-                    <div class="well dash-box" style=" text-align: center;" >
-                      <div class="panel-body">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <h4 id="tituloGrupo"></h4>
-                          </div>
+                  <div class="well dash-box" style=" text-align: center;">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <h4 id="tituloGrupo"></h4>
                         </div>
-                        <table class="table table-striped table-hover tableAsistencia">
-                          <thead>
-                            <th>Fechas</th>
-                            <th>Dia de Semana</th>
-                            <th>Hora Inicio</th>
-                            <th>Hora Termino</th>
-                            <th>Hora Llegada</th>
-                            <th>Horas Presente</th>
-                            <th>Asistencia</th>
-                            
-                          </thead>
-                          <tbody class="tableAsistenciaBody">
-
-                          </tbody>
-                        </table>
                       </div>
+                      <table class="table table-striped table-hover tableAsistencia">
+                        <thead>
+                          <th>Fechas</th>
+                          <th>Dia de Semana</th>
+                          <th>Hora Inicio</th>
+                          <th>Hora Termino</th>
+                          <th>Hora Llegada</th>
+                          <th>Horas Presente</th>
+                          <th>Asistencia</th>
+
+                        </thead>
+                        <tbody class="tableAsistenciaBody">
+
+                        </tbody>
+                      </table>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- -->
+          <div id="tablaconfigurar" class="modal fade">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Configuracion</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Grupo:</h4>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Tardanza:</h4>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
+                    </div>
+                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownhora">
+                      <select id="tiempo" class="btn btn-primary" type="button">
+                        <option selected="selected" value="val2">Tiempo</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                      </select>
+                    </div>
+                  </div>
+
                 </div>
                 <div class="modal-footer">
-                  <input type="hidden" id="rowid">
-                  <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-primary">
+                  <input type="button" id="manageBtn" onclick="findDay()" value="Save" class="btn btn-primary">
                 </div>
               </div>
             </div>
@@ -168,7 +205,11 @@ if(isset($_SESSION['loggedIN'])){
 
                         </tbody>
                       </table>
+                      <div class="col-md-1 col-md-offset-11 ">
+                        <button class="btn btn-primary" onclick="edit()" id="configurar" type="button" style="pa">Configurar</button>
+                      </div>
                     </div>
+
                   </div>
                   <!--/table asistencias-->
                   <!-- estadisticas-->
@@ -183,6 +224,7 @@ if(isset($_SESSION['loggedIN'])){
       </div>
     </div>
   </section>
+
   <!-- Modals -->
   <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -192,7 +234,7 @@ if(isset($_SESSION['loggedIN'])){
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      dataindex = 0; 
+      dataindex = 0;
       dataindex1 = 0;
       var ID = "<?php echo $ID; ?>";
       var NumCedula = "<?php echo $NumCedula; ?>";
@@ -223,6 +265,7 @@ if(isset($_SESSION['loggedIN'])){
           $("#tituloGrupo").append(response.groupCodigo);
           //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
+          $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
     }
@@ -249,35 +292,35 @@ if(isset($_SESSION['loggedIN'])){
             start += limit;
             getAsisData(start, limit, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, privilegio);
           } else {
-              dTable1 = $(".tableAsistencia").DataTable({
-                "language": {
-                  "sProcessing": "Procesando...",
-                  "sLengthMenu": "Mostrar _MENU_ registros",
-                  "sZeroRecords": "No se encontraron resultados",
-                  "sEmptyTable": "Ningún dato disponible en esta tabla",
-                  "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                  "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                  "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                  "sInfoPostFix": "",
-                  "sSearch": "Buscar:",
-                  "sUrl": "",
-                  "sInfoThousands": ",",
-                  "sLoadingRecords": "Cargando...",
-                  "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                  },
-                  "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                  }
+            dTable1 = $(".tableAsistencia").DataTable({
+              "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                  "sFirst": "Primero",
+                  "sLast": "Último",
+                  "sNext": "Siguiente",
+                  "sPrevious": "Anterior"
                 },
-                "lengthChange": false
-              });
-            
-            
+                "oAria": {
+                  "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+              },
+              "lengthChange": false
+            });
+
+
           }
 
         }
@@ -309,6 +352,7 @@ if(isset($_SESSION['loggedIN'])){
           //$(".tableAsisBody").html('');
           cleartable(dTable);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
+          $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
     }
@@ -328,34 +372,34 @@ if(isset($_SESSION['loggedIN'])){
 
         }, success: function (response) {
           $(".tableAsisBody").append(response);
-            dTable = $(".tableAsis").DataTable({
-              "language": {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                  "sFirst": "Primero",
-                  "sLast": "Último",
-                  "sNext": "Siguiente",
-                  "sPrevious": "Anterior"
-                },
-                "oAria": {
-                  "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                }
+          dTable = $(".tableAsis").DataTable({
+            "language": {
+              "sProcessing": "Procesando...",
+              "sLengthMenu": "Mostrar _MENU_ registros",
+              "sZeroRecords": "No se encontraron resultados",
+              "sEmptyTable": "Ningún dato disponible en esta tabla",
+              "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+              "sInfoPostFix": "",
+              "sSearch": "Buscar:",
+              "sUrl": "",
+              "sInfoThousands": ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
               },
-              "lengthChange": false
-            });
-          
+              "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+            },
+            "lengthChange": false
+          });
+
         }
       });
 
@@ -389,7 +433,7 @@ if(isset($_SESSION['loggedIN'])){
         });
       }
     }
-    function cleartable(table){
+    function cleartable(table) {
       table.clear().draw();
       table.destroy();
     }
@@ -401,22 +445,7 @@ if(isset($_SESSION['loggedIN'])){
       matricula.val('');
       cardNumber.val('');
     }
-    function edit(rowID) {
-      $.ajax({
-        url: 'php/ajax_Asistencias.php',
-        method: 'POST',
-        dataType: 'json',
-        data: {
-          key: 'getRowData',
-          rowID: rowID
-        }, success: function (response) {
-          $("#fecha").val(response.fecha);
-          $("#horas").val(response.horasasi);
-          $("#rowid").val(rowID);
-          $("#tableManager").modal('show');
-        }
-      });
-    }
+
     function isNotEmpty(caller) {
       if (caller.val() == '') {
         caller.css('border', '1px solid red');
@@ -424,8 +453,9 @@ if(isset($_SESSION['loggedIN'])){
       } else caller.css('border', '');
       return true;
     }
-    function asistencia(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer){
-      if(dataindex1!=0){
+
+    function asistencia(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer) {
+      if (dataindex1 != 0) {
         //$(".tableAsistenciaBody").html("");
         cleartable(dTable1);
       }
@@ -433,6 +463,60 @@ if(isset($_SESSION['loggedIN'])){
       getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
 
       $("#tableManager").modal('show');
+    }
+
+    function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
+             
+             var eID = document.getElementById("tiempo");
+             var dayVal = eID.options[eID.selectedIndex].value;
+             var daytxt = eID.options[eID.selectedIndex].text;
+             //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+             
+             if(dayVal=='Tiempo'){
+                 alert("Seleccione un tiempo");
+             }else{
+             $.ajax({
+                 url: 'php/ajax_ConfiguracionGrupo.php',
+                 method: 'POST',
+                 dataType: 'json',
+                 data: {
+                     key:'findDay',
+                     dayVal:dayVal,
+                     CodCampus:CodCampus,
+                     CodTema:CodTema,
+                     CodTP:CodTP,
+                     Numgrupo:Numgrupo,
+                     AnoAcad:AnoAcad,
+                     Numper:Numper,
+                 }, success: function (response) {  
+                     $("#tablaconfigurar").modal('hide');
+                     $("div.Tiempo1 select").val("val2")
+                 }
+             });}
+             }
+ 
+    function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+        $.ajax({
+            url: 'php/ajax_ConfiguracionGrupo.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                key: 'edit',
+                CodCampus:CodCampus,
+                CodTema:CodTema,
+                CodTP:CodTP,
+                Numgrupo:Numgrupo,
+                AnoAcad:AnoAcad,
+                Numper:Numper,
+            }, success: function (response) {
+                $("#ID").val(response.Grupo);
+                $("#CardNumber").val(response.Tardanza);
+                //alert('findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                $("#manageBtn").attr('onclick','findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
+                $("div.Tiempo1 select").val("val2")
+                $("#tablaconfigurar").modal('show'); 
+            }
+        });
     }
 
 
