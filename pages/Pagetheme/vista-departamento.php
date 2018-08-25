@@ -1,6 +1,12 @@
 <?php
 session_start();
-
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logadmin.php');
+  exit();
+}
+$ID=$_SESSION['user'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,148 +134,7 @@ session_start();
         </section>
 
 
-        <script>
-
-
-            Chart.defaults.global.defaultFontFamily = 'Lato';
-            Chart.defaults.global.defaultFontSize = 18;
-            Chart.defaults.global.defaultFontColor = '#777';
-
-            let myChart = document.getElementById('myChart').getContext('2d');
-
-            let massPopChart = new Chart(myChart, {
-                type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-                data: {
-                    labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-                    datasets: [{
-                        label: 'Asistencia',
-                        data: [
-                            90,
-                            70,
-                            70,
-                            80,
-                            90,
-                            58
-
-                        ],
-                        //backgroundColor:'green',
-                        backgroundColor: [
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)',
-                            'rgba(88, 214, 141, 1)'
-                        ],
-                        borderWidth: 1,
-                        borderColor: '#777',
-                        hoverBorderWidth: 3,
-                        hoverBorderColor: '#000'
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Asistencia Semanal',
-                        fontSize: 30
-                    },
-                    scales: {
-                        yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                                }]
-                            },
-                    legend: {
-                        display: false,
-
-
-                        labels: {
-                            fontColor: '#000'
-                        }
-                    },
-                    layout: {
-                        padding: {
-                            left: 50,
-                            right: 0,
-                            bottom: 80,
-                            top: 0
-                        }
-                    },
-                    tooltips: {
-                        enabled: true
-                    }
-                }
-            });
-        </script>
         
-        <script>
-
-            Chart.defaults.global.defaultFontFamily = 'Lato';
-            Chart.defaults.global.defaultFontSize = 18;
-            Chart.defaults.global.defaultFontColor = '#777';
-
-
-            let myChart1 = document.getElementById('myChart1').getContext('2d');
-            let massPopChart1 = new Chart(myChart1, {
-                type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-                data: {
-                    labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-                    datasets: [{
-                        label: 'Asistencia',
-                        data: [
-                            90,
-                            50,
-                            30,
-                            28,
-                            45,
-                            70
-                        ],
-                        //backgroundColor:'green',
-                        backgroundColor: [
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)',
-                            'rgba(195, 155, 211, 1)'
-
-                        ],
-                        borderWidth: 1,
-                        borderColor: '#777',
-                        hoverBorderWidth: 3,
-                        hoverBorderColor: '#000'
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Asistencia Mensual',
-                        fontSize: 30
-                    },
-                    legend: {
-                        display: false,
-                        position: 'right',
-                        labels: {
-                            fontColor: '#000'
-                        }
-                    },
-                    layout: {
-                        padding: {
-                            left: 50,
-                            right: 0,
-                            bottom: 60,
-                            top: 0
-                        }
-                    },
-                    tooltips: {
-                        enabled: true
-                    }
-                }
-            });
-        </script>
 
     
     
@@ -282,6 +147,11 @@ session_start();
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            semana=[];
+            asistenciap=[];
+            asistenciae=[];
+            var ID = "<?php echo $ID; ?>";
+            getcedula(ID);
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='1';
@@ -291,7 +161,166 @@ session_start();
             });
         });
 
-        
+    function getcedula(ID){
+      $.ajax({
+              url: 'php/ajax_Misgruposdepartamento.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getcedula',
+                    ID: ID,
+                    }, success: function (response) {
+                        diasemana(response.NumCedula);
+                    }
+                });
+      }
+
+     function diasemana(ID){
+                $.ajax({
+                  url: 'php/ajax_vista-departamento.php',
+                  method: 'POST',
+                  dataType: 'json',
+                   data: {
+                            key: 'diasemana',
+                            ID:ID,
+                            }, success: function (response) {
+                                //alert(response.count);
+                                semana =response.body;
+                                asistenciap = response.count;
+                                asistenciae = response.count1;
+                                grafico();
+                                grafico1();
+                            }
+                        });
+
+    }
+
+     function grafico(){
+        //estudiante
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+        Chart.defaults.global.defaultFontColor = '#777';
+
+
+        let myChart1 = document.getElementById('myChart1').getContext('2d');
+        let massPopChart1 = new Chart(myChart1, {
+            type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: semana,
+                datasets: [{
+                    label: 'Ausencia',
+                    data: asistenciae,
+                    //backgroundColor:'green',
+                    backgroundColor: [
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)',
+                        'rgba(195, 155, 211, 1)'
+
+                    ],
+      
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Ausencia De Los Estudiantes',
+                    fontSize: 30
+                }, scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            },
+                legend: {
+                    display: false,
+                    position: 'right',
+                    labels: {
+                        fontColor: '#000'
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        bottom: 60,
+                        top: 0
+                    }
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
+        });
+
+    }
+
+    function grafico1(){
+        //profesor
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+        Chart.defaults.global.defaultFontColor = '#777';
+
+        let myChart = document.getElementById('myChart').getContext('2d');
+
+        let massPopChart = new Chart(myChart, {
+            type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: semana,
+                datasets: [{
+                    label: 'Ausencia',
+                    data: asistenciap,
+                    //backgroundColor:'green',
+                    backgroundColor: [
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)',
+                        'rgba(88, 214, 141, 1)'
+                    ],
+                  
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Ausencia De Los Docentes',
+                    fontSize: 30
+                }, scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                                }]
+                            },
+                legend: {
+                    display: false,
+
+
+                    labels: {
+                        fontColor: '#000'
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        bottom: 80,
+                        top: 0
+                    }
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
+        });
+    } 
 
 
     </script>

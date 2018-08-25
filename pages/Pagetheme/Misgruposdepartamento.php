@@ -1,9 +1,14 @@
-<!--
 <?php
-$ID= $_POST['ID'];
-$nombre=$_POST['nombre'];
+session_start();
+if(isset($_SESSION['loggedIN'])){
+  
+}else{
+  header('Location: logadmin.php');
+  exit();
+}
+$ID=$_SESSION['user'];
 ?>
--->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -185,12 +190,13 @@ $nombre=$_POST['nombre'];
   <script type="text/javascript">
     $(document).ready(function () {
       dataindex=0;
-      var ID = "75985203021";
+      var ID = "<?php echo $ID; ?>";
       
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
-      getExistingData(0, 50,ID);
+      getcedula(ID);
+      
       });
 
      function getExistingData(start, limit,ID) {
@@ -243,6 +249,20 @@ $nombre=$_POST['nombre'];
             });
         }
         
+    function getcedula(ID){
+      $.ajax({
+              url: 'php/ajax_Misgruposdepartamento.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getcedula',
+                    ID: ID,
+                    }, success: function (response) {
+                        getExistingData(0, 50,response.NumCedula);
+                    }
+                });
+      }
+
   
     function manageData(key) {
             var horas = $("#horas");

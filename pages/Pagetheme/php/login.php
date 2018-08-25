@@ -19,8 +19,10 @@ if(isset($_POST['login'])){
         $_SESSION['loggedIN'] = '1';
         $_SESSION['user']= $user;
         $_SESSION['NumCedula']=$NumCedula;
-        //$_SESSION['privilegio']=$privilegio;
+        $_SESSION['Privilegio']=$privilegio;
+   
         exit('1');
+        
     }else
         exit('2');
 

@@ -1,8 +1,16 @@
 <?php
 session_start();
-if(isset($_SESSION['loggedIN'])){
-    header('Location: vista-profesor.php');
-    exit();
+
+if(isset($_SESSION['loggedIN']) && isset($_SESSION['Privilegio'])){
+    if($_SESSION['Privilegio']=="1"){
+        header('Location: vista-profesor.php');
+        exit();
+    }elseif($_SESSION['Privilegio']=="3"){
+        header('Location: vista-departamento.php');
+        exit();
+    }
+   
+    
 }
 ?>
 <!DOCTYPE html>
@@ -89,33 +97,59 @@ if(isset($_SESSION['loggedIN'])){
                 if (user == "" || password == "") {
                     alert("Usuario o Contraseña incorrectos.")
                 } else {
-                    $.ajax(
-                        {
-                            url: 'php/login.php',
-                            method: 'POST',
-                            dataType: 'text',
-                            data: {
-                                login: 1,
-                                privilegio:1,
-                                userPHP: user,
-                                passwordPHP: password
-
-                            },
-                            success: function (response) {
-                                if(response=="1"){
-                                    location.reload(); 
-                                }else if(response=="2"){
-                                    alert("Usuario o contrasena incorrectos");
-                                }
-                                   
-                            },
-                            dataType: 'text'
-                        }
-                    );
+                    getprivilegio(user,password);
+                      
                 }
-
             });
         });
+        
+
+        function verificar(privilegio,user,password){
+            $.ajax({
+                url: 'php/login.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    login: 1,
+                    privilegio:privilegio,
+                    userPHP: user,
+                    passwordPHP: password
+                },
+                success: function (response) {
+    
+                    if(privilegio=="1"||privilegio=="3"){
+                        location.reload(); 
+                    }else {
+                        alert("Usuario o contrasena incorrectos");
+                    }          
+                },
+                dataType: 'text'
+            }
+        );
+
+        }
+
+        function getprivilegio(user,password){
+            $.ajax({
+              url: 'php/ajax_login.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getprivilegio',
+                    user: user,
+                    passwordPHP: password,
+                    }, success: function (response) {
+                        if(response.privilegio!="E"){
+                        verificar(response.privilegio,user,password);  
+                        }else {
+                            alert("Usuario o contrasena incorrectos");
+                        }
+                         
+                    }
+                });
+        }
+
+
     </script>
 </body>
 
