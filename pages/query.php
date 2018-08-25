@@ -26,7 +26,7 @@ while($data= $sql->fetch_array()){
 //getStudentGroup("20131066","6796045","Angenis","garcia");
 //getProfesorGroup("14785236985","5113378","Marcos","Jimenez");
 //checkGroupTime();
-
+echo getHorafin("16:00:00","02:00:00");
 
 
 function refresh($crawler,$client){
@@ -485,6 +485,15 @@ function totalhorasgrupo($time1,$time2){
         
         return $horas;
     }
+function getHorafin($Horaini,$HoraRecuperar){
+        $time1="00:00:00";
+        $time1 = strtotime($time1);
+        $Horaini = strtotime($Horaini);
+        $HoraRecuperar = strtotime($HoraRecuperar);
+        echo $totalHoras = round(abs($HoraRecuperar - $time1) / 3600,2),"\n";
+        $horadeAusencia = date('H:i:s', strtotime('+'.$totalHoras.' hours', $Horaini));
+        return $horadeAusencia;
+}
 function getaula(){
     $user='root';
     $pass='';

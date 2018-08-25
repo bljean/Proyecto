@@ -267,7 +267,7 @@ if(isset($_SESSION['loggedIN'])){
                 getaula(grupo.val(),HoraRecuperar.val(),fecha.val(),hora.val());
             }
             });
-            $("SaveBtn").on('click',function(){
+            $("#SaveBtn").on('click',function(){
             var periodo=$("#Periodo");
             var grupo = $("#ID");
             var fecharecupera=$("#fecharecuperar");
@@ -276,8 +276,8 @@ if(isset($_SESSION['loggedIN'])){
             var hora=$("#hora");
             var aula=$("#Aula");
             if (isNotEmpty(periodo) && isNotEmpty(grupo) && isNotEmpty(fecharecupera) && isNotEmpty(HoraRecuperar) && isNotEmpty(fecha) && isNotEmpty(hora)&& isNotEmpty(aula) ){
-                inGrupoRecuperar(periodo,grupo,fecharecupera,HoraRecuperar,fecha,hora,aula);
-            }
+                inGrupoRecuperar(periodo.val(),grupo.val(),fecharecupera.val(),HoraRecuperar.val(),fecha.val(),hora.val(),aula.val());
+            }else alert("No Entro");
                 
             });
             getExistingData(0, 50,NumCedula);
@@ -299,7 +299,7 @@ if(isset($_SESSION['loggedIN'])){
                 }
             });
         }
-        function  inGrupoRecuperar(periodo,grupo,fecharecupera,HoraRecuperar,fecha,hora,aula){
+        function inGrupoRecuperar(periodo,grupo,fecharecupera,HoraRecuperar,fecha,hora,aula){
             $.ajax({
                 url: 'php/ajax_RecuperacionDocentes.php',
                 method: 'POST',
@@ -313,7 +313,8 @@ if(isset($_SESSION['loggedIN'])){
                     fecha:fecha,
                     hora:hora,
                     aula: aula,
-                }, success: function (response) {  
+                }, success: function (response) { 
+                    console.log(response);
                    
                 }
             });

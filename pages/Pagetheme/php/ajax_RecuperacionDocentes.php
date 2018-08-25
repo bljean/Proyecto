@@ -60,7 +60,32 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         list($AnoAcad,$Numper) = explode('/', $periodo);
         list($CodCampus,$CodTema,$CodTP,$Numgrupo) = explode('-', $grupo);
         list($Sal_CodCampus,$Sal_CodEdif,$Sal_CodSalon) = explode('-', $aula);
-        $conn->query("INSERT INTO gruporecuperarhoras (CodTema,CodTP,NumGrupo,CodCampus,AnoAcad,NumPer,DiaSem,HoraInicio,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha_Recuperar,Fecha) VALUES ('$CodTema', '$CodTP', '$Numgrupo', '$CodCampus', '$AnoAcad', '$Numper', '$day', '', '', '', '', '', '', '')");
+        $horafin=getHorafin($hora,$HoraRecuperar);
+        $sqlgetgrupoRH=$conn->query("SELECT * FROM gruporecuperarhoras WHERE HoraInicio='$hora'AND CodTema='$CodTema' AND CodTP='$CodTP' AND NumGrupo='$Numper' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND Fecha='$fecha'");
+         if($sqlgetgrupoRH->num_rows == 0 ){
+            $conn->query("INSERT INTO gruporecuperarhoras (CodTema,CodTP,NumGrupo,CodCampus,AnoAcad,NumPer,DiaSem,HoraInicio,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha_Recuperar,Fecha) VALUES ('$CodTema', '$CodTP', '$Numgrupo', '$CodCampus', '$AnoAcad', '$Numper', '$day', '$hora', '$horafin', '$Sal_CodCampus', '$Sal_CodEdif', '$Sal_CodSalon', '$fecharecupera', '$fecha')");
+            $control="Solicitud Aceptada";
+         }else $control="Error en la Solicitud";
+         $jsonArray = array(
+             /*
+            'AnoAcad'=>$AnoAcad,
+            'Numper'=>$Numper,
+            'CodCampus'=>$CodCampus,
+            'CodTema'=>$CodTema,
+            'CodTP'=>$CodTP,
+            'Numgrupo'=>$Numgrupo,
+            'fecharecupera'=>$fecharecupera,
+            'HoraRecuperar'=>$HoraRecuperar,
+            'fecha'=>$fecha,
+            'hora'=>$hora,
+            'horafin'=>$horafin,
+            'Sal_CodCampus'=>$Sal_CodCampus,
+            'Sal_CodEdif'=>$Sal_CodEdif,
+            'Sal_CodSalon'=>$Sal_CodSalon,
+            'day'=>$day,*/
+            'control'=>$control,
+        );
+        exit(json_encode($jsonArray));
 
     }
     if($_POST['key'] == 'edit'){
@@ -91,7 +116,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $hora = $conn->real_escape_string($_POST['hora']);
         $day=getWeekday($fecha);
         list($CodCampus,$CodTema,$CodTP,$Numgrupo) = explode('-', $grupo);
-        $sqlgetaula = $conn->query("SELECT salondocencia.CodCampus as CodCampus,salondocencia.CodEdif as CodEdif,salondocencia.CodSalon as CodSalon FROM salondocencia LEFT JOIN horariogrupoactivo on salondocencia.CodCampus= horariogrupoactivo.Sal_CodCampus AND salondocencia.CodEdif= horariogrupoactivo.Sal_CodEdif AND salondocencia.CodSalon=horariogrupoactivo.Sal_CodSalon AND horariogrupoactivo.DiaSem=3 AND horariogrupoactivo.HoraInicio='$hora' WHERE horariogrupoactivo.CodTema is NULL");
+        $horafin=getHorafin($hora,$HoraRecuperar);
+        $sqlgetaula = $conn->query("SELECT salondocencia.CodCampus as CodCampus,salondocencia.CodEdif as CodEdif,salondocencia.CodSalon as CodSalon FROM salondocencia LEFT JOIN horariogrupoactivo on salondocencia.CodCampus= horariogrupoactivo.Sal_CodCampus AND salondocencia.CodEdif= horariogrupoactivo.Sal_CodEdif AND salondocencia.CodSalon=horariogrupoactivo.Sal_CodSalon AND horariogrupoactivo.DiaSem='$day' AND horariogrupoactivo.HoraInicio='$hora' AND horariogrupoactivo.Horafin='$horafin' WHERE horariogrupoactivo.CodTema is NULL");
         if($sqlgetaula->num_rows >0){
             while($data= $sqlgetaula->fetch_array()){
                $CodCampus =$data['CodCampus'];
@@ -142,8 +168,12 @@ function getWeekday($date) {
     return date('w', strtotime($date));
 }
 function getHorafin($Horaini,$HoraRecuperar){
+    $time1="00:00:00";
+    $time1 = strtotime($time1);
     $Horaini = strtotime($Horaini);
-    $horadeAusencia = date('H:i:s', strtotime('+10 hours', $Horaini));
+    $HoraRecuperar = strtotime($HoraRecuperar);
+    $totalHoras = round(abs($HoraRecuperar - $time1) / 3600,2);
+    $horadeAusencia = date('H:i:s', strtotime('+'.$totalHoras.' hours', $Horaini));
     return $horadeAusencia;
-    }
+}
 ?>
