@@ -26,7 +26,7 @@ while($data= $sql->fetch_array()){
 //getStudentGroup("20131066","6796045","Angenis","garcia");
 //getProfesorGroup("14785236985","5113378","Marcos","Jimenez");
 //checkGroupTime();
-getaula();
+
 
 
 function refresh($crawler,$client){

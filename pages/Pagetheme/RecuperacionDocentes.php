@@ -110,15 +110,39 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h2 class="modal-title">Dia a recuperar la clase</h2>
+                                                                <h2 class="modal-title">Recuperacion</h2>
                                                             </div>
                                                             <div class="modal-body">
+                                                            <div class="row">
+                                                                    <div class="col-md-4" style="text-align: left;">
+                                                                        <h4>Periodo Academico:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="Periodo..." id="Periodo" readonly="readonly">
+                                                                    </div>
+                                                                </div>
                                                                 <div class="row">
                                                                     <div class="col-md-4" style="text-align: left;">
                                                                         <h4>Grupo:</h4>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-4" style="text-align: left;">
+                                                                        <h4>Fecha a Recuperar:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="fecharecuperar..." id="fecharecuperar" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-4"style="text-align: left;">
+                                                                        <h4>Horas a Recuperar:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="horas..." id="HR" readonly="readonly">
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -151,16 +175,6 @@ if(isset($_SESSION['loggedIN'])){
                                                                             </div>
                                                                     </div>
                                                                 </div>
-
-
-                                                                <div class="row">
-                                                                    <div class="col-md-4"style="text-align: left;">
-                                                                        <h4>Horas a Recuperar:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <input type="text" class="form-control" placeholder="horas..." id="HR" readonly="readonly">
-                                                                    </div>
-                                                                </div>
                                                                 <div class="row">
                                                                     <div class="col-md-4"style="text-align: left;">
                                                                         <h4>Aula:</h4>
@@ -175,7 +189,7 @@ if(isset($_SESSION['loggedIN'])){
                                                                 
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" value="Save" class="btn btn-primary">
+                                                                <input type="button" id="SaveBtn" value="Save" class="btn btn-primary">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -232,12 +246,10 @@ if(isset($_SESSION['loggedIN'])){
             });
             $("#datetimepicker1").on("click", function (e) {
             $('#datetimepicker1').data("DateTimePicker").minDate(today);
+            //$('#datetimepicker2').data("DateTimePicker").minDate(today);
             });
             $('#datetimepicker2').datetimepicker({
                 format: 'HH:mm:ss'
-            });
-            $("#datetimepicker2").on("click", function (e) {
-            $('#datetimepicker2').data("DateTimePicker").minDate(today);
             });
         });
         $(document).ready(function () {
@@ -255,36 +267,22 @@ if(isset($_SESSION['loggedIN'])){
                 getaula(grupo.val(),HoraRecuperar.val(),fecha.val(),hora.val());
             }
             });
+            $("SaveBtn").on('click',function(){
+            var periodo=$("#Periodo");
+            var grupo = $("#ID");
+            var fecharecupera=$("#fecharecuperar");
+            var HoraRecuperar = $("#HR");
+            var fecha=$("#fecha");
+            var hora=$("#hora");
+            var aula=$("#Aula");
+            if (isNotEmpty(periodo) && isNotEmpty(grupo) && isNotEmpty(fecharecupera) && isNotEmpty(HoraRecuperar) && isNotEmpty(fecha) && isNotEmpty(hora)&& isNotEmpty(aula) ){
+                inGrupoRecuperar(periodo,grupo,fecharecupera,HoraRecuperar,fecha,hora,aula);
+            }
+                
+            });
             getExistingData(0, 50,NumCedula);
             
         });
-        function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
-             
-            var eID = document.getElementById("tiempo");
-            var dayVal = eID.options[eID.selectedIndex].value;
-            var daytxt = eID.options[eID.selectedIndex].text;
-            if(dayVal=='Tiempo'){
-                alert("Seleccione un tiempo");
-            }else{
-            $.ajax({
-                url: 'php/ajax_ConfiguracionGrupo.php',
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    key:'findDay',
-                    dayVal:dayVal,
-                    CodCampus:CodCampus,
-                    CodTema:CodTema,
-                    CodTP:CodTP,
-                    Numgrupo:Numgrupo,
-                    AnoAcad:AnoAcad,
-                    Numper:Numper,
-                }, success: function (response) {  
-                    $("#tableManager").modal('hide');
-                    $("div.Tiempo1 select").val("val2")
-                }
-            });}
-        }
         function getaula(grupo,HoraRecuperar,fecha,hora){
             $.ajax({
                 url: 'php/ajax_RecuperacionDocentes.php',
@@ -301,9 +299,30 @@ if(isset($_SESSION['loggedIN'])){
                 }
             });
         }
-        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper,Horas) {
+        function  inGrupoRecuperar(periodo,grupo,fecharecupera,HoraRecuperar,fecha,hora,aula){
+            $.ajax({
+                url: 'php/ajax_RecuperacionDocentes.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key:'inGrupoRecuperar',
+                    periodo: periodo,
+                    grupo:grupo,
+                    fecharecupera:fecharecupera,
+                    HoraRecuperar:HoraRecuperar,
+                    fecha:fecha,
+                    hora:hora,
+                    aula: aula,
+                }, success: function (response) {  
+                   
+                }
+            });
+        }
+        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper,Horas,FechaRecuperar,Periodo) {
             $("#ID").val(''+CodCampus+'-'+CodTema+'-'+CodTP+'-'+Numgrupo+'');
             $("#HR").val(Horas);
+            $("#fecharecuperar").val(FechaRecuperar);
+            $("#Periodo").val(Periodo);
             $("#tableManager").modal('show');
         }
 
