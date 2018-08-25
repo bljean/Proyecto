@@ -5,12 +5,10 @@ $user='root';
 $pass='';
 $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
-
+date_default_timezone_set('America/Santo_Domingo');
 
 if($_POST['key'] == 'getprofGroupData'){
-    
     $ID=$conn->real_escape_string($_POST['ID']);
-    
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
@@ -22,14 +20,7 @@ if($_POST['key'] == 'getprofGroupData'){
         }
 
         }
-    }      /*
-        foreach(getsemanagraf() as $fecha){  
-         if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
-        $diasemana[]=getWeekday($fecha);
-        $semanal[]=getestdiadia($fecha,$ID,$conn);
-    
-        }
-        }*/
+    }      
         
         foreach(getsemanagraf() as $fecha){  
             if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
@@ -40,7 +31,7 @@ if($_POST['key'] == 'getprofGroupData'){
            }
 
 
-        $materias1=getprofmateriasdiadia($ID,$conn);
+    $materias1=getprofmateriasdiadia($ID,$conn);
 
     $jsonArray = array(
         //'body'=> $response,  
@@ -52,7 +43,7 @@ if($_POST['key'] == 'getprofGroupData'){
    
 }
 
-
+/*
 if($_POST['key'] == 'getESTAsisProfGroupData'){ 
     $ID=$conn->real_escape_string($_POST['ID']);
     $sql=$conn->query("SELECT  contratodocencia.CodTema as CodTema, contratodocencia.CodTp as CodTp, contratodocencia.Numgrupo as Numgrupo, contratodocencia.CodCampus as CodCampus, contratodocencia.AnoAcad as AnoAcad, contratodocencia.NumPer as NumPer, asignatura.Nombre as Nombre, asignatura.NumCreditos as NumCreditos FROM contratodocencia INNER JOIN asignatura ON asignatura.CodTema=contratodocencia.CodTema AND asignatura.CodTp=contratodocencia.CodTp WHERE contratodocencia.NumCedula='$ID'");
@@ -77,8 +68,6 @@ if($_POST['key'] == 'getESTAsisProfGroupData'){
                 if($sql2->num_rows>0){
                 while($data2=$sql2->fetch_array()){
                     $cant  = $data2["cant"];
-                    
-                    
                       
                 }
             
@@ -96,17 +85,14 @@ if($_POST['key'] == 'getESTAsisProfGroupData'){
     exit(json_encode($jsonArray));
    
 }
-
+*/
 
 }
 
 
 function getprofmateriasdiadia($ID,$conn){
     $sqlprof=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from contratodocencia where NumCedula='$ID'");
-    if($sqlprof->num_rows >0){
-        $count1=0;
-        $count=0;
-        $calculo=0;    
+    if($sqlprof->num_rows >0){   
         while($data= $sqlprof->fetch_array()){
             $NumGrupo   = $data["Numgrupo"];
             $CodTema    = $data["CodTema"];

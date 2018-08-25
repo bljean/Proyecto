@@ -6,7 +6,7 @@ if(isset($_SESSION['loggedIN'])){
   header('Location: logdocentes.php');
   exit();
 }
-$NumCedula =$_SESSION['NumCedula'];
+$NumCedula=$_SESSION['NumCedula'];
 
 ?>
 <!DOCTYPE html>
@@ -153,9 +153,8 @@ $NumCedula =$_SESSION['NumCedula'];
             var ID= "<?php echo $NumCedula;  ?>";
             materias=[];
             semanal=[];
-            
             getprofGroupData(ID);
-            getESTAsisProfGroupData(ID);
+            //getESTAsisProfGroupData(ID);
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='1';
@@ -182,6 +181,7 @@ $NumCedula =$_SESSION['NumCedula'];
                 });
         }
         
+        /*
      function getESTAsisProfGroupData(ID){
             $.ajax({
               url: 'php/ajax_vista-profesor.php',
@@ -196,7 +196,7 @@ $NumCedula =$_SESSION['NumCedula'];
                     
                     }
                 });
-            }
+            }*/
         
      function grafico(){
         //estudiante
