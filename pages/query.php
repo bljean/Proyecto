@@ -25,7 +25,8 @@ while($data= $sql->fetch_array()){
 //getHorapresencia("16:00:00","18:00:00","ITT",562,"ST",1,2018,1);
 //getStudentGroup("20131066","6796045","Angenis","garcia");
 //getProfesorGroup("14785236985","5113378","Marcos","Jimenez");
-checkGroupTime();
+//checkGroupTime();
+getaula();
 
 
 function refresh($crawler,$client){
@@ -471,6 +472,8 @@ function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
        
     } 
 function totalhorasgrupo($time1,$time2){
+        $time1 = strtotime($time1);
+        $time2 = strtotime($time2);
         $totalHoras = round(abs($time2 - $time1) / 3600,2);
         $t = $totalHoras;
         $whole = floor($t);      
@@ -482,4 +485,41 @@ function totalhorasgrupo($time1,$time2){
         
         return $horas;
     }
+function getaula(){
+    $user='root';
+    $pass='';
+    $db='proyectofinal';
+    $conn= new mysqli('localhost',$user, $pass, $db);
+        $grupo = "ST-ITT-562-1";
+        $fecha = "2018-08-25";
+        $hora = "16:00:00";
+        $day=getWeekday($fecha);
+        list($CodCampus,$CodTema,$CodTP,$Numgrupo) = explode('-', $grupo);
+        $sqlgetaula = $conn->query("SELECT salondocencia.CodCampus as CodCampus,salondocencia.CodEdif as CodEdif,salondocencia.CodSalon as CodSalon FROM salondocencia LEFT JOIN horariogrupoactivo on salondocencia.CodCampus= horariogrupoactivo.Sal_CodCampus AND salondocencia.CodEdif= horariogrupoactivo.Sal_CodEdif AND salondocencia.CodSalon=horariogrupoactivo.Sal_CodSalon AND horariogrupoactivo.DiaSem=3 AND horariogrupoactivo.HoraInicio='$hora' WHERE horariogrupoactivo.CodTema is NULL");
+        if($sqlgetaula->num_rows >0){
+            while($data= $sqlgetaula->fetch_array()){
+               $CodCampus =$data['CodCampus'];
+               $CodEdif =$data['CodEdif'];
+               $CodSalon =$data['CodSalon'];
+               $sqlaula = $conn->query("SELECT * FROM gruporecuperarhoras WHERE Fecha='$fecha' AND Sal_CodCampus='$CodCampus' AND Sal_CodEdif='$CodEdif' AND Sal_CodSalon='$CodSalon' AND HoraInicio='$hora'");
+               if($sqlaula->num_rows > 0){
+               
+                     $aula='No Aula';
+                    
+              
+               }else{
+                    $aula =''.$CodCampus.'-'.$CodEdif.'-'.$CodSalon.'';
+                    break;
+                }
+            }
+
+        }else{
+            $aula='se jodio';
+                
+           
+        }
+        
+        echo $aula;
+    }
+
 ?>

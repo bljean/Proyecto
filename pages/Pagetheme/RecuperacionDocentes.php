@@ -25,6 +25,7 @@ if(isset($_SESSION['loggedIN'])){
     <link href="css/styletest.css" rel="stylesheet">
     <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -96,7 +97,7 @@ if(isset($_SESSION['loggedIN'])){
                     <!-- Website Overview -->
                     <div class="panel panel-default">
                         <div class="panel-heading tabla-color-bg">
-                            <h3 class="panel-title">Grupos</h3>
+                            <h3 class="panel-title">Grupos a Recuperar</h3>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -113,7 +114,7 @@ if(isset($_SESSION['loggedIN'])){
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="row">
-                                                                    <div class="col-md-2">
+                                                                    <div class="col-md-4" style="text-align: left;">
                                                                         <h4>Grupo:</h4>
                                                                     </div>
                                                                     <div class="col-md-6">
@@ -121,23 +122,60 @@ if(isset($_SESSION['loggedIN'])){
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                   
-                                                                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownhora" >
-                                                                    <select id="tiempo" class="btn btn-primary" type="button">
-                                                                        <option selected="selected" value="val2" >Dia</option>
-                                                                        <option value="Lunes">Lunes</option>
-                                                                        <option value="Martes">Martes</option>
-                                                                        <option value="Miercoles">Miercoles</option>
-                                                                        <option value="Jueves">Jueves</option>
-                                                                        <option value="Viernes">Viernes</option>
-                                                                        <option value="Sabado">Sabado</option>
-                                                                        </select>
+                                                                    <div class="col-md-4" style="text-align: left;">
+                                                                        <h4>Fecha:</h4>
+                                                                    </div>
+                                                                    <div class="col-sm-6" style="height: 34px;" >
+                                                                            <div class="form-group">
+                                                                                <div class='input-group date' id='datetimepicker1'>
+                                                                                    <input type='text' id="fecha" class="form-control" />
+                                                                                    <span class="input-group-addon">
+                                                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-4" style="text-align: left;">
+                                                                        <h4>Hora:</h4>
+                                                                    </div>
+                                                                    <div class="col-sm-6" style="height: 34px;" >
+                                                                            <div class="form-group">
+                                                                                <div class='input-group date' id='datetimepicker2'>
+                                                                                    <input type='text' id="hora" class="form-control" />
+                                                                                    <span class="input-group-addon">
+                                                                                        <span class="glyphicon glyphicon-time"></span>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="row">
+                                                                    <div class="col-md-4"style="text-align: left;">
+                                                                        <h4>Horas a Recuperar:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="horas..." id="HR" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-4"style="text-align: left;">
+                                                                        <h4>Aula:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="Aula..." id="Aula" readonly="readonly">
+                                                                    </div>
+                                                                    <div class="col-md-1"style="padding-left: 0px;" >
+                                                                        <input type="button" id="AulaBtn" value="Aula" class="btn btn-primary">
                                                                     </div>
                                                                 </div>
                                                                 
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" onclick="findDay()" value="Save" class="btn btn-primary">
+                                                                <input type="button" id="manageBtn" value="Save" class="btn btn-primary">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -149,11 +187,11 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="col-md-12">
                                                         <table class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
-                                                                <td>Grupo</td>
-                                                                <td>Nombre</td>
-                                                                <td>Cred</td>
-                                                                <td>Profesor</td>
                                                                 <td>Periodo</td>
+                                                                <td>Grupo</td>
+                                                                <td>Materia</td>
+                                                                <td>Fecha</td>
+                                                                <td>Horas a Recuperar</td>
                                                                 <td>Opciones</td>
                                                             </thead>
                                                             <tbody>
@@ -181,32 +219,50 @@ if(isset($_SESSION['loggedIN'])){
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <!-- page script -->
 
     <!--Script addNew -->
     <script type="text/javascript">
+        $(function () {
+            var today = new Date();
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY-MM-DD'
+            });
+            $("#datetimepicker1").on("click", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").minDate(today);
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'HH:mm:ss'
+            });
+            $("#datetimepicker2").on("click", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(today);
+            });
+        });
         $(document).ready(function () {
             var NumCedula = "<?php echo $NumCedula; ?>";
             $("#Logout").on('click', function () {
                 window.location = 'php/logout.php'
             });
-            $("#addNew").on('click', function () {
-                cleanModal();
-                $(".modal-title").html('Add New');
-                $("#tableManager").modal('show');
+            $("#AulaBtn").on('click', function () {
+            var HoraRecuperar = $("#HR");
+            var grupo = $("#ID");
+            var fecha=$("#fecha");
+            var hora=$("#hora");
 
+            if (isNotEmpty(HoraRecuperar) && isNotEmpty(grupo) && isNotEmpty(fecha) && isNotEmpty(hora) ) {
+                getaula(grupo.val(),HoraRecuperar.val(),fecha.val(),hora.val());
+            }
             });
             getExistingData(0, 50,NumCedula);
             
         });
-       
         function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
              
             var eID = document.getElementById("tiempo");
             var dayVal = eID.options[eID.selectedIndex].value;
             var daytxt = eID.options[eID.selectedIndex].text;
-            //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
-            
             if(dayVal=='Tiempo'){
                 alert("Seleccione un tiempo");
             }else{
@@ -228,30 +284,27 @@ if(isset($_SESSION['loggedIN'])){
                     $("div.Tiempo1 select").val("val2")
                 }
             });}
-            }
-
-        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+        }
+        function getaula(grupo,HoraRecuperar,fecha,hora){
             $.ajax({
-                url: 'php/ajax_ConfiguracionGrupo.php',
+                url: 'php/ajax_RecuperacionDocentes.php',
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    key: 'edit',
-                    CodCampus:CodCampus,
-                    CodTema:CodTema,
-                    CodTP:CodTP,
-                    Numgrupo:Numgrupo,
-                    AnoAcad:AnoAcad,
-                    Numper:Numper,
-                }, success: function (response) {
-                    $("#ID").val(response.Grupo);
-                    $("#CardNumber").val(response.Tardanza);
-                    //alert('findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
-                    $("#manageBtn").attr('onclick','findDay(\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
-                    $("div.Tiempo1 select").val("val2")
-                    $("#tableManager").modal('show'); 
+                    key:'getaula',
+                    grupo:grupo,
+                    HoraRecuperar:HoraRecuperar,
+                    fecha:fecha,
+                    hora:hora,
+                }, success: function (response) {  
+                   $("#Aula").val(response.aula);
                 }
             });
+        }
+        function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper,Horas) {
+            $("#ID").val(''+CodCampus+'-'+CodTema+'-'+CodTP+'-'+Numgrupo+'');
+            $("#HR").val(Horas);
+            $("#tableManager").modal('show');
         }
 
         function getExistingData(start, limit,NumCedula) {
@@ -302,6 +355,14 @@ if(isset($_SESSION['loggedIN'])){
 
                 }
             });
+        }
+        function isNotEmpty(caller) {
+            if (caller.val() == '') {
+                caller.css('border', '1px solid red');
+                return false;
+            } else caller.css('border', '');
+
+            return true;
         }
         
         

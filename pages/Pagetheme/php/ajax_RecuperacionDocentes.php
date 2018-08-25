@@ -12,7 +12,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $start = $conn->real_escape_string($_POST['start']);
         $limit = $conn->real_escape_string($_POST['limit']);
         $NumCedula = $conn->real_escape_string($_POST['NumCedula']);
-        $sql = $conn->query("SELECT contratodocencia.CodTema AS CodTema , contratodocencia.CodTp as CodTP, contratodocencia.Numgrupo as Numgrupo , contratodocencia.CodCampus as CodCampus , contratodocencia.AnoAcad as AnoAcad , contratodocencia.NumPer as NumPer , asignatura.Nombre as Nombre , asignatura.NumCreditos as NumCreditos, trabajadores.nombre as nombret, trabajadores.apellido_1 as apellido_1 FROM contratodocencia INNER JOIN gruporecuperar ON gruporecuperar.CodTema=contratodocencia.CodTema AND gruporecuperar.CodTp=contratodocencia.CodTp AND gruporecuperar.NumGrupo=contratodocencia.Numgrupo AND gruporecuperar.CodCampus=contratodocencia.CodCampus AND gruporecuperar.AnoAcad =contratodocencia.AnoAcad AND gruporecuperar.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='$NumCedula'  LIMIT $start,$limit");
+        $sql = $conn->query("SELECT contratodocencia.CodTema AS CodTema , contratodocencia.CodTp as CodTP, contratodocencia.Numgrupo as Numgrupo , contratodocencia.CodCampus as CodCampus , contratodocencia.AnoAcad as AnoAcad , contratodocencia.NumPer as NumPer , asignatura.Nombre as Nombre , asignatura.NumCreditos as NumCreditos, trabajadores.nombre as nombret, trabajadores.apellido_1 as apellido_1,gruporecuperar.Fecha_Recuperar as Fecha_Recuperar,gruporecuperar.Horas as Horas FROM contratodocencia INNER JOIN gruporecuperar ON gruporecuperar.CodTema=contratodocencia.CodTema AND gruporecuperar.CodTp=contratodocencia.CodTp AND gruporecuperar.NumGrupo=contratodocencia.Numgrupo AND gruporecuperar.CodCampus=contratodocencia.CodCampus AND gruporecuperar.AnoAcad =contratodocencia.AnoAcad AND gruporecuperar.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='$NumCedula'  LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
@@ -26,16 +26,18 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 $apellido   = $data["apellido_1"];
                 $Nombre   = $data["Nombre"];
                 $NumCreditos   = $data["NumCreditos"];
+                $Fecha_Recuperar= $data["Fecha_Recuperar"];
+                $Horas=$data["Horas"];
                 $response .='
                 <tr>
-                <td>'.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'</td>
-                <td>'. $Nombre.'</td>
-                <td>'. $NumCreditos.'</td>
-                <td>'.$nombret.' '.$apellido.'</td>
                 <td>'.$AnoAcad.'/'.$Numper.'</td>
+                <td>'.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'</td>
+                <td>'.$Nombre.'</td>
+                <td>'.$Fecha_Recuperar.'</td>
+                <td>'.$Horas.'</td>
                 <td>
                 <div class="col-md-12">
-                <input type="button" onclick="edit(\''.$CodCampus.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$Numgrupo.'\',\''.$AnoAcad.'\',\''.$Numper.'\')" value="Recuperar" class="btn btn-primary">
+                <input type="button" onclick="edit(\''.$CodCampus.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$Numgrupo.'\',\''.$AnoAcad.'\',\''.$Numper.'\',\''.$Horas.'\')" value="Recuperar" class="btn btn-primary">
                 </div> 
                 </td>
                 </tr>
@@ -68,7 +70,41 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         );
         exit(json_encode($jsonArray));
     }
-    
+    if($_POST['key'] == 'getaula'){
+        $grupo = $conn->real_escape_string($_POST['grupo']);
+        $HoraRecuperar = $conn->real_escape_string($_POST['HoraRecuperar']);
+        $fecha = $conn->real_escape_string($_POST['fecha']);
+        $hora = $conn->real_escape_string($_POST['hora']);
+        $day=getWeekday($fecha);
+        list($CodCampus,$CodTema,$CodTP,$Numgrupo) = explode('-', $grupo);
+        $sqlgetaula = $conn->query("SELECT salondocencia.CodCampus as CodCampus,salondocencia.CodEdif as CodEdif,salondocencia.CodSalon as CodSalon FROM salondocencia LEFT JOIN horariogrupoactivo on salondocencia.CodCampus= horariogrupoactivo.Sal_CodCampus AND salondocencia.CodEdif= horariogrupoactivo.Sal_CodEdif AND salondocencia.CodSalon=horariogrupoactivo.Sal_CodSalon AND horariogrupoactivo.DiaSem=3 AND horariogrupoactivo.HoraInicio='$hora' WHERE horariogrupoactivo.CodTema is NULL");
+        if($sqlgetaula->num_rows >0){
+            while($data= $sqlgetaula->fetch_array()){
+               $CodCampus =$data['CodCampus'];
+               $CodEdif =$data['CodEdif'];
+               $CodSalon =$data['CodSalon'];
+               $sqlaula = $conn->query("SELECT * FROM gruporecuperarhoras WHERE Fecha='$fecha' AND Sal_CodCampus='$CodCampus' AND Sal_CodEdif='$CodEdif' AND Sal_CodSalon='$CodSalon' AND HoraInicio='$hora'");
+               if($sqlaula->num_rows > 0){
+               
+                     $aula='No Aula';
+                    
+              
+               }else{
+                    $aula =''.$CodCampus.'-'.$CodEdif.'-'.$CodSalon.'';
+                    break;
+                }
+            }
+
+        }else{
+            $aula='se jodio';
+        }
+        $jsonArray = array(
+            'aula'=>$aula,
+        );
+        
+        exit(json_encode($jsonArray));
+
+    }
     if($_POST['key'] == 'findDay'){
         $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
         $CodTema = $conn->real_escape_string($_POST['CodTema']);
@@ -87,5 +123,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     }
 
   
+}
+function getWeekday($date) {
+    return date('w', strtotime($date));
 }
 ?>
