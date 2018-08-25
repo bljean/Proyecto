@@ -35,20 +35,33 @@ if($_POST['key'] == 'getestgrupo'){
    
 }
 
-if($_POST['key'] == 'asistencia'){
-
-    //$sql = $conn->query("SELECT ID, Name, CardNumber FROm student LIMIT $start,$limit");
-    $sql = $conn->query("SELECT");
+if($_POST['key'] == 'asistente'){
+    $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
+    $CodTema = $conn->real_escape_string($_POST['CodTema']);
+    $CodTP = $conn->real_escape_string($_POST['CodTP']);
+    $Numgrupo = $conn->real_escape_string($_POST['Numgrupo']);
+    $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
+    $Numper = $conn->real_escape_string($_POST['Numper']);
+    $ProfID = $conn->real_escape_string($_POST['ProfID']);
+    $sql = $conn->query("SELECT  DISTINCT trabajadores.nombre as nombre, trabajadores.NumCedula as NumCedula, trabajadores.apellido_1 as apellido FROM contratodocencia inner JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE CodTema='$CodTema' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
     if($sql->num_rows >0){
         $response ="";
             while($data= $sql->fetch_array()){
-                $response .='
-             
-                ';
+                if($ProfID!=$data["NumCedula"]){
+                    $response .='
+                    <option value="'.$data["NumCedula"].'">'.$data["nombre"].' '.$data["apellido"].'</option>
+                    ';
+                }
+               
             }
         }
         
-        exit($response);
+        $grupo=''.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'';
+        $jsonArray = array(
+            'Grupo'=>$grupo,
+            'trabajadores'=>$response ,
+        );
+        exit(json_encode($jsonArray));
    
 }
 

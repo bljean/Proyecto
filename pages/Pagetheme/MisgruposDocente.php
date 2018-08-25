@@ -170,6 +170,41 @@ if(isset($_SESSION['loggedIN'])){
               </div>
             </div>
           </div>
+          <div id="tablaasistente" class="modal fade">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Asistente</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Grupo:</h4>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" placeholder="ID..." id="GrupoAsistente" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <h4>Profesores:</h4>
+                    </div>
+                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownasistente">
+                      <select id="profasis" class="btn btn-default" type="button">
+                        <option selected="selected" value="val2">Profesores</option>
+                        
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+                
+                <div class="modal-footer">
+                <input type="button" id="manageBtn"  value="Save" class="btn btn-primary">
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- Website Overview -->
           <div class="panel panel-default">
             <div class="panel-heading tabla-color-bg">
@@ -207,9 +242,16 @@ if(isset($_SESSION['loggedIN'])){
 
                         </tbody>
                       </table>
-                      <div class="col-md-1 col-md-offset-11 ">
+                      <div class="row"  >
+                        <div align="right" class="asistente"> 
+                        <button class="btn btn-primary" onclick="asistente()" id="Asistente" type="button" style="pa">Asistente</button>
+                    
                         <button class="btn btn-primary" onclick="edit()" id="configurar" type="button" style="pa">Configurar</button>
+                        </div>
                       </div>
+
+
+
                     </div>
 
                   </div>
@@ -268,6 +310,7 @@ if(isset($_SESSION['loggedIN'])){
           //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
           $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
+          $("#Asistente").attr('onclick','asistente(\''+ProfID+'\',\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
     }
@@ -355,6 +398,7 @@ if(isset($_SESSION['loggedIN'])){
           cleartable(dTable);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
           $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
+          $("#Asistente").attr('onclick','asistente(\''+ProfID+'\',\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
     }
@@ -520,7 +564,32 @@ if(isset($_SESSION['loggedIN'])){
             }
         });
     }
+    
+    function asistente(ProfID,CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+        $.ajax({
+            url: 'php/ajax_misgruposdocentes.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                key: 'asistente',
+                ProfID:ProfID,
+                CodCampus:CodCampus,
+                CodTema:CodTema,
+                CodTP:CodTP,
+                Numgrupo:Numgrupo,
+                AnoAcad:AnoAcad,
+                Numper:Numper,
+            }, success: function (response) {
+              $("#GrupoAsistente").val(response.Grupo);
+              $("#profasis").html("");
+              $("#profasis").html('<option selected="selected" value="val2">Profesores</option>');
+              $("#profasis").append(response.trabajadores);
 
+              $("#tablaasistente").modal('show');
+               
+            }
+        });
+    }
 
 
 
