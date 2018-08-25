@@ -78,109 +78,102 @@ $nombre=$_POST['nombre'];
   </section>
 
   <section id="main">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-        <div id="tableManager" class="modal fade">
-           <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h2 class="modal-title">Editar</h2>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-md-2">
-                      <h4>Fecha:</h4>
-                    </div>
-                    <div class="col-md-10">
-                      <input type="text" class="form-control"  id="fecha" readonly="readonly">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <h4>Horas:</h4>
-                    </div>
-                    <div class="col-md-10">
-                      <input type="text" class="form-control"  id="horas">
-                    </div>
-                  </div>
-                  <input type="hidden" id="editRowID" value="0">
-                  </div>
-                  <div class="modal-footer">
-                    <input type="hidden" id="rowid">
-                    <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-primary">
-                  </div>
-                </div>
-            </div>
-          </div>
-          <!-- Website Overview -->
-          <div class="panel panel-default">
-            <div class="panel-heading tabla-color-bg">
-              <h3 class="panel-title">Historial de Asistencias</h3>
-            </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="well dash-box"style=" text-align: center;">
-                    <h4><?php echo $ID?> <?php echo $nombre?></h4>
-                    <h4>Grupos:</h4>
-                    <ul id="pillsbodys" class="nav nav-pills nav-stacked pillsbody">
-                    
-                    </ul>
-                  </div>
-                </div>
-                <!-- table asistencias-->
-                <div class="col-md-8">
-                  <div class="well dash-box" style=" text-align: center;" >
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <h4 id="tituloGrupo"></h4>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Website Overview -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading tabla-color-bg">
+                            <h3 class="panel-title">Mis Grupos</h3>
                         </div>
-                      </div>
-                      <table class="table table-striped table-hover tableAsis">
-                        <thead>
-                          <th>Fechas</th>
-                          <th>Horas presente</th>
-                          <th>Opciones</th>
-                        </thead>
-                        <tbody class="tableAsisBody">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="well dash-box">
+                                        <div class="panel-body">
+                                            <!--Add new and Edit -->
+                                            <div class="container-fluid">
+                                                <div id="tableManager" class="modal fade">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h2 class="modal-title">Nuevo</h2>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Usuario:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Nombre:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Apellido:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <h4>Tarjeta:</h4>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <input type="button" id="autoRecordCardBtn" onclick="autoRecordCard()" value="Registro Automático" class="btn btn-primary">
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" id="editRowID" value="0">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--/Add new and Edit -->
 
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <!--/table asistencias-->
-                   <!-- estadisticas-->
-                  <div class="well dash-box" style=" text-align: left;">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <h4>Horas presente:</h4>
-                      </div>
-                      <div class="col-md-2">
-                        <h4>6/70</h4>
-                      </div>
-                      <div class="col-md-2">
-                          <h4>Horas faltadas:</h4>
-                        </div>
-                        <div class="col-md-2">
-                          <h4>3/16</h4>
-                        </div>
-                        <div class="col-md-2">
-                            <h4>Excusas:</h4>
-                          </div>
-                          <div class="col-md-2">
-                            <h4>1/3</h4>
-                          </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                                                <!--Table Mysql -->
+                                                <div class="row">
+                                                    <div class="col-md-12" >
+                                                        <table class="table table-hover table-bordered" style="background-color:white ">
+                                                            <thead>
+                                                              <td>Grupo</td>
+                                                                <td>Nombre</td>
+                                                                <td>Cred</td>
+                                                                <td>Profesor</td>
+                                                                <td>Periodo</td>
+                                                                <td>Opciones</td>
+                                                            </thead>
+                                                            <tbody>
 
-              <!-- Latest Users -->
-            </div>
-          </div>
-        </div>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/Table Mysql -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Latest Users -->
+                        </div>
+                    </div>
+                </div>
   </section>
   <!-- Modals -->
   <!-- Bootstrap core JavaScript
@@ -192,12 +185,65 @@ $nombre=$_POST['nombre'];
   <script type="text/javascript">
     $(document).ready(function () {
       dataindex=0;
-      var ID = "<?php echo $ID; ?>";
-      getGroupData(ID);
+      var ID = "75985203021";
+      
       $("#Logout").on('click', function () {
             window.location= 'php/logout.php'
       });
+      getExistingData(0, 50,ID);
       });
+
+     function getExistingData(start, limit,ID) {
+            $.ajax({
+                url: 'php/ajax_Misgruposdepartamento.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getExistingData',
+                    start: start,
+                    limit: limit,
+                    ID:ID,
+                }, success: function (response) {
+                    if (response != "reachedMax") {
+                        $('tbody').append(response);
+                        start += limit;
+                        getExistingData(start, limit, ID);
+                    } else {
+
+                        $(".table").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });
+                    }
+
+                }
+            });
+        }
+        
+  
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");
@@ -348,6 +394,7 @@ $nombre=$_POST['nombre'];
                     }
                 });
       }
+
 
 </script>
 </body>
