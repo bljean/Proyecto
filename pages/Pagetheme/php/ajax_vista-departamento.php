@@ -7,17 +7,17 @@ $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
 
 if($_POST['key'] == 'diasemana')
-{   
+{   $ID=$conn->real_escape_string($_POST['ID']);
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
            
            
             
-            if(getCountprofesoresDia($data["DiaSem"],$conn)!=-1){
+            if(getCountprofesoresDia($data["DiaSem"],$conn,$ID)!=-1){
                 $response []= $data["NombreLargo"];
-                $count []= getCountprofesoresDia($data["DiaSem"],$conn);
-                $count1 []= getCountestudiantedia($data["DiaSem"],$conn);
+                $count []= getCountprofesoresDia($data["DiaSem"],$conn,$ID);
+                $count1 []= getCountestudiantedia($data["DiaSem"],$conn,$ID);
             }
             //echo "\n", getCountprofesoresDia($data["DiaSem"],$conn),"\n";
     
@@ -32,8 +32,14 @@ if($_POST['key'] == 'diasemana')
         
 }  
 }
-function getCountprofesoresDia($dia,$conn){
-    $sqlGDia=$conn->query("SELECT CodTema, CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia'");
+function getCountprofesoresDia($dia,$conn,$ID){
+    $sqldepartamento = $conn->query("SELECT CodTema FROM contratodirector WHERE NumCedula='$ID'");
+        if($sqldepartamento->num_rows >0){
+        while($data= $sqldepartamento->fetch_array()){
+            $CodTema   = $data["CodTema"];
+       
+
+    $sqlGDia=$conn->query("SELECT  CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia' AND CodTema='$CodTema'");
     $sqlcounGDia=$conn->query("SELECT  COUNT(*)  as can FROM horariogrupoactivo WHERE DiaSem='$dia'");
     $canGrupDia=0;
     $canProfDia=0;
@@ -42,7 +48,6 @@ function getCountprofesoresDia($dia,$conn){
             $canGrupDia=$data["can"];
         }
         while($data=$sqlGDia->fetch_array()){
-            $CodTema=$data["CodTema"];
             $CodTP=$data["CodTP"];
             $NumGrupo=$data["NumGrupo"];
             $CodCampus=$data["CodCampus"];
@@ -65,17 +70,24 @@ function getCountprofesoresDia($dia,$conn){
        
         
         return $multiplicarl;
-        }else{return $multiplicarl=-1;}       
+        }else{return $multiplicarl=-1;}  
+    
+    }
+    }     
 }
 
 
-function getCountestudiantedia($dia,$conn){
-    $sqlGDia=$conn->query("SELECT CodTema, CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia'");
+function getCountestudiantedia($dia,$conn,$ID){
+    $sqldepartamento = $conn->query("SELECT CodTema FROM contratodirector WHERE NumCedula='$ID'");
+        if($sqldepartamento->num_rows >0){
+        while($data= $sqldepartamento->fetch_array()){
+        $CodTema   = $data["CodTema"];
+
+    $sqlGDia=$conn->query("SELECT  CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia'AND CodTema='$CodTema'");
     $totalestudianteporgrupo=0;
     $totalasistenciaporgrupo=0;
     if($sqlGDia->num_rows>0){
         while($data=$sqlGDia->fetch_array()){
-            $CodTema=$data["CodTema"];
             $CodTP=$data["CodTP"];
             $NumGrupo=$data["NumGrupo"];
             $CodCampus=$data["CodCampus"];
@@ -92,7 +104,10 @@ function getCountestudiantedia($dia,$conn){
 
         } else{$calculo=0;
         } 
-          return $calculo;     
+          return $calculo;    
+        
+        }
+    }
 }
 
 function contarestudianteporgrupo($CodTema,$CodTP,$NumGrupo,$CodCampus,$AnoAcad,$NumPer,$conn){

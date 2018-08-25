@@ -69,29 +69,22 @@ $conn= new mysqli('localhost',$user, $pass, $db);
 
         }
 
-    }
+        }
 
 
     }
     
-    if($_POST['key'] == 'edit'){
-        $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
-        $CodTema = $conn->real_escape_string($_POST['CodTema']);
-        $CodTP = $conn->real_escape_string($_POST['CodTP']);
-        $Numgrupo = $conn->real_escape_string($_POST['Numgrupo']);
-        $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
-        $Numper = $conn->real_escape_string($_POST['Numper']);
-        $sql = $conn->query("SELECT PTLimiteH FROM configuraciongrupo WHERE CodTema='$CodTema' AND CodTp='$CodTP' AND NumGrupo='$Numgrupo' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
-        $tiempo=0;
+    if($_POST['key'] == 'getcedula'){
+        $ID = $conn->real_escape_string($_POST['ID']);
+        $sql = $conn->query("SELECT NumCedula FROM users WHERE username='$ID'");
         if($sql->num_rows >0){
-            while($data= $sql->fetch_array()){
-                $tiempo= $data['PTLimiteH'];
-            }
+        while($data= $sql->fetch_array()){
+            $NumCedula   = $data["NumCedula"];
         }
-        $grupo=''.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'';
+        }
         $jsonArray = array(
-            'Grupo'=>$grupo,
-            'Tardanza'=>$tiempo ,
+            'NumCedula'=>$NumCedula,
+            
         );
         exit(json_encode($jsonArray));
     }

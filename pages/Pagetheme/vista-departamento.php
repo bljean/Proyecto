@@ -6,7 +6,7 @@ if(isset($_SESSION['loggedIN'])){
   header('Location: logadmin.php');
   exit();
 }
-$id=$_SESSION['user'];
+$ID=$_SESSION['user'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,8 +150,8 @@ $id=$_SESSION['user'];
             semana=[];
             asistenciap=[];
             asistenciae=[];
-            diasemana();
-            var ID = "<?php echo $id; ?>";
+            var ID = "<?php echo $ID; ?>";
+            getcedula(ID);
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='1';
@@ -161,14 +161,28 @@ $id=$_SESSION['user'];
             });
         });
 
+    function getcedula(ID){
+      $.ajax({
+              url: 'php/ajax_Misgruposdepartamento.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getcedula',
+                    ID: ID,
+                    }, success: function (response) {
+                        diasemana(response.NumCedula);
+                    }
+                });
+      }
 
-     function diasemana(){
+     function diasemana(ID){
                 $.ajax({
-                  url: 'php/ajax_vista-administrador.php',
+                  url: 'php/ajax_vista-departamento.php',
                   method: 'POST',
                   dataType: 'json',
                    data: {
                             key: 'diasemana',
+                            ID:ID,
                             }, success: function (response) {
                                 //alert(response.count);
                                 semana =response.body;
