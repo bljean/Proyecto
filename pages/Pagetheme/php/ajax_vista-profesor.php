@@ -52,6 +52,52 @@ if($_POST['key'] == 'getprofGroupData'){
    
 }
 
+
+if($_POST['key'] == 'getESTAsisProfGroupData'){ 
+    $ID=$conn->real_escape_string($_POST['ID']);
+    $sql=$conn->query("SELECT  contratodocencia.CodTema as CodTema, contratodocencia.CodTp as CodTp, contratodocencia.Numgrupo as Numgrupo, contratodocencia.CodCampus as CodCampus, contratodocencia.AnoAcad as AnoAcad, contratodocencia.NumPer as NumPer, asignatura.Nombre as Nombre, asignatura.NumCreditos as NumCreditos FROM contratodocencia INNER JOIN asignatura ON asignatura.CodTema=contratodocencia.CodTema AND asignatura.CodTp=contratodocencia.CodTp WHERE contratodocencia.NumCedula='$ID'");
+    if($sql->num_rows>0){ 
+        while($data=$sql->fetch_array()){
+            $CodTema   = $data["CodTema"];
+            $CodTP   = $data["CodTp"];
+            $Numgrupo   = $data["Numgrupo"];
+            $CodCampus = $data["CodCampus"];
+            $AnoAcad   = $data["AnoAcad"];
+            $Numper   = $data["NumPer"];  
+            $asignombre= $data["Nombre"];
+            $NumCreditos= $data["NumCreditos"];
+            $calcular[]=$NumCreditos*3;
+
+           $sql1=$conn->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+            if($sql1->num_rows>0){
+             while($data1=$sql1->fetch_array()){
+                $Matricula   = $data1["Matricula"];
+               
+            $sql2=$conn->query("SELECT COUNT(*) as cant FROM asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND ID='$Matricula'");    
+                if($sql2->num_rows>0){
+                while($data2=$sql2->fetch_array()){
+                    $cant  = $data2["cant"];
+                    
+                    
+                      
+                }
+            
+                }
+                  
+            }
+            }
+            
+        }
+    }   
+    $jsonArray = array(
+        'ausenciaest'=> $calcular, 
+        //'ausenciamatricula'=>$paso3,
+    );
+    exit(json_encode($jsonArray));
+   
+}
+
+
 }
 
 
