@@ -51,12 +51,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 <td>'.$nombreprof.' '.$apellido.'</td>
                 <td>'.$AnoAcad.'/'.$Numper.'</td>
                 <td>
-                <form method="POST" action="Asistencias.php">
-                        <input type="hidden" name="ID" value="'.$data["NumCedula"].'">
-                        <input type="hidden" name="privilegio" value="2">
-                        <input type="hidden" name="nombre" value="'.$data["nombre"].' '.$data["apellido_1"].'">
-                        <input type="submit" value="Asistencias"  class="btn btn-primary">
-                    </form> 
+                <input type="button" onclick="asistencia(\''.$NumCedula.'\',\''.$Numgrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$Numper.'\')" value="Asistencia" class="btn btn-primary" id="asistencia">
                 </td>
                 </tr>
                  
