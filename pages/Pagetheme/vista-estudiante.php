@@ -73,7 +73,7 @@ $id=$_SESSION['user'];
         <section id="breadcrumb">
             <div class="container-fluid">
                 <ol class="breadcrumb">
-                    <li class="active"> <?php echo $id ?> </a>
+                    <li class="active"> Dashboard </a>
                     </li>
                 </ol>
             </div>
