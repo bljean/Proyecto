@@ -43,7 +43,7 @@ if($_POST['key'] == 'getprofGroupData'){
    
 }
 
-/*
+
 if($_POST['key'] == 'getESTAsisProfGroupData'){ 
     $ID=$conn->real_escape_string($_POST['ID']);
     $sql=$conn->query("SELECT  contratodocencia.CodTema as CodTema, contratodocencia.CodTp as CodTp, contratodocencia.Numgrupo as Numgrupo, contratodocencia.CodCampus as CodCampus, contratodocencia.AnoAcad as AnoAcad, contratodocencia.NumPer as NumPer, asignatura.Nombre as Nombre, asignatura.NumCreditos as NumCreditos FROM contratodocencia INNER JOIN asignatura ON asignatura.CodTema=contratodocencia.CodTema AND asignatura.CodTp=contratodocencia.CodTp WHERE contratodocencia.NumCedula='$ID'");
@@ -57,38 +57,85 @@ if($_POST['key'] == 'getESTAsisProfGroupData'){
             $Numper   = $data["NumPer"];  
             $asignombre= $data["Nombre"];
             $NumCreditos= $data["NumCreditos"];
-            $calcular[]=$NumCreditos*3;
-
+           
+            
            $sql1=$conn->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
             if($sql1->num_rows>0){
              while($data1=$sql1->fetch_array()){
                 $Matricula   = $data1["Matricula"];
-               
-            $sql2=$conn->query("SELECT COUNT(*) as cant FROM asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND ID='$Matricula'");    
+                $grupo[]= getgrupomatricula($CodTema,$CodTP,$conn);
+                $calcular[]=$NumCreditos*3;
+            $sql2=$conn->query("SELECT COUNT(*) as cant FROM asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND ID='$Matricula'AND Presencia='A'");    
                 if($sql2->num_rows>0){
                 while($data2=$sql2->fetch_array()){
                     $cant  = $data2["cant"];
-                      
+                    $canti[]=$cant*$horas[]= cantidadhoras($CodTema, $CodTP,$Numgrupo,$CodCampus,$AnoAcad,$Numper,$Matricula,$conn);;
+                    $cantidadmatricula[]=$Matricula;
+                    
+                    
                 }
             
-                }
-                  
+                }   
             }
             }
             
         }
     }   
+
+    for ($i = 0; $i <= (count($canti) -1); $i++) {
+        $temp[$i] = ($canti[$i] / $calcular[$i])*100;
+        
+        }
+
+        rsort($temp); 
+          
+        
+    
     $jsonArray = array(
-        'ausenciaest'=> $calcular, 
-        //'ausenciamatricula'=>$paso3,
+        'ausenciaest'=> $calcular,
+        'canti'=> $canti,
+        'ausenciamatricula'=>$temp,
+        //'fatality'=>$mayoramenor,
+        
     );
     exit(json_encode($jsonArray));
    
 }
-*/
+
 
 }
 
+
+
+function totalhorasgrupo($time1,$time2){
+    $time1=strtotime($time1);
+    $time2=strtotime($time2);
+    $totalHoras = round(abs($time2 - $time1) / 3600,2);
+    return $totalHoras;
+}
+
+function getgrupomatricula($CodTema,$CodTP,$conn){
+    $sql=$conn->query("SELECT Nombre FROM asignatura WHERE CodTema='$CodTema' AND CodTp='$CodTP'");    
+                if($sql->num_rows>0){
+                while($data=$sql->fetch_array()){
+                 $Nombre   = $data["Nombre"];
+                }
+            }
+            return $Nombre;
+}
+
+function cantidadhoras($CodTema, $CodTP,$Numgrupo,$CodCampus,$AnoAcad,$Numper,$Matricula,$conn){
+    $sql2=$conn->query("SELECT Horaini , Horafin  FROM asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus'  AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND ID='$Matricula'");    
+    if($sql2->num_rows>0){
+    while($data=$sql2->fetch_array()){
+        $Horaini   = $data["Horaini"];
+        $Horafin   = $data["Horafin"];
+        $hora= totalhorasgrupo($Horaini,$Horafin);
+    }
+    }
+    return $hora;
+
+}
 
 function getprofmateriasdiadia($ID,$conn){
     $sqlprof=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from contratodocencia where NumCedula='$ID'");

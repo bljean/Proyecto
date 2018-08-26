@@ -5,7 +5,7 @@ $user='root';
 $pass='';
 $db='proyectofinal';
 $conn= new mysqli('localhost',$user, $pass, $db);
-
+date_default_timezone_set('America/Santo_Domingo');
 
 if($_POST['key'] == 'getEstGroupData'){
     

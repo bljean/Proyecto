@@ -154,7 +154,8 @@ $NumCedula=$_SESSION['NumCedula'];
             materias=[];
             semanal=[];
             getprofGroupData(ID);
-            //getESTAsisProfGroupData(ID);
+            grafico();
+            getESTAsisProfGroupData(ID);
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='1';
@@ -176,12 +177,12 @@ $NumCedula=$_SESSION['NumCedula'];
                        //    materias=response.materias1;
                         //semanal=response.semanal;
                         grafico();
-                        grafico1();
+                        //grafico1();
                     }
                 });
         }
         
-        /*
+        
      function getESTAsisProfGroupData(ID){
             $.ajax({
               url: 'php/ajax_vista-profesor.php',
@@ -191,12 +192,13 @@ $NumCedula=$_SESSION['NumCedula'];
                     key: 'getESTAsisProfGroupData',
                     ID: ID,
                     }, success: function (response) {
-                        //alert(response.ausenciaest);
-                      //  alert(response.ausenciamatricula);
-                    
+                        alert(response.ausenciaest);
+                        alert(response.canti);
+                       alert(response.ausenciamatricula);
+                        //alert(response.fatality);
                     }
                 });
-            }*/
+            }
         
      function grafico(){
         //estudiante
