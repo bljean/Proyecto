@@ -12,7 +12,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         $start = $conn->real_escape_string($_POST['start']);
         $limit = $conn->real_escape_string($_POST['limit']);
         $NumCedula = $conn->real_escape_string($_POST['NumCedula']);
-        $sql = $conn->query("SELECT contratodocencia.CodTema AS CodTema , contratodocencia.CodTp as CodTP, contratodocencia.Numgrupo as Numgrupo , contratodocencia.CodCampus as CodCampus , contratodocencia.AnoAcad as AnoAcad , contratodocencia.NumPer as NumPer , asignatura.Nombre as Nombre , asignatura.NumCreditos as NumCreditos, trabajadores.nombre as nombret, trabajadores.apellido_1 as apellido_1,gruporecuperar.Fecha_Recuperar as Fecha_Recuperar,gruporecuperar.Horas as Horas FROM contratodocencia INNER JOIN gruporecuperar ON gruporecuperar.CodTema=contratodocencia.CodTema AND gruporecuperar.CodTp=contratodocencia.CodTp AND gruporecuperar.NumGrupo=contratodocencia.Numgrupo AND gruporecuperar.CodCampus=contratodocencia.CodCampus AND gruporecuperar.AnoAcad =contratodocencia.AnoAcad AND gruporecuperar.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='$NumCedula' AND gruporecuperar.PR_o_R='PR' LIMIT $start,$limit");
+        $sql = $conn->query("SELECT contratodocencia.CodTema AS CodTema , contratodocencia.CodTp as CodTP, contratodocencia.Numgrupo as Numgrupo , contratodocencia.CodCampus as CodCampus , contratodocencia.AnoAcad as AnoAcad , contratodocencia.NumPer as NumPer , asignatura.Nombre as Nombre , asignatura.NumCreditos as NumCreditos, trabajadores.nombre as nombret, trabajadores.apellido_1 as apellido_1,gruporecuperar.Fecha_Recuperar as Fecha_Recuperar,gruporecuperar.Horas as Horas,gruporecuperar.PR_o_R as estado FROM contratodocencia INNER JOIN gruporecuperar ON gruporecuperar.CodTema=contratodocencia.CodTema AND gruporecuperar.CodTp=contratodocencia.CodTp AND gruporecuperar.NumGrupo=contratodocencia.Numgrupo AND gruporecuperar.CodCampus=contratodocencia.CodCampus AND gruporecuperar.AnoAcad =contratodocencia.AnoAcad AND gruporecuperar.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='$NumCedula' AND gruporecuperar.PR_o_R!='R' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
             while($data= $sql->fetch_array()){
@@ -28,7 +28,9 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 $NumCreditos   = $data["NumCreditos"];
                 $Fecha_Recuperar= $data["Fecha_Recuperar"];
                 $Horas=$data["Horas"];
-                $response .='
+                $estado=$data["estado"];
+                if($estado=="PR"){
+                    $response .='
                 <tr>
                 <td>'.$AnoAcad.'/'.$Numper.'</td>
                 <td>'.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'</td>
@@ -43,6 +45,60 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 </tr>
                  
                 ';
+                }elseif($estado=="E"){
+                    $response .='
+                    <tr>
+                    <td>'.$AnoAcad.'/'.$Numper.'</td>
+                    <td>'.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'</td>
+                    <td>'.$Nombre.'</td>
+                    <td>'.$Fecha_Recuperar.'</td>
+                    <td>'.$Horas.'</td>
+                    <td>
+                    <div class="col-md-12">
+                    <input type="button" value="Espera" class="btn btn-primary"disabled>
+                    </div> 
+                    </td>
+                    </tr>
+                     
+                    ';
+                }
+                
+            }
+            exit($response);
+        } else
+            exit('reachedMax');
+    }
+    if($_POST['key'] == 'getSolicitudesData'){
+        $NumCedula = $conn->real_escape_string($_POST['NumCedula']);
+        $sql = $conn->query("SELECT gruporecuperarhoras.CodTema AS CodTema, gruporecuperarhoras.CodTP AS CodTP, gruporecuperarhoras.NumGrupo as Numgrupo,gruporecuperarhoras.CodCampus as CodCampus,gruporecuperarhoras.AnoAcad as AnoAcad, gruporecuperarhoras.NumPer as NumPer, gruporecuperarhoras.HoraInicio as HoraInicio, gruporecuperarhoras.Horafin as Horafin, gruporecuperarhoras.Sal_CodCampus as Sal_CodCampus, gruporecuperarhoras.Sal_CodEdif as Sal_CodEdif, gruporecuperarhoras.Sal_CodSalon as Sal_CodSalon, gruporecuperarhoras.Fecha_Recuperar as Fecha_Recuperar, gruporecuperarhoras.Fecha as Fecha  FROM contratodocencia INNER JOIN gruporecuperarhoras ON gruporecuperarhoras.CodTema=contratodocencia.CodTema AND gruporecuperarhoras.CodTp=contratodocencia.CodTp AND gruporecuperarhoras.NumGrupo=contratodocencia.Numgrupo AND gruporecuperarhoras.CodCampus=contratodocencia.CodCampus AND gruporecuperarhoras.AnoAcad =contratodocencia.AnoAcad AND gruporecuperarhoras.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='14785236985'");
+        if($sql->num_rows >0){
+            $response ="";
+            while($data= $sql->fetch_array()){
+                $CodTema   = $data["CodTema"];
+                $CodTP   = $data["CodTP"];
+                $Numgrupo   = $data["Numgrupo"];
+                $CodCampus   = $data["CodCampus"];
+                $AnoAcad   = $data["AnoAcad"];
+                $Numper   = $data["NumPer"];
+                $HoraInicio  = $data["HoraInicio"];
+                $Horafin  = $data["Horafin"];
+                $Sal_CodCampus  = $data["Sal_CodCampus"];
+                $Sal_CodEdif  = $data["Sal_CodEdif"];
+                $Sal_CodSalon  = $data["Sal_CodSalon"];
+                $Fecha_Recuperar  = $data["Fecha_Recuperar"];
+                $Fecha = $data["Fecha"];
+                    $response .='
+                <tr>
+                <td>'.$AnoAcad.'/'.$Numper.'</td>
+                <td>'.$CodCampus.'-'.$CodTema.'-'.$CodTP.'-'.$Numgrupo.'</td>
+                <td>'.$HoraInicio.'</td>
+                <td>'.$Horafin.'</td>
+                <td>'.$Sal_CodCampus.'-'.$Sal_CodEdif.'-'.$Sal_CodSalon.'</td>
+                </tr>
+                 
+                ';
+                
+                
             }
             exit($response);
         } else
@@ -61,11 +117,16 @@ $conn= new mysqli('localhost',$user, $pass, $db);
         list($CodCampus,$CodTema,$CodTP,$Numgrupo) = explode('-', $grupo);
         list($Sal_CodCampus,$Sal_CodEdif,$Sal_CodSalon) = explode('-', $aula);
         $horafin=getHorafin($hora,$HoraRecuperar);
-        $sqlgetgrupoRH=$conn->query("SELECT * FROM gruporecuperarhoras WHERE HoraInicio='$hora'AND CodTema='$CodTema' AND CodTP='$CodTP' AND NumGrupo='$Numper' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND Fecha='$fecha'");
+        $sqlgetgrupoRH=$conn->query("SELECT * FROM gruporecuperarhoras WHERE HoraInicio<'$horafin' AND CodTema='$CodTema' AND CodTP='$CodTP' AND NumGrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper' AND Fecha='$fecha'");
          if($sqlgetgrupoRH->num_rows == 0 ){
             $conn->query("INSERT INTO gruporecuperarhoras (CodTema,CodTP,NumGrupo,CodCampus,AnoAcad,NumPer,DiaSem,HoraInicio,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha_Recuperar,Fecha) VALUES ('$CodTema', '$CodTP', '$Numgrupo', '$CodCampus', '$AnoAcad', '$Numper', '$day', '$hora', '$horafin', '$Sal_CodCampus', '$Sal_CodEdif', '$Sal_CodSalon', '$fecharecupera', '$fecha')");
-            $control="Solicitud Aceptada";
-         }else $control="Error en la Solicitud";
+            $control=1;
+            $mensaje="Solicitud Aceptada";
+            $conn->query("UPDATE gruporecuperar SET PR_o_R = 'E' WHERE CodTema = '$CodTema' AND CodTp = '$CodTP' AND NumGrupo ='$Numgrupo'  AND CodCampus = '$CodCampus' AND AnoAcad = '$AnoAcad' AND NumPer = '$Numper' AND Fecha_Recuperar = '$fecharecupera'");
+         }else {
+            $control=0;
+            $mensaje="Error en la Solicitud";
+        }
          $jsonArray = array(
              /*
             'AnoAcad'=>$AnoAcad,
@@ -84,6 +145,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
             'Sal_CodSalon'=>$Sal_CodSalon,
             'day'=>$day,*/
             'control'=>$control,
+            'mensaje'=>$mensaje,
         );
         exit(json_encode($jsonArray));
 
@@ -123,12 +185,9 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                $CodCampus =$data['CodCampus'];
                $CodEdif =$data['CodEdif'];
                $CodSalon =$data['CodSalon'];
-               $sqlaula = $conn->query("SELECT * FROM gruporecuperarhoras WHERE Fecha='$fecha' AND Sal_CodCampus='$CodCampus' AND Sal_CodEdif='$CodEdif' AND Sal_CodSalon='$CodSalon' AND HoraInicio='$hora'");
+               $sqlaula = $conn->query("SELECT * FROM gruporecuperarhoras WHERE Fecha='$fecha' AND Sal_CodCampus='$CodCampus' AND Sal_CodEdif='$CodEdif' AND Sal_CodSalon='$CodSalon' AND HoraInicio<'$horafin'");
                if($sqlaula->num_rows > 0){
-               
                      $aula='No Aula';
-                    
-              
                }else{
                     $aula =''.$CodCampus.'-'.$CodEdif.'-'.$CodSalon.'';
                     break;

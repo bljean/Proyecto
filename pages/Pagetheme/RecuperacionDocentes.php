@@ -100,10 +100,16 @@ if(isset($_SESSION['loggedIN'])){
                             <h3 class="panel-title">Grupos a Recuperar</h3>
                         </div>
                         <div class="panel-body">
+                           
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="well dash-box">
                                         <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-1"style="padding-left: 0px;" >
+                                                    <input type="button" id="SolicituBtn" value="Solicitudes" class="btn btn-primary">
+                                                </div>
+                                            </div>
                                             <!--Add new and Edit -->
                                             <div class="container-fluid">
                                                 <div id="tableManager" class="modal fade">
@@ -194,12 +200,47 @@ if(isset($_SESSION['loggedIN'])){
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div id="tableSolicitudes" class="modal fade">
+                                                    <div class="modal-dialog" style="width:1250px;">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                        <h2 class="modal-title">Asistencia</h2>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                        <div class="well dash-box" style=" text-align: center;">
+                                                            <div class="panel-body">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                <h4 id="tituloGrupo"></h4>
+                                                                </div>
+                                                            </div>
+                                                            <table class="table table-striped table-hover tableSolicitud">
+                                                                <thead>
+                                                                <th>Fechas</th>
+                                                                <th>Dia de Semana</th>
+                                                                <th>Hora Inicio</th>
+                                                                <th>Hora Termino</th>
+                                                                <th>Hora Llegada</th>
+                                                                <th>Horas Presente</th>
+                                                                <th>Asistencia</th>
+
+                                                                </thead>
+                                                                <tbody class="tableSolicitudesBody">
+
+                                                                </tbody>
+                                                            </table>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
                                                 <!--/Add new and Edit -->
                                               
                                                 <!--Table Mysql -->
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <table class="table table-hover table-bordered" style="background-color:white ">
+                                                        <table class="table table-hover table-bordered tableRecuperar" style="background-color:white ">
                                                             <thead>
                                                                 <td>Periodo</td>
                                                                 <td>Grupo</td>
@@ -208,7 +249,7 @@ if(isset($_SESSION['loggedIN'])){
                                                                 <td>Horas a Recuperar</td>
                                                                 <td>Opciones</td>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody class="tableRecuperarBody">
 
                                                             </tbody>
                                                         </table>
@@ -258,28 +299,34 @@ if(isset($_SESSION['loggedIN'])){
                 window.location = 'php/logout.php'
             });
             $("#AulaBtn").on('click', function () {
-            var HoraRecuperar = $("#HR");
-            var grupo = $("#ID");
-            var fecha=$("#fecha");
-            var hora=$("#hora");
+                var HoraRecuperar = $("#HR");
+                var grupo = $("#ID");
+                var fecha=$("#fecha");
+                var hora=$("#hora");
 
-            if (isNotEmpty(HoraRecuperar) && isNotEmpty(grupo) && isNotEmpty(fecha) && isNotEmpty(hora) ) {
-                getaula(grupo.val(),HoraRecuperar.val(),fecha.val(),hora.val());
-            }
+                if (isNotEmpty(HoraRecuperar) && isNotEmpty(grupo) && isNotEmpty(fecha) && isNotEmpty(hora) ) {
+                    getaula(grupo.val(),HoraRecuperar.val(),fecha.val(),hora.val());
+                }
             });
             $("#SaveBtn").on('click',function(){
-            var periodo=$("#Periodo");
-            var grupo = $("#ID");
-            var fecharecupera=$("#fecharecuperar");
-            var HoraRecuperar = $("#HR");
-            var fecha=$("#fecha");
-            var hora=$("#hora");
-            var aula=$("#Aula");
-            if (isNotEmpty(periodo) && isNotEmpty(grupo) && isNotEmpty(fecharecupera) && isNotEmpty(HoraRecuperar) && isNotEmpty(fecha) && isNotEmpty(hora)&& isNotEmpty(aula) ){
-                inGrupoRecuperar(periodo.val(),grupo.val(),fecharecupera.val(),HoraRecuperar.val(),fecha.val(),hora.val(),aula.val());
-            }else alert("No Entro");
-                
+                var periodo=$("#Periodo");
+                var grupo = $("#ID");
+                var fecharecupera=$("#fecharecuperar");
+                var HoraRecuperar = $("#HR");
+                var fecha=$("#fecha");
+                var hora=$("#hora");
+                var aula=$("#Aula");
+                if (isNotEmpty(periodo) && isNotEmpty(grupo) && isNotEmpty(fecharecupera) && isNotEmpty(HoraRecuperar) && isNotEmpty(fecha) && isNotEmpty(hora)&& isNotEmpty(aula) ){
+                    if(confirm("¿Esta seguro que quiere recuperar el grupo: "+grupo.val()+",en la fecha : "+fecha.val()+",a la hora: "+hora.val()+"?.")){
+                        inGrupoRecuperar(periodo.val(),grupo.val(),fecharecupera.val(),HoraRecuperar.val(),fecha.val(),hora.val(),aula.val());
+                    }
+                    
+                }  
             });
+            $("#SolicituBtn").on('click', function () {
+                $("#tableSolicitudes").modal('show');
+            });
+            getSolicitudesData(NumCedula);
             getExistingData(0, 50,NumCedula);
             
         });
@@ -314,7 +361,14 @@ if(isset($_SESSION['loggedIN'])){
                     hora:hora,
                     aula: aula,
                 }, success: function (response) { 
-                    console.log(response);
+                    //console.log(response);
+                    if(response.control=="1"){
+                    alert(response.mensaje);
+                    location.reload();
+                    }else if(response.control=="0"){
+                    alert(response.mensaje);
+                    }
+                    
                    
                 }
             });
@@ -339,12 +393,12 @@ if(isset($_SESSION['loggedIN'])){
                     NumCedula:NumCedula,
                 }, success: function (response) {
                     if (response != "reachedMax") {
-                        $('tbody').append(response);
+                        $(".tableRecuperarBody").append(response);
                         start += limit;
                         getExistingData(start, limit,NumCedula);
                     } else {
 
-                        $(".table").DataTable({
+                        $(".tableRecuperar").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -374,6 +428,18 @@ if(isset($_SESSION['loggedIN'])){
                     }
 
                 }
+            });
+        }
+        function getSolicitudesData(NumCedula) {
+            $.ajax({
+                url: 'php/ajax_RecuperacionDocentes.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'getSolicitudesData',
+                    NumCedula:NumCedula,
+                }, success: function (response) {
+                        
             });
         }
         function isNotEmpty(caller) {
