@@ -216,13 +216,13 @@ if(isset($_SESSION['loggedIN'])){
                                                             </div>
                                                             <table class="table table-striped table-hover tableSolicitud">
                                                                 <thead>
-                                                                <th>Fechas</th>
-                                                                <th>Dia de Semana</th>
+                                                                <th>Periodo</th>
+                                                                <th>Grupo</th>
                                                                 <th>Hora Inicio</th>
                                                                 <th>Hora Termino</th>
-                                                                <th>Hora Llegada</th>
-                                                                <th>Horas Presente</th>
-                                                                <th>Asistencia</th>
+                                                                <th>Aula</th>
+                                                                <th>Fecha a Recuperar</th>
+                                                                <th>Fecha de Recuperacion</th>
 
                                                                 </thead>
                                                                 <tbody class="tableSolicitudesBody">
@@ -397,7 +397,6 @@ if(isset($_SESSION['loggedIN'])){
                         start += limit;
                         getExistingData(start, limit,NumCedula);
                     } else {
-
                         $(".tableRecuperar").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
@@ -439,7 +438,35 @@ if(isset($_SESSION['loggedIN'])){
                     key: 'getSolicitudesData',
                     NumCedula:NumCedula,
                 }, success: function (response) {
-                        
+                    $(".tableSolicitudesBody").append(response);
+                    dTable = $(".tableSolicitud").DataTable({
+                        "language": {
+                        "sProcessing": "Procesando...",
+                        "sLengthMenu": "Mostrar _MENU_ registros",
+                        "sZeroRecords": "No se encontraron resultados",
+                        "sEmptyTable": "Ningún dato disponible en esta tabla",
+                        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Buscar:",
+                        "sUrl": "",
+                        "sInfoThousands": ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst": "Primero",
+                            "sLast": "Último",
+                            "sNext": "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        }
+                        },
+                        "lengthChange": false
+                    });
+                }
             });
         }
         function isNotEmpty(caller) {

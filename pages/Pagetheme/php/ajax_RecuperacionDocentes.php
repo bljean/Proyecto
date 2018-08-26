@@ -71,8 +71,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     if($_POST['key'] == 'getSolicitudesData'){
         $NumCedula = $conn->real_escape_string($_POST['NumCedula']);
         $sql = $conn->query("SELECT gruporecuperarhoras.CodTema AS CodTema, gruporecuperarhoras.CodTP AS CodTP, gruporecuperarhoras.NumGrupo as Numgrupo,gruporecuperarhoras.CodCampus as CodCampus,gruporecuperarhoras.AnoAcad as AnoAcad, gruporecuperarhoras.NumPer as NumPer, gruporecuperarhoras.HoraInicio as HoraInicio, gruporecuperarhoras.Horafin as Horafin, gruporecuperarhoras.Sal_CodCampus as Sal_CodCampus, gruporecuperarhoras.Sal_CodEdif as Sal_CodEdif, gruporecuperarhoras.Sal_CodSalon as Sal_CodSalon, gruporecuperarhoras.Fecha_Recuperar as Fecha_Recuperar, gruporecuperarhoras.Fecha as Fecha  FROM contratodocencia INNER JOIN gruporecuperarhoras ON gruporecuperarhoras.CodTema=contratodocencia.CodTema AND gruporecuperarhoras.CodTp=contratodocencia.CodTp AND gruporecuperarhoras.NumGrupo=contratodocencia.Numgrupo AND gruporecuperarhoras.CodCampus=contratodocencia.CodCampus AND gruporecuperarhoras.AnoAcad =contratodocencia.AnoAcad AND gruporecuperarhoras.NumPer=contratodocencia.NumPer INNER JOIN asignatura ON contratodocencia.CodTema=asignatura.CodTema AND contratodocencia.CodTp=asignatura.CodTp INNER JOIN trabajadores ON trabajadores.NumCedula=contratodocencia.NumCedula WHERE contratodocencia.NumCedula='14785236985'");
+        $response ="";
         if($sql->num_rows >0){
-            $response ="";
             while($data= $sql->fetch_array()){
                 $CodTema   = $data["CodTema"];
                 $CodTP   = $data["CodTP"];
@@ -94,15 +94,16 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 <td>'.$HoraInicio.'</td>
                 <td>'.$Horafin.'</td>
                 <td>'.$Sal_CodCampus.'-'.$Sal_CodEdif.'-'.$Sal_CodSalon.'</td>
+                <td>'.$Fecha_Recuperar.'</td>
+                <td>'.$Fecha.'</td>
                 </tr>
                  
                 ';
                 
                 
             }
-            exit($response);
-        } else
-            exit('reachedMax');
+        } 
+        exit($response);
     }
     if($_POST['key'] == 'inGrupoRecuperar'){
         $periodo = $conn->real_escape_string($_POST['periodo']);
