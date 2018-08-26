@@ -131,22 +131,43 @@ if($_POST['key'] == 'getAsisData'){
                 }
             }else{
                 while($data= $sql->fetch_array()){
-                    $response .='
-                    <tr>
-                        <td>'.$data["Fecha"].'</td>
-                        <td>'.$data["Diasemana"].'</td>
-                        <td>'.$data["Horaini"].'</td>
-                        <td>'.$data["Horafin"].'</td>
-                        <td>'.$data["Horaentrada"].'</td>
-                        <td>'.$data["HorasPresente"].'</td>
-                        <td>'.$data["Presencia"].'</td>
-                        <td>
-                        <div class="col-md-2">
-                        <input type="button" onclick="edit(\''.$studentID.'\',\''.$data["Fecha"].'\',\''.$data["Horaini"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\',\''.$data["Diasemana"].'\',\''.$data["Presencia"].'\')" value="Editar" class="btn btn-primary">
-                        </div>
-                        </td>
-                    </tr>
-                    ';
+                    if($data["Presencia"]=="P"){
+                        $response .='
+                        <tr>
+                            <td>'.$data["Fecha"].'</td>
+                            <td>'.$data["Diasemana"].'</td>
+                            <td>'.$data["Horaini"].'</td>
+                            <td>'.$data["Horafin"].'</td>
+                            <td>'.$data["Horaentrada"].'</td>
+                            <td>'.$data["HorasPresente"].'</td>
+                            <td>'.$data["Presencia"].'</td>
+                            <td>
+                            <div class="col-md-2">
+                            <input type="button" onclick="edit(\''.$studentID.'\',\''.$data["Fecha"].'\',\''.$data["Horaini"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\',\''.$data["Diasemana"].'\',\''.$data["Presencia"].'\')" value="Editar" class="btn btn-primary" disabled>
+                            </div>
+                            </td>
+                        </tr>
+                        ';
+                    }else{
+                        $response .='
+                        <tr>
+                            <td>'.$data["Fecha"].'</td>
+                            <td>'.$data["Diasemana"].'</td>
+                            <td>'.$data["Horaini"].'</td>
+                            <td>'.$data["Horafin"].'</td>
+                            <td>'.$data["Horaentrada"].'</td>
+                            <td>'.$data["HorasPresente"].'</td>
+                            <td>'.$data["Presencia"].'</td>
+                            <td>
+                            <div class="col-md-2">
+                            <input type="button" onclick="edit(\''.$studentID.'\',\''.$data["Fecha"].'\',\''.$data["Horaini"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\',\''.$data["Diasemana"].'\',\''.$data["Presencia"].'\')" value="Editar" class="btn btn-primary">
+                            </div>
+                            </td>
+                        </tr>
+                        ';
+                        
+                    }
+                   
                 }
             }
             

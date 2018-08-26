@@ -467,7 +467,7 @@ $privilegio= $_SESSION['privilegio'];
              var daytxt = eID.options[eID.selectedIndex].text;
              //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
              
-             if(dayVal=='Asistencia'){
+             if(dayVal=='val2'){
                  alert("Seleccione un Asistencia");
              }else{
              $.ajax({
