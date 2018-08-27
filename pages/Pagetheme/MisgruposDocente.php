@@ -26,6 +26,7 @@ if(isset($_SESSION['loggedIN'])){
   <link href="css/styletest.css" rel="stylesheet">
   <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -186,10 +187,25 @@ if(isset($_SESSION['loggedIN'])){
                     </div>
                   </div>
                   <div class="row">
+                    <div class="col-md-2" style="text-align: left;">
+                        <h4>Fecha:</h4>
+                    </div>
+                    <div class="col-sm-6" style="height: 34px;" >
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker1'>
+                                    <input type='text' id="fecha" class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col-md-2">
                       <h4>Profesores:</h4>
                     </div>
-                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownasistente">
+                    <div class="dropdown create col-md-2 sistituto" id="dropdownasistente">
                       <select id="profasis" class="btn btn-default" type="button">
                         <option selected="selected" value="val2">Profesores</option>
                         
@@ -200,7 +216,7 @@ if(isset($_SESSION['loggedIN'])){
                 </div>
                 
                 <div class="modal-footer">
-                <input type="button" id="manageBtn"  value="Save" class="btn btn-primary">
+                <input type="button" id="sustiBtn" onclick="inSustituto()"  value="Save" class="btn btn-primary">
                 </div>
               </div>
             </div>
@@ -242,16 +258,13 @@ if(isset($_SESSION['loggedIN'])){
 
                         </tbody>
                       </table>
-                      <div class="row"  >
+                      <div class="row">
                         <div align="right" class="asistente"> 
                         <button class="btn btn-primary" onclick="asistente()" id="Asistente" type="button" style="pa">Asistente</button>
                     
                         <button class="btn btn-primary" onclick="edit()" id="configurar" type="button" style="pa">Configurar</button>
                         </div>
                       </div>
-
-
-
                     </div>
 
                   </div>
@@ -276,7 +289,19 @@ if(isset($_SESSION['loggedIN'])){
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
   <script type="text/javascript">
+    $(function () {
+            var today = new Date();
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY-MM-DD'
+            });
+            $("#datetimepicker1").on("click", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").minDate(today);
+            });
+           
+        });
     $(document).ready(function () {
       dataindex = 0;
       dataindex1 = 0;
@@ -451,7 +476,40 @@ if(isset($_SESSION['loggedIN'])){
 
 
     }
-
+    function inSustituto(ProfID,CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){
+            var grupo=$("#GrupoAsistente").val();
+            var fecha=$("#fecha").val();
+            var eID = document.getElementById("profasis");
+            var dayVal = eID.options[eID.selectedIndex].value;
+            var daytxt = eID.options[eID.selectedIndex].text;
+             //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+             
+             if(dayVal=='val2'){
+                 alert("Seleccione un Profesor");
+             }else{
+             $.ajax({
+                 url: 'php/ajax_misgruposdocentes.php',
+                 method: 'POST',
+                 dataType: 'json',
+                 data: {
+                     key:'inSustituto',
+                     ProfID:ProfID,
+                     CodCampus:CodCampus,
+                     CodTema:CodTema,
+                     CodTP:CodTP,
+                     Numgrupo:Numgrupo,
+                     AnoAcad:AnoAcad,
+                     Numper:Numper,
+                     dayVal:dayVal,
+                     fecha:fecha,
+                 }, success: function (response) {
+                      console.log(response);  
+                     $("#tablaasistente").modal('hide');
+                     //$("div.Tiempo1 select").val("val2")
+                 }
+             });}
+             
+    }
     function manageData(key) {
       var horas = $("#horas");
       var rowid = $("#rowid");
@@ -491,7 +549,6 @@ if(isset($_SESSION['loggedIN'])){
       matricula.val('');
       cardNumber.val('');
     }
-
     function isNotEmpty(caller) {
       if (caller.val() == '') {
         caller.css('border', '1px solid red');
@@ -518,7 +575,7 @@ if(isset($_SESSION['loggedIN'])){
              var daytxt = eID.options[eID.selectedIndex].text;
              //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
              
-             if(dayVal=='Tiempo'){
+             if(dayVal=='val2'){
                  alert("Seleccione un tiempo");
              }else{
              $.ajax({
@@ -584,7 +641,7 @@ if(isset($_SESSION['loggedIN'])){
               $("#profasis").html("");
               $("#profasis").html('<option selected="selected" value="val2">Profesores</option>');
               $("#profasis").append(response.trabajadores);
-
+              $("#sustiBtn").attr('onclick','inSustituto(\''+ProfID+'\',\''+CodCampus+'\',\''+CodTema+'\',\''+CodTP+'\',\''+Numgrupo+'\',\''+AnoAcad+'\',\''+Numper+'\')');
               $("#tablaasistente").modal('show');
                
             }

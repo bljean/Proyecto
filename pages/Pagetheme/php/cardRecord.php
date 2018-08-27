@@ -5,7 +5,7 @@ require '/xampp/htdocs/Proyecto/vendor/autoload.php';
 use Goutte\Client;
 //connection
 $url = "http://169.254.65.123/";
-
+date_default_timezone_set('America/Santo_Domingo');
 if (isset($_POST['key'])){ 
     if($_POST['key'] == 'getCardNumber'){
         //-------------------------------------------------------------
@@ -42,17 +42,17 @@ function getSwipeInfo($text){
 
     }
 function compareInfo($cardnumber,$Status,$DataTime){
-   
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
     $cardN = eraseTd($cardnumber);
     $status = eraseTd($Status);
     $datatime = eraseTd($DataTime);
         
-    $sqlStudentName = connectBd()->query( "SELECT nombre, apellido, matricula FROM estudiante WHERE CardNumber='$cardN'");
-    $sqlProfessorName = connectBd()->query( "SELECT nombre, apellido, usuario FROM profesor WHERE CardNumber='$cardN'");
-    $sqlWorkersName = connectBd()->query( "SELECT nombre, apellido, cedula FROM trabajadores WHERE CardNumber='$cardN'");
-    $sqlDataTime = connectBd()->query( "SELECT dataTime FROM swipe WHERE dataTime='$datatime'");
+    $sqlStudentName = connectBd()->query( "SELECT * FROM estudiante WHERE NumTarjeta='$cardN'");
+    $sqlWorkersName = connectBd()->query( "SELECT * FROM trabajadores WHERE NumTarjeta='$cardN'");
+    $sqlDataTime = connectBd()->query( "SELECT * FROM swipe WHERE Fecha='$date' AND Tiempo='$time'");
     
-    if($sqlStudentName->num_rows > 0 OR $sqlProfessorName->num_rows > 0 OR $sqlWorkersName->num_rows > 0){
+    if($sqlStudentName->num_rows > 0 OR $sqlWorkersName->num_rows > 0){
         
         $jsonArray = array(
             'body'=> $cardN,

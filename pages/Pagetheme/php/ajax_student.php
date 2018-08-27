@@ -67,7 +67,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
     
 
     if ($_POST['key'] == 'updateRow'){
-      $conn->query("UPDATE estudiante SET matricula='$ID', nombre='$name', CardNumber='$cardNumber' WHERE matricula='$rowID'");
+      $conn->query("UPDATE estudiante SET Matricula='$ID', nombre='$name', NumTarjeta='$cardNumber' WHERE Matricula='$rowID'");
       exit('success');
      }
     if ($_POST['key'] == 'addNew'){
