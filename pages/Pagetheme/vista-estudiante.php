@@ -86,7 +86,7 @@ $id=$_SESSION['user'];
                         <!-- Website Overview -->
                         <div class="panel panel-default">
                             <div class="panel-heading tabla-color-bg">
-                                <h3 class="panel-title">Buenas tardes</h3>
+                                <h3 class="panel-title">Buenas </h3>
                             </div>
                             <div class="panel-body panel-body-color">
                                 <div class="row">

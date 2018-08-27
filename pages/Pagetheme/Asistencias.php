@@ -87,15 +87,14 @@ $privilegio= $_SESSION['privilegio'];
         </li>
         <li>
           <?php
-          if($privilegio==1){
-            echo '<a href="students.html">Estudiantes</a>';
+          if($privilegio1==1){
+            echo '<a href="students.php">Estudiantes</a>';
           }
-          if($privilegio==2){
-           echo '<a href="professors.html">Profesores</a>';
+          if($privilegio1==2){
+           echo '<a href="professors.php">Profesores</a>';
         }
           ?>
           
-
         </li>
         <li class="active">Asistencias</li>
       </ol>

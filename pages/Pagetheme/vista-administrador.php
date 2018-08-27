@@ -108,7 +108,7 @@ if(isset($_SESSION['loggedIN'])){
                     <!-- Website Overview -->
                     <div class="panel panel-default">
                         <div class="panel-heading tabla-color-bg">
-                            <h3 class="panel-title">Buenas tardes</h3>
+                            <h3 class="panel-title">Buenas </h3>
                         </div>
                         <div class="panel-body panel-body-color">
                             <div class="row">
@@ -127,14 +127,7 @@ if(isset($_SESSION['loggedIN'])){
                                                             <canvas id="myChart1"></canvas>
                                                         </div>
                                                     </div>
-                                            </div>    
-
-                                              <div class="checkbox checkbox-success checkbox-inline">
-                                             <input type="checkbox" id="inlineCheckbox2" value="option1" checked="">
-                                             <label for="inlineCheckbox2"> Semanal </label>
-                                                </div>
-
-                                        </div>
+                                          
                                     
 
                                 </div>

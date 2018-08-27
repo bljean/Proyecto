@@ -115,7 +115,7 @@ if(isset($_SESSION['loggedIN'])){
                                 <div id="navbar" class="collapse navbar-collapse">
                                     <ul class="nav navbar-nav">
                                         <li>
-                                            <div class="dropdown create">
+                                            <div class="dropdown create ">
                                                 <button class="btn btn-primary campustitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
                                                     aria-expanded="true">
                                                     Campus
@@ -132,14 +132,12 @@ if(isset($_SESSION['loggedIN'])){
                                                     <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu bodyedf" aria-labelledby="dropdownMenu1">
-                        
-                        
                                                 </ul>
                                             </div>
                                         </li>
                         
                                         <li>
-                                            <div class="dropdown create">
+                                            <div class="dropdown create ">
                                                 <button class="btn btn-primary aulatitulo" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                     Aula
                                                     <span class="caret"></span>
@@ -152,18 +150,10 @@ if(isset($_SESSION['loggedIN'])){
                                         <li>
                                             <a class="navbar-brand btn btn-primary  " id="boton1" onclick="llenartabla()" disabled >Enter</a>
                                         </li>
-                        
-                        
-                        
                                     </ul>
-                        
-                        
-                        
                         
                                 </div>
                             </div>
-                        
-                        
                         
                         </div>
                             <div class="row " >
