@@ -87,15 +87,14 @@ $privilegio= $_SESSION['privilegio'];
         </li>
         <li>
           <?php
-          if($privilegio==1){
-            echo '<a href="students.html">Estudiantes</a>';
+          if($privilegio1==1){
+            echo '<a href="students.php">Estudiantes</a>';
           }
-          if($privilegio==2){
-           echo '<a href="professors.html">Profesores</a>';
+          if($privilegio1==2){
+           echo '<a href="professors.php">Profesores</a>';
         }
           ?>
           
-
         </li>
         <li class="active">Asistencias</li>
       </ol>
@@ -110,30 +109,53 @@ $privilegio= $_SESSION['privilegio'];
            <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h2 class="modal-title">Editar</h2>
+                  <h2 class="modal-title" >Editar Asistencia</h2>
                 </div>
                 <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                      <h4>Grupo:</h4>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control"  id="grupo" readonly="readonly">
+                    </div>
+                  </div>
                   <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                       <h4>Fecha:</h4>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-3">
                       <input type="text" class="form-control"  id="fecha" readonly="readonly">
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-2">
-                      <h4>Horas:</h4>
+                    <div class="col-md-4">
+                      <h4>Dia de Semana:</h4>
                     </div>
-                    <div class="col-md-10">
-                      <input type="text" class="form-control"  id="horas">
+                    <div class="col-md-2">
+                      <input type="text" class="form-control"  id="semana" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Asistencia:</h4>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="text" class="form-control"  id="asistencia" readonly="readonly">
+                    </div>
+                    <div class="dropdown create col-md-2 Tiempo1" id="dropdownasis">
+                      <select id="idasis" class="btn btn-default" type="button">
+                        <option selected="selected" value="val2">Asistencia</option>
+                        <option value="P">P</option>
+                        <option value="E">E</option>
+                      </select>
                     </div>
                   </div>
                   <input type="hidden" id="editRowID" value="0">
                   </div>
                   <div class="modal-footer">
                     <input type="hidden" id="rowid">
-                    <input type="button" id="manageBtn" onclick="manageData()" value="Salvar cambios" class="btn btn-primary">
+                    <input type="button" id="botonasis" onclick="guardarasis()" value="Salvar cambios" class="btn btn-primary">
                   </div>
                 </div>
             </div>
@@ -421,21 +443,13 @@ $privilegio= $_SESSION['privilegio'];
       table.clear().draw();
       table.destroy();
     }
-    function edit(rowID) {
-            $.ajax({
-                url: 'php/ajax_Asistencias.php',
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    key: 'getRowData',
-                    rowID: rowID
-                }, success: function (response) {
-                    $("#fecha").val(response.fecha);
-                    $("#horas").val(response.horasasi);
-                    $("#rowid").val(rowID);
-                    $("#tableManager").modal('show');
-                }
-            });
+    function edit(studentID,Fecha,Horaini,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,Diasemana,Presencia) {
+         $("#grupo").val(""+CodTema+"-"+CodTP+"-"+NumGrupo +"");
+        $("#fecha").val(Fecha);
+        $("#semana").val(Diasemana);
+        $("#asistencia").val(Presencia);
+        $("#tableManager").modal('show');
+        $("#botonasis").attr('onclick','guardarasis(\''+studentID+'\',\''+Fecha+'\',\''+Horaini+'\',\''+NumGrupo+'\',\''+CodTema+'\',\''+CodTP+'\',\''+CodCampus+'\',\''+AnoAcad+'\',\''+NumPer+'\',\''+Diasemana+'\',\''+Presencia+'\')');        
         }
     function isNotEmpty(caller) {
       if (caller.val() == '') {
@@ -445,7 +459,41 @@ $privilegio= $_SESSION['privilegio'];
         return true;
         }      
     
-   
+    function guardarasis(studentID,Fecha,Horaini,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,Diasemana,Presencia){
+             
+             var eID = document.getElementById("idasis");
+             var dayVal = eID.options[eID.selectedIndex].value;
+             var daytxt = eID.options[eID.selectedIndex].text;
+             //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+             
+             if(dayVal=='val2'){
+                 alert("Seleccione un Asistencia");
+             }else{
+             $.ajax({
+                 url: 'php/ajax_Asistencias.php',
+                 method: 'POST',
+                 dataType: 'json',
+                 data: {
+                     key:'guardarasis',
+                     dayVal:dayVal,
+                     studentID:studentID,
+                     Fecha:Fecha,
+                     Horaini:Horaini,
+                     NumGrupo:NumGrupo,
+                     CodTema:CodTema,
+                     CodTP:CodTP,
+                     CodCampus:CodCampus,
+                     AnoAcad:AnoAcad,
+                     NumPer:NumPer,
+                     Diasemana:Diasemana,
+                     Presencia:Presencia,
+                 }, success: function (response) {  
+                     $("#tableManager").modal('hide');
+                     $("div.Tiempo1 select").val("val2")
+                     location.reload();
+                 }
+             });}
+             }
    
 
 

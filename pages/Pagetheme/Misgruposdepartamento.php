@@ -98,54 +98,39 @@ $ID=$_SESSION['user'];
                                         <div class="panel-body">
                                             <!--Add new and Edit -->
                                             <div class="container-fluid">
-                                                <div id="tableManager" class="modal fade">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h2 class="modal-title">Nuevo</h2>
+                                            <div id="tableManager" class="modal fade">
+                                                <div class="modal-dialog" style="width:1250px;">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                        <h2 class="modal-title">Asistencia</h2>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                        <div class="well dash-box" style=" text-align: center;">
+                                                            <div class="panel-body">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                <h4 id="tituloGrupo"></h4>
+                                                                </div>
                                                             </div>
-                                                            <div class="modal-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Usuario:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="ID..." id="ID" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Nombre:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Name..." id="Name" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Apellido:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <input type="text" class="form-control" placeholder="Apellido.." id="Apellido" readonly="readonly">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <h4>Tarjeta:</h4>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <input type="text" class="form-control" placeholder="Card Number.." id="CardNumber" readonly="readonly">
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <input type="button" id="autoRecordCardBtn" onclick="autoRecordCard()" value="Registro Automático" class="btn btn-primary">
-                                                                    </div>
-                                                                </div>
-                                                                <input type="hidden" id="editRowID" value="0">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <input type="button" id="manageBtn" onclick="manageData('addNew')" value="Save" class="btn btn-primary">
+                                                            <table class="table table-striped table-hover tableAsistencia">
+                                                                <thead>
+                                                                <th>Fechas</th>
+                                                                <th>Dia de Semana</th>
+                                                                <th>Hora Inicio</th>
+                                                                <th>Hora Termino</th>
+                                                                <th>Hora Llegada</th>
+                                                                <th>Horas Presente</th>
+                                                                <th>Asistencia</th>
+
+                                                                </thead>
+                                                                <tbody class="tableAsistenciaBody">
+
+                                                                </tbody>
+                                                        </table>
                                                             </div>
                                                         </div>
+                                                        </div>
+                                                    </div>
                                                     </div>
                                                 </div>
                                                 <!--/Add new and Edit -->
@@ -153,7 +138,7 @@ $ID=$_SESSION['user'];
                                                 <!--Table Mysql -->
                                                 <div class="row">
                                                     <div class="col-md-12" >
-                                                        <table class="table table-hover table-bordered" style="background-color:white ">
+                                                        <table class="table table-hover table-bordered table-informacion" style="background-color:white ">
                                                             <thead>
                                                               <td>Grupo</td>
                                                                 <td>Nombre</td>
@@ -162,7 +147,7 @@ $ID=$_SESSION['user'];
                                                                 <td>Periodo</td>
                                                                 <td>Opciones</td>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody class="body-informacion">
 
                                                             </tbody>
                                                         </table>
@@ -189,7 +174,7 @@ $ID=$_SESSION['user'];
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      dataindex=0;
+      dataindex1=0;
       var ID = "<?php echo $ID; ?>";
       
       $("#Logout").on('click', function () {
@@ -211,12 +196,12 @@ $ID=$_SESSION['user'];
                     ID:ID,
                 }, success: function (response) {
                     if (response != "reachedMax") {
-                        $('tbody').append(response);
+                        $(".body-informacion").append(response);
                         start += limit;
                         getExistingData(start, limit, ID);
                     } else {
 
-                        $(".table").DataTable({
+                        $(".table-informacion").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -263,7 +248,80 @@ $ID=$_SESSION['user'];
                 });
       }
 
-  
+    function asistencia(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer) {
+        if (dataindex1 != 0) {
+            //$(".tableAsistenciaBody").html("");
+            cleartable(dTable1);
+        }
+        dataindex1 = 1;
+        getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
+
+        $("#tableManager").modal('show');
+        }
+
+    function getAsisData(start, limit, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, privilegio) {
+      $.ajax({
+        url: 'php/ajax_Asistencias.php',
+        method: 'POST',
+        dataType: 'text',
+        data: {
+          key: 'getAsisData',
+          start: start,
+          limit: limit,
+          studentID: studentID,
+          NumGrupo: NumGrupo,
+          CodTema: CodTema,
+          CodTP: CodTP,
+          CodCampus: CodCampus,
+          AnoAcad: AnoAcad,
+          NumPer: NumPer,
+          privilegio: privilegio,
+        }, success: function (response) {
+          if (response != "reachedMax") {
+            $(".tableAsistenciaBody").append(response);
+            start += limit;
+            getAsisData(start, limit, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, privilegio);
+          } else {
+            dTable1 = $(".tableAsistencia").DataTable({
+              "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                  "sFirst": "Primero",
+                  "sLast": "Último",
+                  "sNext": "Siguiente",
+                  "sPrevious": "Anterior"
+                },
+                "oAria": {
+                  "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+              },
+              "lengthChange": false
+            });
+
+
+          }
+
+        }
+      });
+    }
+    
+    function cleartable(table) {
+      table.clear().draw();
+      table.destroy();
+    }
+
     function manageData(key) {
             var horas = $("#horas");
             var rowid=$("#rowid");
@@ -343,59 +401,7 @@ $ID=$_SESSION['user'];
                 }
             });
             }
-    function getAsisData(start, limit,ID,grupID) {
-            $.ajax({
-                url: 'php/ajax_Asistencias.php',
-                method: 'POST',
-                dataType: 'text',
-                data: {
-                    key: 'getExistingData',
-                    start: start,
-                    limit: limit,
-                    ID: ID,
-                    grupID: grupID
-                }, success: function (response) {
-                    if (response != "reachedMax") {
-                        $(".tableAsisBody").append(response);
-                        start += limit;
-                        getAsisData(start, limit,ID,grupID);
-                    } else {
-                      if(dataindex != 0){
-                            
-                        }else{
-                          dTable = $(".tableAsis").DataTable({
-                            "language": {
-                                "sProcessing": "Procesando...",
-                                "sLengthMenu": "Mostrar _MENU_ registros",
-                                "sZeroRecords": "No se encontraron resultados",
-                                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                                "sInfoPostFix": "",
-                                "sSearch": "Buscar:",
-                                "sUrl": "",
-                                "sInfoThousands": ",",
-                                "sLoadingRecords": "Cargando...",
-                                "oPaginate": {
-                                    "sFirst": "Primero",
-                                    "sLast": "Último",
-                                    "sNext": "Siguiente",
-                                    "sPrevious": "Anterior"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                                }
-                            },
-                            "lengthChange": false
-                        });}
-                        
-                    }
-
-                }
-            });
-        }
+    
     function getGroupData(idestudiante){
       $.ajax({
               url: 'php/ajax_Asistencias.php',

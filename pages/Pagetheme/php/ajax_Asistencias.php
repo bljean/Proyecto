@@ -131,22 +131,43 @@ if($_POST['key'] == 'getAsisData'){
                 }
             }else{
                 while($data= $sql->fetch_array()){
-                    $response .='
-                    <tr>
-                        <td>'.$data["Fecha"].'</td>
-                        <td>'.$data["Diasemana"].'</td>
-                        <td>'.$data["Horaini"].'</td>
-                        <td>'.$data["Horafin"].'</td>
-                        <td>'.$data["Horaentrada"].'</td>
-                        <td>'.$data["HorasPresente"].'</td>
-                        <td>'.$data["Presencia"].'</td>
-                        <td>
-                        <div class="col-md-2">
-                        <input type="button" onclick="edit('.$data["Fecha"].')" value="Editar" class="btn btn-primary">
-                        </div>
-                        </td>
-                    </tr>
-                    ';
+                    if($data["Presencia"]=="P"){
+                        $response .='
+                        <tr>
+                            <td>'.$data["Fecha"].'</td>
+                            <td>'.$data["Diasemana"].'</td>
+                            <td>'.$data["Horaini"].'</td>
+                            <td>'.$data["Horafin"].'</td>
+                            <td>'.$data["Horaentrada"].'</td>
+                            <td>'.$data["HorasPresente"].'</td>
+                            <td>'.$data["Presencia"].'</td>
+                            <td>
+                            <div class="col-md-2">
+                            <input type="button" onclick="edit(\''.$studentID.'\',\''.$data["Fecha"].'\',\''.$data["Horaini"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\',\''.$data["Diasemana"].'\',\''.$data["Presencia"].'\')" value="Editar" class="btn btn-primary" disabled>
+                            </div>
+                            </td>
+                        </tr>
+                        ';
+                    }else{
+                        $response .='
+                        <tr>
+                            <td>'.$data["Fecha"].'</td>
+                            <td>'.$data["Diasemana"].'</td>
+                            <td>'.$data["Horaini"].'</td>
+                            <td>'.$data["Horafin"].'</td>
+                            <td>'.$data["Horaentrada"].'</td>
+                            <td>'.$data["HorasPresente"].'</td>
+                            <td>'.$data["Presencia"].'</td>
+                            <td>
+                            <div class="col-md-2">
+                            <input type="button" onclick="edit(\''.$studentID.'\',\''.$data["Fecha"].'\',\''.$data["Horaini"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\',\''.$data["Diasemana"].'\',\''.$data["Presencia"].'\')" value="Editar" class="btn btn-primary">
+                            </div>
+                            </td>
+                        </tr>
+                        ';
+                        
+                    }
+                   
                 }
             }
             
@@ -281,7 +302,32 @@ if ($_POST['key'] == 'updateRow' or $_POST['key'] == 'addNew'){
         exit('success');
         }
     }
+
+if($_POST['key'] == 'guardarasis'){
+        
+        $studentID = $conn->real_escape_string($_POST['studentID']);
+        $Fecha = $conn->real_escape_string($_POST['Fecha']);
+        $Horaini = $conn->real_escape_string($_POST['Horaini']);
+        $NumGrupo = $conn->real_escape_string($_POST['NumGrupo']);
+        $CodTema = $conn->real_escape_string($_POST['CodTema']);
+        $CodTP = $conn->real_escape_string($_POST['CodTP']);
+        $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
+        $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
+        $NumPer = $conn->real_escape_string($_POST['NumPer']);
+        $Diasemana = $conn->real_escape_string($_POST['Diasemana']);
+        $Presencia = $conn->real_escape_string($_POST['Presencia']);
+        $dayVal = $conn->real_escape_string($_POST['dayVal']);
+        $sql = $conn->query("UPDATE asistencia SET Presencia ='$dayVal' WHERE ID ='$studentID' AND Fecha ='$Fecha' AND Horaini ='$Horaini' AND NumGrupo ='$NumGrupo' AND CodTema = '$CodTema' AND CodTP = '$CodTP' AND CodCampus = '$CodCampus' AND AnoAcad = '$AnoAcad' AND NumPer ='$NumPer'");
+
+        $jsonArray = array(
+            'Grupo'=>"hola",
+           // 'Tardanza'=>$tiempo ,
+        );
+        exit(json_encode($jsonArray));
+    }
+        
 }
+
 function totalHorasAsistencia($horaIni,$horaFin,$horaEntrada,$precencia){
     $time1 = strtotime($horaIni);
     $time2 = strtotime($horaFin);
