@@ -247,7 +247,7 @@ if(isset($_SESSION['loggedIN'])){
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    key: 'edit',
+                    key: 'edit1',
                     CodCampus:CodCampus,
                     CodTema:CodTema,
                     CodTP:CodTP,
