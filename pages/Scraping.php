@@ -250,7 +250,7 @@ function getProfesorGroup($numCedula,$cardN,$name,$apellido){
         }
         attendEstRecord($numCedula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido,'P',$numCedula);
     }elseif($sqlProfessorSustiGrupo->num_rows >0){
-        while($data= $sqlProfessorGrupo->fetch_array()){
+        while($data= $sqlProfessorSustiGrupo->fetch_array()){
             $horaini=$data["HoraInicio"];
             $horafin=$data["Horafin"];
             $NumGrupo=$data["NumGrupo"];
@@ -399,7 +399,6 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
     $time= date('H:i:s');
     $day= getWeekday($date);
     $horadeAusencia = getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer);
-    echo $horafin,"\n";
     $horas=totalhorasgrupo($horaini,$horafin);
     //echo"$horadeAusencia";
     if($time > $horadeAusencia){
@@ -493,7 +492,9 @@ function getHorapresencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo
         }
         $totalHoras = round(abs($time2 - $time1) / 3600,2);
         $whole = floor($totalHoras);
+        //echo $totalHoras,"\n";
         $tiempolimite*=$whole;
+        //$fraction = $totalHoras - $whole;
         $horadeAusencia = date('H:i:s', strtotime('+'.$tiempolimite.' minutes', $time1));
         return $horadeAusencia;
     
