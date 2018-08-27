@@ -95,6 +95,7 @@ if(isset($_SESSION['loggedIN'])){
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+<!---->
           <div id="tableManager" class="modal fade">
             <div class="modal-dialog" style="width:1250px;">
               <div class="modal-content">
@@ -118,7 +119,7 @@ if(isset($_SESSION['loggedIN'])){
                           <th>Hora Llegada</th>
                           <th>Horas Presente</th>
                           <th>Asistencia</th>
-
+                          <th>Opciones</th>
                         </thead>
                         <tbody class="tableAsistenciaBody">
 
@@ -130,6 +131,7 @@ if(isset($_SESSION['loggedIN'])){
               </div>
             </div>
           </div>
+
           <!-- -->
           <div id="tablaconfigurar" class="modal fade">
             <div class="modal-dialog">
@@ -221,6 +223,62 @@ if(isset($_SESSION['loggedIN'])){
               </div>
             </div>
           </div>
+          <div id="tableeditasis" class="modal fade">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Editar Asistencia</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Grupo:</h4>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" id="grupo1" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Fecha:</h4>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" id="fecha1" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Dia de Semana:</h4>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="text" class="form-control" id="semana1" readonly="readonly">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Asistencia:</h4>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="text" class="form-control" id="asistencia1" readonly="readonly">
+                    </div>
+                    <div class="dropdown create col-md-2 Tiempo2" id="dropdownasis">
+                      <select id="idasis" class="btn btn-default" type="button">
+                        <option selected="selected" value="val2">Asistencia</option>
+                        <option value="P">P</option>
+                        <option value="E">E</option>
+                      </select>
+                    </div>
+                  </div>
+                  <input type="hidden" id="editRowID" value="0">
+                </div>
+                <div class="modal-footer">
+                  <input type="hidden" id="rowid">
+                  <input type="button" id="botonasis" onclick="guardarasis()" value="Salvar cambios" class="btn btn-primary">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- -->
           <!-- Website Overview -->
           <div class="panel panel-default">
             <div class="panel-heading tabla-color-bg">
@@ -262,7 +320,7 @@ if(isset($_SESSION['loggedIN'])){
                         <div align="right" class="asistente"> 
                         <button class="btn btn-primary" onclick="asistente()" id="Asistente" type="button" style="pa">Asistente</button>
                     
-                        <button class="btn btn-primary" onclick="edit()" id="configurar" type="button" style="pa">Configurar</button>
+                        <button class="btn btn-primary" onclick="edit1()" id="configurar1" type="button" style="pa">Configurar</button>
                         </div>
                       </div>
                     </div>
@@ -334,7 +392,7 @@ if(isset($_SESSION['loggedIN'])){
           $("#tituloGrupo").append(response.groupCodigo);
           //getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
-          $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
+          $("#configurar1").attr('onclick','edit1(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
           $("#Asistente").attr('onclick','asistente(\''+ProfID+'\',\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
@@ -422,7 +480,7 @@ if(isset($_SESSION['loggedIN'])){
           //$(".tableAsisBody").html('');
           cleartable(dTable);
           getestgrupo(response.NumGrupo, response.CodTema, response.CodTP, response.CodCampus, response.AnoAcad, response.NumPer);
-          $("#configurar").attr('onclick','edit(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
+          $("#configurar1").attr('onclick','edit1(\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
           $("#Asistente").attr('onclick','asistente(\''+ProfID+'\',\''+response.CodCampus+'\',\''+response.CodTema+'\',\''+response.CodTP+'\',\''+response.NumGrupo+'\',\''+response.AnoAcad+'\',\''+response.NumPer+'\')');
         }
       });
@@ -597,14 +655,23 @@ if(isset($_SESSION['loggedIN'])){
                  }
              });}
              }
+
+    function edit(studentID,Fecha,Horaini,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,Diasemana,Presencia) {
+        $("#grupo1").val(""+CodTema+"-"+CodTP+"-"+NumGrupo +"");
+        $("#fecha1").val(Fecha);
+        $("#semana1").val(Diasemana);
+        $("#asistencia1").val(Presencia);
+        $("#tableeditasis").modal('show');
+        $("#botonasis").attr('onclick','guardarasis(\''+studentID+'\',\''+Fecha+'\',\''+Horaini+'\',\''+NumGrupo+'\',\''+CodTema+'\',\''+CodTP+'\',\''+CodCampus+'\',\''+AnoAcad+'\',\''+NumPer+'\',\''+Diasemana+'\',\''+Presencia+'\')');        
+        }
  
-    function edit(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
+    function edit1(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper) {
         $.ajax({
             url: 'php/ajax_ConfiguracionGrupo.php',
             method: 'POST',
             dataType: 'json',
             data: {
-                key: 'edit',
+                key: 'edit1',
                 CodCampus:CodCampus,
                 CodTema:CodTema,
                 CodTP:CodTP,
@@ -647,7 +714,41 @@ if(isset($_SESSION['loggedIN'])){
             }
         });
     }
-
+    function guardarasis(studentID,Fecha,Horaini,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,Diasemana,Presencia){
+             
+             var eID = document.getElementById("idasis");
+             var dayVal = eID.options[eID.selectedIndex].value;
+             var daytxt = eID.options[eID.selectedIndex].text;
+             //alert("Selected Item  " +  daytxt + ", Value " + dayVal);
+             
+             if(dayVal=='val2'){
+                 alert("Seleccione un Asistencia");
+             }else{
+             $.ajax({
+                 url: 'php/ajax_Asistencias.php',
+                 method: 'POST',
+                 dataType: 'json',
+                 data: {
+                     key:'guardarasis',
+                     dayVal:dayVal,
+                     studentID:studentID,
+                     Fecha:Fecha,
+                     Horaini:Horaini,
+                     NumGrupo:NumGrupo,
+                     CodTema:CodTema,
+                     CodTP:CodTP,
+                     CodCampus:CodCampus,
+                     AnoAcad:AnoAcad,
+                     NumPer:NumPer,
+                     Diasemana:Diasemana,
+                     Presencia:Presencia,
+                 }, success: function (response) {  
+                     $("#tableeditasis").modal('hide');
+                     $("div.Tiempo2 select").val("val2")
+                     location.reload();
+                 }
+             });}
+             }
 
 
 

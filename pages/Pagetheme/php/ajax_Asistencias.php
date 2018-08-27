@@ -114,7 +114,7 @@ if($_POST['key'] == 'getAsisData'){
         $sql = $conn->query("SELECT Fecha,Horaini,Horafin,Horaentrada,HorasPresente,Diasemana,Presencia FROM asistencia where ID='$studentID' AND NumGrupo='$NumGrupo' AND CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus' AND  AnoAcad='$AnoAcad' AND NumPer='$NumPer' LIMIT $start,$limit");
         if($sql->num_rows >0){
             $response ="";
-            if($privilegio!=0){
+            if($privilegio==2){
                 while($data= $sql->fetch_array()){
 
                     $response .='

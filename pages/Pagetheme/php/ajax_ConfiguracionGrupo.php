@@ -59,7 +59,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
             exit('reachedMax');
     }
     
-    if($_POST['key'] == 'edit'){
+    if($_POST['key'] == 'edit1'){
         $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
         $CodTema = $conn->real_escape_string($_POST['CodTema']);
         $CodTP = $conn->real_escape_string($_POST['CodTP']);
