@@ -264,6 +264,15 @@ function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$m
     $mensaje['message'] = $mensaje;
     $date = date('Y-m-d');
     $time= date('H:i:s');
+    // the message
+    $msg = "First line of text\nSecond line of text";
+
+    // use wordwrap() if lines are longer than 70 characters
+    $msg = wordwrap($msg,70);
+
+    // send email
+    mail("someone@example.com","My subject",$msg);
+
    
     $sqlestudiantes= connectBd()->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
     if($sqlestudiantes->num_rows >0){

@@ -238,10 +238,10 @@ $NumCedula=$_SESSION['NumCedula'];
                     key: 'getprofGroupData',
                     ID: ID,
                     }, success: function (response) {
-                       //    materias=response.materias1;
-                        //semanal=response.semanal;
+                       materias=response.materias1;
+                        semanal=response.semanal;
                         grafico();
-                        //grafico1();
+                        grafico1();
                     }
                 });
         }
