@@ -270,7 +270,7 @@ function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$m
         while($data=$sqlestudiantes->fetch_array()){
             $pusher->trigger(''.$data["Matricula"].'', 'my-event', $mensaje);
             $matricula=$data["Matricula"];
-            connectBd()->query("INSERT INTO notificaciones (ID, mensaje, estado, autor, fecha, Hora) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time')");
+            connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
         }
     }
     $sqlprofesores=connectBd()->query("SELECT NumCedula FROM contratodocencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
@@ -278,7 +278,7 @@ function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$m
         while($data=$sqlprofesores->fetch_array()){
             $pusher->trigger(''.$data["NumCedula"].'', 'my-event', $mensaje);
             $NumCedula=$data["NumCedula"];
-            connectBd()->query("INSERT INTO notificaciones (ID, mensaje, estado, autor, fecha, Hora) VALUES ('$NumCedula', '$mensaje', '0','Sistema', '$date', '$time')");
+            connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$NumCedula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
         }
     }
 }

@@ -26,6 +26,7 @@ $ID=$_SESSION['user'];
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!--iconos google-->
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -160,7 +161,21 @@ $ID=$_SESSION['user'];
                 
             });
         });
-
+    function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+           
+            });
+            //final de notificaciones
+    }
     function getcedula(ID){
       $.ajax({
               url: 'php/ajax_Misgruposdepartamento.php',
@@ -171,6 +186,7 @@ $ID=$_SESSION['user'];
                     ID: ID,
                     }, success: function (response) {
                         diasemana(response.NumCedula);
+                        notificacion(response.NumCedula);
                     }
                 });
       }

@@ -8,6 +8,17 @@ date_default_timezone_set('America/Santo_Domingo');
 $CodCampus = "ST";
 $CodEdif = "A1";
 $CodSalon = 14;
+$options = array(
+    'cluster' => 'mt1',
+    'encrypted' => true
+);
+$pusher = new Pusher\Pusher(
+    '8b7b30cb5814aead90c6',
+    '487f91e47b4bbf226e84',
+    '583885',
+    $options
+);
+
 
 //-------------------------------------------------------------
 //get the page: 
@@ -543,5 +554,14 @@ function totalhorasgrupo($time1,$time2){
         $horas=date("h:i", $thorastime);
         
         return $horas;
-    }
+}
+function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje){
+    $pusher=notificacion();
+    $mensaje['message'] = $mensaje;
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
+    $pusher->trigger(''.$data["Matricula"].'', 'my-event', $mensaje);
+    connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
+    
+}
 ?>
