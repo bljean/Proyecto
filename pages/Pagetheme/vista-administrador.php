@@ -25,6 +25,7 @@ if(isset($_SESSION['loggedIN'])){
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -169,7 +170,7 @@ if(isset($_SESSION['loggedIN'])){
             asistenciae=[];
             diasemana();
             //contargrupoactivolunes();
-           
+            notificacion("admin");
          
             $("#Logout").on('click', function () {
                 <?php 
@@ -180,7 +181,21 @@ if(isset($_SESSION['loggedIN'])){
             });
         });
 
-
+    function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+           
+            });
+            //final de notificaciones
+    }
     function diasemana(){
                 $.ajax({
                   url: 'php/ajax_vista-administrador.php',

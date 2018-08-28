@@ -40,6 +40,31 @@ if($_POST['key'] == 'getEstGroupData'){
    
 }
 
+if($_POST['key'] == 'getExistingData'){
+    
+    $ID=$conn->real_escape_string($_POST['ID']);
+    $sql = $conn->query("SELECT mensaje,estado,autor,fecha,Hora FROM notificaciones  WHERE ID='$ID' ORDER BY fecha,Hora DESC ");
+    if($sql->num_rows >0){
+        $response ="";
+        while($data= $sql->fetch_array()){
+            $mensaje=$data["mensaje"];
+            $autor=$data["autor"];
+            $fecha=$data["fecha"];
+            $Hora=$data["Hora"];
+            $response .='
+                
+            <li class="list-group-item">'.$mensaje.',('.$autor.','.$fecha.' '.$Hora.')</li>
+                
+                ';
+        }
+    }
+    $jsonArray = array(
+        'body'=> $response,
+    );
+    exit(json_encode($jsonArray));
+   
+}
+
 }
 
 

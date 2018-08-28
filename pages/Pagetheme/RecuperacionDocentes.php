@@ -26,6 +26,7 @@ if(isset($_SESSION['loggedIN'])){
     <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -295,6 +296,7 @@ if(isset($_SESSION['loggedIN'])){
         });
         $(document).ready(function () {
             var NumCedula = "<?php echo $NumCedula; ?>";
+            notificacion(NumCedula);
             $("#Logout").on('click', function () {
                 window.location = 'php/logout.php'
             });
@@ -325,6 +327,8 @@ if(isset($_SESSION['loggedIN'])){
             });
             $("#SolicituBtn").on('click', function () {
                 $("#tableSolicitudes").modal('show');
+                cleartable(dTable1);
+                getSolicitudesData(NumCedula);
             });
             getSolicitudesData(NumCedula);
             getExistingData(0, 50,NumCedula);
@@ -363,8 +367,7 @@ if(isset($_SESSION['loggedIN'])){
                 }, success: function (response) { 
                     //console.log(response);
                     if(response.control=="1"){
-                    alert(response.mensaje);
-                    location.reload();
+             
                     }else if(response.control=="0"){
                     alert(response.mensaje);
                     }
@@ -397,7 +400,7 @@ if(isset($_SESSION['loggedIN'])){
                         start += limit;
                         getExistingData(start, limit,NumCedula);
                     } else {
-                        $(".tableRecuperar").DataTable({
+                        dTable =$(".tableRecuperar").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -439,7 +442,7 @@ if(isset($_SESSION['loggedIN'])){
                     NumCedula:NumCedula,
                 }, success: function (response) {
                     $(".tableSolicitudesBody").append(response);
-                    dTable = $(".tableSolicitud").DataTable({
+                    dTable1 = $(".tableSolicitud").DataTable({
                         "language": {
                         "sProcessing": "Procesando...",
                         "sLengthMenu": "Mostrar _MENU_ registros",
@@ -476,6 +479,28 @@ if(isset($_SESSION['loggedIN'])){
             } else caller.css('border', '');
 
             return true;
+        }
+        function cleartable(table){
+        table.clear().draw();
+        table.destroy();
+        }
+        function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+            cleartable(dTable);
+            getExistingData(0,50,ID);
+            $("#tableManager").modal('hide');
+            //location.reload();
+            });
+            //final de notificaciones
         }
         
         

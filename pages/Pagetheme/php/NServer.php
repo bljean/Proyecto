@@ -13,5 +13,5 @@
   );
 
   $data['message'] = 'hello world';
-  $pusher->trigger('my-channel', 'my-event', $data);
+  $pusher->trigger('admin', 'my-event', $data);
 ?>

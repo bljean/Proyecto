@@ -27,6 +27,7 @@ $NumCedula=$_SESSION['NumCedula'];
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!--iconos google-->
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -134,7 +135,10 @@ $NumCedula=$_SESSION['NumCedula'];
                                     <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> NotiFicaciones</h3>
                             </div>
         
-                            <div class="panel-body"> test</div>
+                            <div class="panel-body"> 
+                            <ul class="list-group list-group-flush tableNotificacionBody">
+                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -153,6 +157,8 @@ $NumCedula=$_SESSION['NumCedula'];
             var ID= "<?php echo $NumCedula;  ?>";
             materias=[];
             semanal=[];
+            notificacion(ID);
+            getExistingData(ID);
             getprofGroupData(ID);
             grafico();
             getESTAsisProfGroupData(ID);
@@ -163,8 +169,66 @@ $NumCedula=$_SESSION['NumCedula'];
                 window.location = 'php/logout.php';
             });
         });
+        function getExistingData(ID) {
+            $.ajax({
+                url: 'php/ajax_vista-estudiante.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getExistingData',
+                    ID:ID,
+                }, success: function (response) {
+                   
+                    $(".tableNotificacionBody").append(response.body);
+                      /*  dTable =$(".tableNotificacion").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });*/
+                    
 
-    
+                }
+            });
+        }
+    function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+            //cleartable(dTable);
+            $(".tableNotificacionBody").html("");
+            getExistingData(ID);
+            });
+            //final de notificaciones
+        }
     function getprofGroupData(ID){
             $.ajax({
               url: 'php/ajax_vista-profesor.php',

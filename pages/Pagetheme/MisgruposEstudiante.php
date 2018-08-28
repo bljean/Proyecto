@@ -23,6 +23,7 @@ if(isset($_SESSION['loggedIN'])){
     <link href="css/styletest.css" rel="stylesheet">
     <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -202,6 +203,7 @@ if(isset($_SESSION['loggedIN'])){
       dataindex=0;
       var ID = "<?php echo $ID; ?>";
       var privilegio = "<?php echo $privilegio; ?>";
+      notificacion(ID)
       getEstGroupData(ID,privilegio);
       $("#Logout").on('click', function () {
                 <?php 
@@ -212,6 +214,21 @@ if(isset($_SESSION['loggedIN'])){
                 
             });
       });
+    function notificacion(ID){
+            //notificaciones
+          // Enable pusher logging - don't include this in production
+          Pusher.logToConsole = true;
+          var pusher = new Pusher('8b7b30cb5814aead90c6', {
+          cluster: 'mt1',
+          encrypted: true
+          });
+          var channel = pusher.subscribe(''+ID+'');
+          channel.bind('my-event', function(data) {
+          alert(JSON.stringify(data));
+          //cleartable(dTable);
+          });
+          //final de notificaciones
+      }
     function getEstGroupData(studentID,privilegio){
       $.ajax({
               url: 'php/ajax_Asistencias.php',

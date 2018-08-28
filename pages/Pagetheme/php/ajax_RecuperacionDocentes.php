@@ -1,4 +1,6 @@
 <?php
+require '/xampp/htdocs/Proyecto/vendor/autoload.php';
+date_default_timezone_set('America/Santo_Domingo');
 if (isset($_POST['key'])){
     
 $user='root';
@@ -122,7 +124,8 @@ $conn= new mysqli('localhost',$user, $pass, $db);
          if($sqlgetgrupoRH->num_rows == 0 ){
             $conn->query("INSERT INTO gruporecuperarhoras (CodTema,CodTP,NumGrupo,CodCampus,AnoAcad,NumPer,DiaSem,HoraInicio,Horafin,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Fecha_Recuperar,Fecha) VALUES ('$CodTema', '$CodTP', '$Numgrupo', '$CodCampus', '$AnoAcad', '$Numper', '$day', '$hora', '$horafin', '$Sal_CodCampus', '$Sal_CodEdif', '$Sal_CodSalon', '$fecharecupera', '$fecha')");
             $control=1;
-            $mensaje="Solicitud Aceptada";
+            $mensaje='La recuperacion del grupo: '.$grupo.' ha sido pautada para la fecha: '.$fecha.' en el aula:'.$aula.' desde la hora : '.$hora.' Hasta la hora: '.$horafin.' ';
+            notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje);
             $conn->query("UPDATE gruporecuperar SET PR_o_R = 'E' WHERE CodTema = '$CodTema' AND CodTp = '$CodTP' AND NumGrupo ='$Numgrupo'  AND CodCampus = '$CodCampus' AND AnoAcad = '$AnoAcad' AND NumPer = '$Numper' AND Fecha_Recuperar = '$fecharecupera'");
          }else {
             $control=0;
@@ -224,6 +227,13 @@ $conn= new mysqli('localhost',$user, $pass, $db);
 
   
 }
+function connectBd(){
+    $user='root';
+    $pass='';
+    $db='proyectofinal';
+    $conn= new mysqli('localhost',$user, $pass, $db);
+    return $conn;
+}
 function getWeekday($date) {
     return date('w', strtotime($date));
 }
@@ -235,5 +245,41 @@ function getHorafin($Horaini,$HoraRecuperar){
     $totalHoras = round(abs($HoraRecuperar - $time1) / 3600,2);
     $horadeAusencia = date('H:i:s', strtotime('+'.$totalHoras.' hours', $Horaini));
     return $horadeAusencia;
+}
+function notificacion(){
+    $options = array(
+        'cluster' => 'mt1',
+        'encrypted' => true
+    );
+    $pusher = new Pusher\Pusher(
+        '8b7b30cb5814aead90c6',
+        '487f91e47b4bbf226e84',
+        '583885',
+        $options
+    );
+    return $pusher;
+}
+function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje){
+    $pusher=notificacion();
+    $mensaje['message'] = $mensaje;
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
+   
+    $sqlestudiantes= connectBd()->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+    if($sqlestudiantes->num_rows >0){
+        while($data=$sqlestudiantes->fetch_array()){
+            $pusher->trigger(''.$data["Matricula"].'', 'my-event', $mensaje);
+            $matricula=$data["Matricula"];
+            connectBd()->query("INSERT INTO notificaciones (ID, mensaje, estado, autor, fecha, Hora) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time')");
+        }
+    }
+    $sqlprofesores=connectBd()->query("SELECT NumCedula FROM contratodocencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+    if($sqlprofesores->num_rows >0){
+        while($data=$sqlprofesores->fetch_array()){
+            $pusher->trigger(''.$data["NumCedula"].'', 'my-event', $mensaje);
+            $NumCedula=$data["NumCedula"];
+            connectBd()->query("INSERT INTO notificaciones (ID, mensaje, estado, autor, fecha, Hora) VALUES ('$NumCedula', '$mensaje', '0','Sistema', '$date', '$time')");
+        }
+    }
 }
 ?>

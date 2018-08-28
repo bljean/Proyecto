@@ -21,6 +21,7 @@ if(isset($_SESSION['loggedIN'])){
     <link href="css/styletest.css" rel="stylesheet">
     <script src="http://cdn.ckeditor.com/4.6.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -236,9 +237,24 @@ if(isset($_SESSION['loggedIN'])){
     
 <script type="text/javascript"> 
 $(document).ready(function () {
-    
+    notificacion("admin");
     getCampusData();
       });
+function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+           
+            });
+            //final de notificaciones
+}
 function getCampusData(){
     $.ajax({
             url: 'php/ajax_eventos.php',
@@ -323,6 +339,7 @@ function llenartabla(){
                   campus: campus,
                   aula: aula,
                   }, success: function (response) {
+                      
                         if(dataindex != 0){
                             dTable.destroy();
                         }
@@ -355,6 +372,7 @@ function llenartabla(){
                                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                                 }
                             },
+                            "order": [[ 4, "desc" ]],
                             "lengthChange": false
                         });
                   }

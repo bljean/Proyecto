@@ -27,6 +27,7 @@ $id=$_SESSION['user'];
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!--iconos google-->
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 </head>
 
 <body>
@@ -127,7 +128,10 @@ $id=$_SESSION['user'];
                                     <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> NotiFicaciones</h3>
                             </div>
         
-                            <div class="panel-body"> test</div>
+                            <div class="panel-body ">
+                            <ul class="list-group list-group-flush tableNotificacionBody">
+                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,12 +148,13 @@ $id=$_SESSION['user'];
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var ID = "<?php echo $id; ?>";
             semana=[];
             asistenciassemanal=[];
             asistenciae=[];
-            var ID = "<?php echo $id; ?>";
-            
+            notificacion(ID);
             getEstGroupData(ID);
+            getExistingData(ID);
             $("#Logout").on('click', function () {
                 <?php 
 
@@ -160,8 +165,66 @@ $id=$_SESSION['user'];
             });
         });
         
+        function notificacion(ID){
+             //notificaciones
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('8b7b30cb5814aead90c6', {
+            cluster: 'mt1',
+            encrypted: true
+            });
+            var channel = pusher.subscribe(''+ID+'');
+            channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+            //cleartable(dTable);
+            $(".tableNotificacionBody").html("");
+            getExistingData(ID);
+            });
+            //final de notificaciones
+        }
+        function getExistingData(ID) {
+            $.ajax({
+                url: 'php/ajax_vista-estudiante.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getExistingData',
+                    ID:ID,
+                }, success: function (response) {
+                   
+                    $(".tableNotificacionBody").append(response.body);
+                      /*  dTable =$(".tableNotificacion").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });*/
+                    
 
-
+                }
+            });
+        }
         function getEstGroupData(ID){
             $.ajax({
               url: 'php/ajax_vista-estudiante.php',
@@ -181,7 +244,10 @@ $id=$_SESSION['user'];
                     }
                 });
         }
-
+        function cleartable(table){
+            table.clear().draw();
+            table.destroy();
+        }
         function grafico(){
             Chart.defaults.global.defaultFontFamily = 'Lato';
             Chart.defaults.global.defaultFontSize = 18;
@@ -311,15 +377,7 @@ $id=$_SESSION['user'];
 
         }
         
-        
-        
-        
-
-
     </script>
-
-
-
 </body>
 
 </html>
