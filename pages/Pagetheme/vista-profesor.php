@@ -132,9 +132,8 @@ $NumCedula=$_SESSION['NumCedula'];
                             <div class="panel-heading tabla-color-bg">
         
                                 <h3 class="panel-title " style="text-align: start">
-                                    <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> NotiFicaciones</h3>
+                                    <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> Notificaciones</h3>
                             </div>
-        
                             <div class="panel-body"> 
                             <ul class="list-group list-group-flush tableNotificacionBody">
                             </ul>
