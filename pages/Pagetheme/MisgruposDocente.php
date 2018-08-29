@@ -319,7 +319,7 @@ if(isset($_SESSION['loggedIN'])){
                       </table>
                       <div class="row">
                         <div align="right" class="asistente"> 
-                        <button class="btn btn-primary" onclick="asistente()" id="Asistente" type="button" style="pa">Asistente</button>
+                        <button class="btn btn-primary" onclick="asistente()" id="Asistente" type="button" style="pa">Sustituto</button>
                     
                         <button class="btn btn-primary" onclick="edit1()" id="configurar1" type="button" style="pa">Configurar</button>
                         </div>
