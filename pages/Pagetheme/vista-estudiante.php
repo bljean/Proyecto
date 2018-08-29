@@ -150,6 +150,7 @@ $id=$_SESSION['user'];
         $(document).ready(function () {
             var ID = "<?php echo $id; ?>";
             semana=[];
+            materias1=[];
             asistenciassemanal=[];
             asistenciae=[];
             notificacion(ID);
@@ -235,10 +236,9 @@ $id=$_SESSION['user'];
                     ID: ID,
                     }, success: function (response) {
                         
-                        semana =response.body;
+                        materias1=response.materias1;
                         asistenciae = response.semestral;
                         asistenciassemanal=response.semanal;
-                        
                         grafico();
                         grafico1();
                     }
@@ -258,7 +258,7 @@ $id=$_SESSION['user'];
             let massPopChart = new Chart(myChart, {
                 type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
                 data: {
-                    labels: semana,
+                    labels: materias1,
                     datasets: [{
                         label: 'Ausencia',
                         data: asistenciassemanal ,
@@ -322,7 +322,7 @@ $id=$_SESSION['user'];
             let massPopChart1 = new Chart(myChart1, {
                 type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
                 data: {
-                    labels: semana,
+                    labels: materias1,
                     datasets: [{
                         label: 'Asistencia',
                         data: asistenciae,
@@ -343,7 +343,7 @@ $id=$_SESSION['user'];
                 options: {
                     title: {
                         display: true,
-                        text: 'Ausencia Mensual',
+                        text: 'Ausencia Semestral',
                         fontSize: 30
                     }, scales: {
                         yAxes: [{

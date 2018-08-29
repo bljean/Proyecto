@@ -26,14 +26,18 @@ if($_POST['key'] == 'getEstGroupData'){
         foreach(getsemanagraf() as $fecha){  
          if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
         $diasemana[]=getWeekday($fecha);
-        $semanal[]=getestdiadia($fecha,$ID,$conn);
+        $semanal[]=ausenciaporsemanaEST($fecha,$ID,$conn);
     
         }
         }
 
-    $jsonArray = array(
-        'body'=> $response,  
-        'semestral'=> $semestral,
+        $semestralpormateria[]=asistenciasemestralEST($ID,$conn);
+      
+        $materias1=getestdiadia($ID,$conn);
+
+    $jsonArray = array( 
+        'materias1'=>$materias1,
+        'semestral'=> $semestralpormateria,
         'semanal'=> $semanal,   
     );
     exit(json_encode($jsonArray));
@@ -161,10 +165,31 @@ function getWeekday($date) {
             
 }
 
-function getestdiadia($fecha,$ID,$conn){
-    
+function getestdiadia($ID,$conn){
+    $sqlest=$conn->query("SELECT CodTema, CodTP,Numgrupo, CodCampus, AnoAcad, NumPer FROM grupoinsest WHERE Matricula='$ID'");
+    $count1=0;
+    $count=0;
+    $calculo=0;
+    if($sqlest->num_rows >0){
+        while($data= $sqlest->fetch_array()){
+            $NumGrupo   = $data["Numgrupo"];
+            $CodTema    = $data["CodTema"];
+            $CodTP      = $data["CodTP"];
+            $CodCampus  = $data["CodCampus"];
+            $AnoAcad    = $data["AnoAcad"];
+            $NumPer     = $data["NumPer"]; 
+            $response []=''.$CodTema.'-'.$CodTP.'-'.$NumPer.'';
+        }
+
+    } return $response;
+
+}
+
+
+
+function ausenciaporsemanaEST($fecha,$ID,$conn){
     $diasemana=getWeekday($fecha);
-    $sqlest=$conn->query("SELECT grupoinsest.CodTema as CodTema , grupoinsest.CodTP as CodTP , grupoinsest.Numgrupo as Numgrupo  , grupoinsest.CodCampus as CodCampus, grupoinsest.AnoAcad as AnoAcad, grupoinsest.NumPer as NumPer FROM grupoinsest INNER JOIN horariogrupoactivo ON grupoinsest.CodTema=horariogrupoactivo.CodTema AND grupoinsest.CodTP=horariogrupoactivo.CodTP AND grupoinsest.Numgrupo=horariogrupoactivo.NumGrupo AND grupoinsest.CodCampus= horariogrupoactivo.CodCampus AND grupoinsest.AnoAcad=horariogrupoactivo.AnoAcad AND grupoinsest.NumPer=horariogrupoactivo.NumPer AND horariogrupoactivo.DiaSem='$diasemana' WHERE grupoinsest.Matricula='$ID'");
+    $sqlest=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer  from grupoinsest where Matricula='$ID'");
     $count1=0;
     $count=0;
     $calculo=0;
@@ -177,7 +202,7 @@ function getestdiadia($fecha,$ID,$conn){
             $AnoAcad    = $data["AnoAcad"];
             $NumPer     = $data["NumPer"]; 
             $count+=1;
-            $sqlasistencia=$conn->query("SELECT COUNT(*) as cont from asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Fecha='$fecha' and Presencia='P' and ID='$ID' ");
+            $sqlasistencia=$conn->query("SELECT COUNT(*) as cont from asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Fecha='$fecha' and Presencia='A' and ID='$ID' ");
             if($sqlasistencia->num_rows>0){
                 while($data= $sqlasistencia->fetch_array())
                 {
@@ -185,14 +210,38 @@ function getestdiadia($fecha,$ID,$conn){
                 }
             } 
         }
-        $ausencia=((int)$count-(int)$count1);
-    $dividirl= ((int)$ausencia / (int)$count);
-    $calculo = ($dividirl*100);
+    $calculo=(int)$count1;
     } return $calculo;
 
 }
 
+function asistenciasemestralEST($ID,$conn){
+    
+    $sqlest=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from grupoinsest where Matricula='$ID'");
+    $count1=0;
+    $count=0;
+    $calculo=0;
+    if($sqlest->num_rows >0){
+        while($data= $sqlest->fetch_array()){
+            $NumGrupo   = $data["Numgrupo"];
+            $CodTema    = $data["CodTema"];
+            $CodTP      = $data["CodTP"];
+            $CodCampus  = $data["CodCampus"];
+            $AnoAcad    = $data["AnoAcad"];
+            $NumPer     = $data["NumPer"]; 
+            $count+=1;
+            $sqlasistencia=$conn->query("SELECT COUNT(*) as cont from asistencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND Presencia='A' AND ID='$ID'");
+            if($sqlasistencia->num_rows>0){
+                while($data= $sqlasistencia->fetch_array())
+                {
+                    $count1+=$data["cont"];
+                }
+            } 
+        }
+    $calculo=(int)$count1;
+    } return $calculo;
 
+}
 
 
 
