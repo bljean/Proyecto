@@ -9,6 +9,7 @@ date_default_timezone_set('America/Santo_Domingo');
 
 if($_POST['key'] == 'getprofGroupData'){
     $ID=$conn->real_escape_string($_POST['ID']);
+    /*
     $sqlsemana=$conn->query("SELECT DiaSem,NombreLargo FROM diasemana");
     if($sqlsemana->num_rows>0){ 
         while($data=$sqlsemana->fetch_array()){
@@ -20,7 +21,7 @@ if($_POST['key'] == 'getprofGroupData'){
         }
 
         }
-    }      
+        }      
         
         foreach(getsemanagraf() as $fecha){  
             if(getCountprofesoresDia(getWeekday($fecha),$conn)!=-1){
@@ -28,22 +29,46 @@ if($_POST['key'] == 'getprofGroupData'){
            $semanal[]=asistenciapormateriaprof($fecha,$ID,$conn);
        
            }
-           }
-
+        }*/
+    
+        $sqlest=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from contratodocencia where NumCedula='$ID'");
+        if($sqlest->num_rows >0){
+            while($data= $sqlest->fetch_array()){
+                $NumGrupo   = $data["Numgrupo"];
+                $CodTema    = $data["CodTema"];
+                $CodTP      = $data["CodTP"];
+                $CodCampus  = $data["CodCampus"];
+                $AnoAcad    = $data["AnoAcad"];
+                $NumPer     = $data["NumPer"]; 
+                
+                $sqlasistencia=$conn->query("SELECT Horas from gruporecuperar WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND PR_o_R!='R'");
+                if($sqlasistencia->num_rows>0){
+                    while($data1= $sqlasistencia->fetch_array())
+                    {   
+                        $cantidad=$data1["Horas"];
+                        $horaini="00:00:00";
+                        $hora[]= totalhorasgrupo($horaini,$cantidad);
+                    }
+                } 
+            }
+         
+        }  
+    
+    //$variable[]=test($ID,$conn);
 
     $materias1=getprofmateriasdiadia($ID,$conn);
 
     $jsonArray = array(
         //'body'=> $response,  
         //'semestral'=> $semestral,
-        'semanal'=> $semanal, 
+        'semanal'=> $hora, 
         'materias1'=> $materias1,  
     );
     exit(json_encode($jsonArray));
    
 }
 
-
+/*
 if($_POST['key'] == 'getESTAsisProfGroupData'){ 
     $ID=$conn->real_escape_string($_POST['ID']);
     $sql=$conn->query("SELECT  contratodocencia.CodTema as CodTema, contratodocencia.CodTp as CodTp, contratodocencia.Numgrupo as Numgrupo, contratodocencia.CodCampus as CodCampus, contratodocencia.AnoAcad as AnoAcad, contratodocencia.NumPer as NumPer, asignatura.Nombre as Nombre, asignatura.NumCreditos as NumCreditos FROM contratodocencia INNER JOIN asignatura ON asignatura.CodTema=contratodocencia.CodTema AND asignatura.CodTp=contratodocencia.CodTp WHERE contratodocencia.NumCedula='$ID'");
@@ -101,11 +126,9 @@ if($_POST['key'] == 'getESTAsisProfGroupData'){
     exit(json_encode($jsonArray));
    
 }
-
+*/
 
 }
-
-
 
 function totalhorasgrupo($time1,$time2){
     $time1=strtotime($time1);
@@ -113,7 +136,7 @@ function totalhorasgrupo($time1,$time2){
     $totalHoras = round(abs($time2 - $time1) / 3600,2);
     return $totalHoras;
 }
-
+/*
 function getgrupomatricula($CodTema,$CodTP,$conn){
     $sql=$conn->query("SELECT Nombre FROM asignatura WHERE CodTema='$CodTema' AND CodTp='$CodTP'");    
                 if($sql->num_rows>0){
@@ -135,7 +158,7 @@ function cantidadhoras($CodTema, $CodTP,$Numgrupo,$CodCampus,$AnoAcad,$Numper,$M
     }
     return $hora;
 
-}
+}*/
 
 function getprofmateriasdiadia($ID,$conn){
     $sqlprof=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from contratodocencia where NumCedula='$ID'");
@@ -152,7 +175,7 @@ function getprofmateriasdiadia($ID,$conn){
         }
     } return $response;
 }
-
+/*
 function asistenciapormateriaprof($fecha,$ID,$conn){
    
     $diasemana=getWeekday($fecha);
@@ -182,8 +205,36 @@ function asistenciapormateriaprof($fecha,$ID,$conn){
     $calculo = ($dividirl*100);
     } return $calculo;
 
-}
+}*/
+/*
+function test($ID,$conn){
+    
+    $sqlest=$conn->query("SELECT Numgrupo, CodTema,CodTP,CodCampus,AnoAcad,NumPer from contratodocencia where NumCedula='$ID'");
+    if($sqlest->num_rows >0){
+        while($data= $sqlest->fetch_array()){
+            $NumGrupo   = $data["Numgrupo"];
+            $CodTema    = $data["CodTema"];
+            $CodTP      = $data["CodTP"];
+            $CodCampus  = $data["CodCampus"];
+            $AnoAcad    = $data["AnoAcad"];
+            $NumPer     = $data["NumPer"]; 
+            
+            $sqlasistencia=$conn->query("SELECT Horas from gruporecuperar WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' AND PR_o_R!='R'");
+            if($sqlasistencia->num_rows>0){
+                while($data1= $sqlasistencia->fetch_array())
+                {   
+                    $cantidad=$data1["Horas"];
+                    $horaini="00:00:00";
+                    $hora[]= totalhorasgrupo($horaini,$cantidad);
+                }
+            } 
+        }
+     
+    } return $hora;
+    
+}*/
 
+/*
 function contarausencia($DiaSem,$ID,$conn){
     $sqlest=$conn->query("SELECT grupoinsest.CodTema as CodTema , grupoinsest.CodTP as CodTP , grupoinsest.Numgrupo as Numgrupo  , grupoinsest.CodCampus as CodCampus, grupoinsest.AnoAcad as AnoAcad, grupoinsest.NumPer as NumPer FROM grupoinsest INNER JOIN horariogrupoactivo ON grupoinsest.CodTema=horariogrupoactivo.CodTema AND grupoinsest.CodTP=horariogrupoactivo.CodTP AND grupoinsest.Numgrupo=horariogrupoactivo.NumGrupo AND grupoinsest.CodCampus= horariogrupoactivo.CodCampus AND grupoinsest.AnoAcad=horariogrupoactivo.AnoAcad AND grupoinsest.NumPer=horariogrupoactivo.NumPer AND horariogrupoactivo.DiaSem='$DiaSem' WHERE grupoinsest.Matricula='$ID'");
     $count1=0;
@@ -307,7 +358,7 @@ function getestdiadia($fecha,$ID,$conn){
     } return $calculo;
 
 }
-
+*/
 
 
 
