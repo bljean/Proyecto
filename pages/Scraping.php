@@ -38,7 +38,7 @@ $crawler = $client->submit($form);
 //get the swipe page:
 $form = $crawler->selectButton('Swipe')->form();
 $crawler = $client->submit($form);
-$compare=getinfo($crawler,$compare);
+$compare=getinfo($crawler);
 getSwipeInfo($compare);
 //-------------------------------------------------------------
 //get the swipe info:
@@ -48,7 +48,7 @@ getSwipeInfo($compare);
 echo $compare1;*/
 //getSwipeInfo($compare1);
 while(1){
-    $message = getinfo($crawler,$message);
+    $message = getinfo($crawler);
     if($compare != $message){
         
         //code-----------------------------------------
@@ -77,7 +77,7 @@ function refresh($crawler,$client){
             $codsalon =$GLOBALS['CodSalon'];
             $date = date('Y-m-d');
             $time= date('H:i:s');
-            echo"Desconectado";
+            echo"Desconectado\n";
             usleep(1000000);
             $mensaje='Se ha desconectado, en el aula '.$codcampus.'-'.$codedif.'-'.$codsalon.' en la fecha '.$date.' a la hora'.$time.' ';
             notificaradmin('admin',$mensaje);
@@ -112,18 +112,20 @@ function newcrawler(){
         return $crawler;
     }catch(\GuzzleHttp\Exception\RequestException $E)
     {    
-        echo"Desconectado";
+        echo"Desconectado\n";
         usleep(1000000);
         return newcrawler();
     }
 }
-function getinfo($crawler,$message){
+function getinfo($crawler){
    try {
      return $crawler->filter('tr.N')->first()->html();
 
     }catch(\GuzzleHttp\Exception\RequestException $E)
-    {
-        return $message;
+    {   
+        $crawler=newcrawler();
+        
+        return $crawler->filter('tr.N')->first()->html();
     }
 
     }
@@ -210,18 +212,32 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$status1,$date,$time
     }
     
 function openDoor(){
-        $url = "http://169.254.65.123/";
-        $client = new Client();
-        $crawler = $client->request('GET', $url);
-        //-------------------------------------------------------------
-        //login and sumbit:
-        $form = $crawler->selectButton('Login')->form();
-        $form['username'] = 'abc';
-        $form['pwd'] = '654321';
-        $crawler = $client->submit($form);
-    
-        $form = $crawler->selectButton('Remote Open #1 Door m001-1')->form();
-        $crawler = $client->submit($form);
+        try{
+            $url = "http://169.254.65.123/";
+            $client = new Client();
+            $crawler = $client->request('GET', $url);
+            //-------------------------------------------------------------
+            //login and sumbit:
+            $form = $crawler->selectButton('Login')->form();
+            $form['username'] = 'abc';
+            $form['pwd'] = '654321';
+            $crawler = $client->submit($form);
+        
+            $form = $crawler->selectButton('Remote Open #1 Door m001-1')->form();
+            $crawler = $client->submit($form);
+        }catch(\GuzzleHttp\Exception\RequestException $E)
+        {   $codcampus = $GLOBALS['CodCampus'];
+            $codedif =$GLOBALS['CodEdif'];
+            $codsalon =$GLOBALS['CodSalon'];
+            $date = date('Y-m-d');
+            $time= date('H:i:s');
+            echo"Fallo al abrir la puerta\n";
+            $mensaje='Se ha desconectado, el aula '.$codcampus.'-'.$codedif.'-'.$codsalon.' en la fecha '.$date.' a la hora'.$time.' ';
+            notificaradmin('admin',$mensaje);
+            usleep(1000000);
+            newcrawler();
+            openDoor();
+        }
     }
 function reconigtion($personid){
        exec("python /xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/takePhoto.py $personid",$output);
@@ -533,7 +549,7 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
         $sqlAusenteProf=connectBd()->query("SELECT contratodocencia.NumCedula as NumCedula FROM contratodocencia LEFT JOIN asistencia ON asistencia.ID=contratodocencia.NumCedula AND asistencia.CodTema=contratodocencia.CodTema AND asistencia.CodTP= contratodocencia.CodTp AND asistencia.CodCampus= contratodocencia.CodCampus AND asistencia.NumGrupo= contratodocencia.Numgrupo AND asistencia.AnoAcad=contratodocencia.AnoAcad AND asistencia.NumPer= contratodocencia.NumPer AND asistencia.Fecha= '$date' WHERE contratodocencia.CodTema='$Codtema' AND contratodocencia.CodTP='$CodTP' AND contratodocencia.CodCampus='$CodCampus' AND contratodocencia.Numgrupo='$NumGrupo' AND contratodocencia.AnoAcad='$AnoAcad' AND contratodocencia.NumPer='$NumPer' AND asistencia.ID is NULL");
         
         if($sqlhorarioRecoverytime->num_rows>0){
-            if($sqlAusenteProf->num_rows>0 && $time >= getHorausencia($Horafin) ){
+            if($sqlAusenteProf->num_rows>0 && $time >= getHorausencia($horafin) ){
                 $sqlPresentesEst=connectBd()->query("SELECT asistencia.ID as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer AND asistencia.Fecha= '$date' WHERE grupoinsest.CodTema='$Codtema' AND grupoinsest.CodTP='$CodTP' AND grupoinsest.CodCampus='$CodCampus' AND grupoinsest.Numgrupo='$NumGrupo' AND grupoinsest.AnoAcad='$AnoAcad' AND grupoinsest.NumPer='$NumPer' AND asistencia.Presencia='R' ");
                 
                 while($data=$sqlAusenteProf->fetch_array()){
@@ -576,7 +592,7 @@ function ausencia($horaini,$horafin,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAca
                 }
             }
         }else{
-            if($sqlAusenteProf->num_rows>0 && $time >= getHorausencia($Horafin)  ){
+            if($sqlAusenteProf->num_rows>0 && $time >= getHorausencia($horafin)  ){
                 $sqlPresentesEst=connectBd()->query("SELECT asistencia.ID as Matricula FROM grupoinsest LEFT JOIN asistencia ON asistencia.ID=grupoinsest.Matricula AND asistencia.CodTema=grupoinsest.CodTema AND asistencia.CodTP= grupoinsest.CodTP AND asistencia.CodCampus= grupoinsest.CodCampus AND asistencia.NumGrupo= grupoinsest.Numgrupo AND asistencia.AnoAcad=grupoinsest.AnoAcad AND asistencia.NumPer= grupoinsest.NumPer AND asistencia.Fecha= '$date' WHERE grupoinsest.CodTema='$Codtema' AND grupoinsest.CodTP='$CodTP' AND grupoinsest.CodCampus='$CodCampus' AND grupoinsest.Numgrupo='$NumGrupo' AND grupoinsest.AnoAcad='$AnoAcad' AND grupoinsest.NumPer='$NumPer' AND asistencia.Presencia='P' ");
                 connectBd()->query("INSERT INTO gruporecuperar (CodTema, CodTp, NumGrupo, CodCampus, AnoAcad, NumPer, PR_o_R, Fecha_Recuperar,Horas) VALUES ('$Codtema', '$CodTP', '$NumGrupo', '$CodCampus', '$AnoAcad', '$NumPer', 'PR', '$date','$horas')");
                 while($data=$sqlAusenteProf->fetch_array()){
@@ -728,6 +744,6 @@ function notificaradmin($ID,$mensaje){
     $pusher=$GLOBALS['pusher'];
     $message['message'] = $mensaje;
     $pusher->trigger(''.$ID.'', 'my-event', $message);
-    connectBd()->query("INSERT INTO notificacionesadmin (mensaje,CodCampus,CodEdif,CodSalon,fecha,hora,) VALUES ('$mensaje', '$CodCampus','$codedif','$codsalon','$date','$time')");
+    connectBd()->query("INSERT INTO notificacionesadmin (mensaje,CodCampus,CodEdif,CodSalon,fecha,hora) VALUES ('$mensaje','$codcampus','$codedif','$codsalon','$date','$time')");
 }
 ?>
