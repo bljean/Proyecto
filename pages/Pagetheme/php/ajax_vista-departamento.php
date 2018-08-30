@@ -31,7 +31,22 @@ if($_POST['key'] == 'diasemana')
         exit(json_encode($jsonArray));
         
 }  
+
+if($_POST['key'] == 'getdepartamento'){
+    $ID=$conn->real_escape_string($_POST['ID']);
+   $sqlgetcodtema =$conn->query("SELECT CodTema FROM contratodirector WHERE NumCedula='$ID'");
+   if($sqlgetcodtema->num_rows>0){ 
+        while($data=$sqlgetcodtema->fetch_array()){
+            $response=$data["CodTema"];
+        }
+   }
+   $jsonArray = array(
+    'body'=> $response,
+    );
+    exit(json_encode($jsonArray));
+    }
 }
+
 function getCountprofesoresDia($dia,$conn,$ID){
     $sqldepartamento = $conn->query("SELECT CodTema FROM contratodirector WHERE NumCedula='$ID'");
         if($sqldepartamento->num_rows >0){

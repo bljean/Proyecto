@@ -127,7 +127,7 @@ $ID=$_SESSION['user'];
                                     <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> NotiFicaciones</h3>
                             </div>
         
-                            <div class="panel-body"> test</div>
+                            <div class="panel-body tableNotificacionBody"></div>
                         </div>
                     </div>
                 </div>
@@ -153,6 +153,7 @@ $ID=$_SESSION['user'];
             asistenciae=[];
             var ID = "<?php echo $ID; ?>";
             getcedula(ID);
+           
             $("#Logout").on('click', function () {
                 <?php 
                 $_SESSION['privilegio'] ='1';
@@ -172,10 +173,40 @@ $ID=$_SESSION['user'];
             var channel = pusher.subscribe(''+ID+'');
             channel.bind('my-event', function(data) {
             alert(JSON.stringify(data));
-           
+            $(".tableNotificacionBody").html("");
+            getnotiData(response.body);
             });
             //final de notificaciones
     }
+    function getnotiData(ID) {
+            $.ajax({
+                url: 'php/ajax_vista-estudiante.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getExistingData',
+                    ID:ID,
+                }, success: function (response) {
+                    console.log(response);
+                    $(".tableNotificacionBody").append(response.body);
+                }
+            });
+   
+    }
+    function getdepartamento(ID){
+        $.ajax({
+              url: 'php/ajax_vista-departamento.php',
+              method: 'POST',
+              dataType: 'json',
+              data: {
+                    key: 'getdepartamento',
+                    ID: ID,
+                    }, success: function (response) {
+                        notificacion(response.body);
+                        getnotiData(response.body);
+                    }
+                });
+      }
     function getcedula(ID){
       $.ajax({
               url: 'php/ajax_Misgruposdepartamento.php',
@@ -186,7 +217,7 @@ $ID=$_SESSION['user'];
                     ID: ID,
                     }, success: function (response) {
                         diasemana(response.NumCedula);
-                        notificacion(response.NumCedula);
+                        getdepartamento(response.NumCedula);
                     }
                 });
       }
