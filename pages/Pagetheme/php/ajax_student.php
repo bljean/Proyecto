@@ -36,7 +36,7 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                     <td id="CardNumber_'.$data["Matricula"].'">'.$data["NumTarjeta"].'</td>
                     <td>
                     <div class="col-md-2">
-                        <input type="button" onclick="edit('.$data["Matricula"].')" value="Editar" class="btn btn-primary">
+                        <input type="button" onclick="edit('.$data["Matricula"].')" value="Tarjeta" class="btn btn-primary">
                     </div>
                     
                      <form method="POST" action="Asistencias.php">

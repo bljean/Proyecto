@@ -205,7 +205,7 @@ if(isset($_SESSION['loggedIN'])){
                                                     <div class="modal-dialog" style="width:1250px;">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                        <h2 class="modal-title">Asistencia</h2>
+                                                        <h2 class="modal-title">Solicitudes a Recuperar</h2>
                                                         </div>
                                                         <div class="modal-body">
                                                         <div class="well dash-box" style=" text-align: center;">

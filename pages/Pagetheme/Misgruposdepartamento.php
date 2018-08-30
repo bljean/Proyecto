@@ -121,6 +121,7 @@ $ID=$_SESSION['user'];
                                                                 <th>Hora Llegada</th>
                                                                 <th>Horas Presente</th>
                                                                 <th>Asistencia</th>
+                                                                <th>Opciones</th>
 
                                                                 </thead>
                                                                 <tbody class="tableAsistenciaBody">

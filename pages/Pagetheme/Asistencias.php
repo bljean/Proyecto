@@ -205,28 +205,7 @@ $privilegio= $_SESSION['privilegio'];
                   </div>
                   <!--/table asistencias-->
                    <!-- estadisticas-->
-                  <div class="well dash-box" style=" text-align: left;">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <h4>Horas presente:</h4>
-                      </div>
-                      <div class="col-md-2">
-                        <h4>6/70</h4>
-                      </div>
-                      <div class="col-md-2">
-                          <h4>Horas faltadas:</h4>
-                        </div>
-                        <div class="col-md-2">
-                          <h4>3/16</h4>
-                        </div>
-                        <div class="col-md-2">
-                            <h4>Excusas:</h4>
-                          </div>
-                          <div class="col-md-2">
-                            <h4>1/3</h4>
-                          </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
 

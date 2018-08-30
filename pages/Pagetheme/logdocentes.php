@@ -40,7 +40,7 @@ if(isset($_SESSION['loggedIN']) && isset($_SESSION['Privilegio'])){
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Control de acceso</a>
+                <a class="navbar-brand" href="index.html">Sistema Inteligente De Control De Asistencia</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
 

@@ -264,7 +264,7 @@ if(isset($_SESSION['loggedIN'])){
                     $("#Name").val(response.Name);
                     $("#CardNumber").val(response.CardNumber);
                     $("#Apellido").val(response.Apellido);
-                    $(".modal-title").html('Editar');
+                    $(".modal-title").html('Editar Tarjeta');
                     $("#tableManager").modal('show');
                     $("#manageBtn").attr('value', 'Salvar cambios').attr('onclick', "manageData('updateRow')");
                 }

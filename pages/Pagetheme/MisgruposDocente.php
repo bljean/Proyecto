@@ -178,7 +178,7 @@ if(isset($_SESSION['loggedIN'])){
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h2 class="modal-title">Asistente</h2>
+                  <h2 class="modal-title">Sustituto</h2>
                 </div>
                 <div class="modal-body">
                   <div class="row">

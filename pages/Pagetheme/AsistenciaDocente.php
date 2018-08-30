@@ -248,7 +248,7 @@ if(isset($_SESSION['loggedIN'])){
                           $(".pillsbody").append(response.body);
                           $("#tituloGrupo").html('');
                           $("#tituloGrupo").append(response.groupCodigo);
-                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                         getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
                     }
                 });
       }
@@ -363,7 +363,7 @@ if(isset($_SESSION['loggedIN'])){
                   //$(".tableAsisBody").html('');
                   cleartable(dTable);
                   dataindex=1;
-                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                  getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,2);
                   
                 }
             });
