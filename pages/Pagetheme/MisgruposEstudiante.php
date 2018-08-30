@@ -193,6 +193,10 @@ if(isset($_SESSION['loggedIN'])){
                 
             });
       });
+    function cleartable(table){
+      table.clear().draw();
+      table.destroy();
+    }
     function notificacion(ID){
             //notificaciones
           // Enable pusher logging - don't include this in production
@@ -265,9 +269,7 @@ if(isset($_SESSION['loggedIN'])){
                         start += limit;
                         getAsisData(start,limit,studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio);
                     } else {
-                      if(dataindex != 0){
-                            
-                        }else{
+
                           dTable = $(".tableAsis").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
@@ -294,7 +296,7 @@ if(isset($_SESSION['loggedIN'])){
                                 }
                             },
                             "lengthChange": false
-                        });}
+                        });
                         
                     }
 
@@ -324,7 +326,7 @@ if(isset($_SESSION['loggedIN'])){
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
-                  dataindex=1;
+                  cleartable( dTable);
                   getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }
@@ -353,7 +355,7 @@ if(isset($_SESSION['loggedIN'])){
                   $("#tituloGrupo").html('');
                   $("#tituloGrupo").append(response.groupCodigo);
                   $(".tableAsisBody").html('');
-                  dataindex=1;
+                  cleartable( dTable);
                   getAsisData(0, 50,ProfID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
                   
                 }

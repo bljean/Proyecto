@@ -261,32 +261,37 @@ function notificacion(){
 }
 function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje){
     $pusher=notificacion();
-    $mensaje['message'] = $mensaje;
+    $message['message'] = $mensaje;
     $date = date('Y-m-d');
     $time= date('H:i:s');
-    // the message
-    $msg = "First line of text\nSecond line of text";
-
-    // use wordwrap() if lines are longer than 70 characters
-    $msg = wordwrap($msg,70);
-
-    // send email
-    mail("someone@example.com","My subject",$msg);
+   
+    
 
    
     $sqlestudiantes= connectBd()->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
     if($sqlestudiantes->num_rows >0){
         while($data=$sqlestudiantes->fetch_array()){
-            $pusher->trigger(''.$data["Matricula"].'', 'my-event', $mensaje);
+            $pusher->trigger(''.$data["Matricula"].'', 'my-event', $message);
             $matricula=$data["Matricula"];
+            //mail(''.$matricula.'@ce.pucmm.edu.do',"Sistema",$mensaje);
             connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
         }
     }
     $sqlprofesores=connectBd()->query("SELECT NumCedula FROM contratodocencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
     if($sqlprofesores->num_rows >0){
         while($data=$sqlprofesores->fetch_array()){
-            $pusher->trigger(''.$data["NumCedula"].'', 'my-event', $mensaje);
+            $pusher->trigger(''.$data["NumCedula"].'', 'my-event', $message);
             $NumCedula=$data["NumCedula"];
+            /*
+            $sqlemail=connectBd()->query("SELECT usuario FROM trabajadores WHERE NumCedula='$NumCedula'");
+            if($sqlemail->num_rows > 0){
+                while($data= $sqlemail->fetch_array()){
+                // send email
+                $usuario=$data["usuario"];
+                mail(''.$usuario.'@ce.pucmm.edu.do',"Sistema",$mensaje);
+                }
+             }*/
+            //mail(''.$NumCedula.'@ce.pucmm.edu.do',"Sistema",$mensaje);
             connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$NumCedula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
         }
     }

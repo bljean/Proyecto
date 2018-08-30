@@ -705,15 +705,17 @@ function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$m
     $message['message'] = $mensaje;
     $date = date('Y-m-d');
     $time= date('H:i:s');
-     // the message
-     //$msg = "First line of text\nSecond line of text";
-
-     // use wordwrap() if lines are longer than 70 characters
-    // $msg = wordwrap($msg,70);
+    /*$sqlemail=connectBd()->query("SELECT usuario FROM trabajadores WHERE NumCedula='$ID'");
+    if($sqlemail->num_rows > 0){
+        while($data= $sqlemail->fetch_array()){
+        // send email
+        $usuario=$data["usuario"];
+        //mail(''.$usuario.'@ce.pucmm.edu.do',"Sistema",$mensaje);
+        }
+     }*/
  
-     // send email
-    mail(''.$ID.'@ce.pucmm.edu.do',"Sistema",$mensaje);
-    $pusher->trigger(''.$ID.'', 'my-event', $mensaje);
+    
+    $pusher->trigger(''.$ID.'', 'my-event', $message);
     connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$ID', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
     
 }
@@ -725,7 +727,7 @@ function notificaradmin($ID,$mensaje){
     $time= date('H:i:s');
     $pusher=$GLOBALS['pusher'];
     $message['message'] = $mensaje;
-    $pusher->trigger(''.$ID.'', 'my-event', $mensaje);
+    $pusher->trigger(''.$ID.'', 'my-event', $message);
     connectBd()->query("INSERT INTO notificacionesadmin (mensaje,CodCampus,CodEdif,CodSalon,fecha,hora,) VALUES ('$mensaje', '$CodCampus','$codedif','$codsalon','$date','$time')");
 }
 ?>

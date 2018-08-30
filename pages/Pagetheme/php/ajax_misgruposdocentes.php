@@ -1,4 +1,6 @@
 <?php
+require '/xampp/htdocs/Proyecto/vendor/autoload.php';
+date_default_timezone_set('America/Santo_Domingo');
 if (isset($_POST['key'])){
     
 $user='root';
@@ -75,7 +77,8 @@ if($_POST['key'] == 'inSustituto'){
     $dayVal = $conn->real_escape_string($_POST['dayVal']);
     $fecha = $conn->real_escape_string($_POST['fecha']);
     $conn->query("INSERT INTO sustituto (CodTema,CodTp,Numgrupo,CodCampus,AnoAcad,NumPer,NumCedula,NumCedulaSusti,Fecha) VALUES ('$CodTema', '$CodTP', '$Numgrupo', '$CodCampus', '$AnoAcad', '$Numper', '$ProfID', '$dayVal', '$fecha')");
-    
+    $mensaje='se le ha asignado un profesor sustituto al grupo: '.$CodCampus.'-'.$CodTema.'-'.$CodTP.' para la fecha: '.$fecha.'';
+    notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje);
     $jsonArray = array(
         'CodCampus'=>$CodCampus,
         'CodTema'=>$CodTema,
@@ -86,12 +89,66 @@ if($_POST['key'] == 'inSustituto'){
         'ProfID'=>$ProfID,
         'dayVal'=>$dayVal,
         'fecha'=>$fecha,
+        'mensaje'=>$mensaje,
     );
     exit(json_encode($jsonArray));
 }
 
 
 
+}
+function connectBd(){
+    $user='root';
+    $pass='';
+    $db='proyectofinal';
+    $conn= new mysqli('localhost',$user, $pass, $db);
+    return $conn;
+}
+function notificacion(){
+    $options = array(
+        'cluster' => 'mt1',
+        'encrypted' => true
+    );
+    $pusher = new Pusher\Pusher(
+        '8b7b30cb5814aead90c6',
+        '487f91e47b4bbf226e84',
+        '583885',
+        $options
+    );
+    return $pusher;
+}
+function notificargrupo($CodCampus,$CodTema,$CodTP,$Numgrupo,$AnoAcad,$Numper,$mensaje){
+    $pusher=notificacion();
+    $message['message'] = $mensaje;
+    $date = date('Y-m-d');
+    $time= date('H:i:s');
+    // send email
+    $sqlestudiantes= connectBd()->query("SELECT Matricula FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+    if($sqlestudiantes->num_rows >0){
+        while($data=$sqlestudiantes->fetch_array()){
+            $pusher->trigger(''.$data["Matricula"].'', 'my-event', $message);
+            $matricula=$data["Matricula"];
+            
+            mail(''.$matricula.'@ce.pucmm.edu.do',"Sistema",$mensaje);
+            connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$matricula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
+        }
+    }
+    $sqlprofesores=connectBd()->query("SELECT NumCedula FROM contratodocencia WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$Numgrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$Numper'");
+    if($sqlprofesores->num_rows >0){
+        while($data=$sqlprofesores->fetch_array()){
+            $pusher->trigger(''.$data["NumCedula"].'', 'my-event', $message);
+            $NumCedula=$data["NumCedula"];
+            $sqlemail=connectBd()->query("SELECT usuario FROM trabajadores WHERE NumCedula='$NumCedula'");
+            if($sqlemail->num_rows > 0){
+                while($data= $sqlemail->fetch_array()){
+                // send email
+                $usuario=$data["usuario"];
+                //mail(''.$usuario.'@ce.pucmm.edu.do',"Sistema",$mensaje);
+                }
+             }
+            connectBd()->query("INSERT INTO notificaciones (ID,mensaje,estado,autor,fecha,Hora,CodTema,CodTp,NumGrupo,CodCampus,AnoAcad,NumPer) VALUES ('$NumCedula', '$mensaje', '0','Sistema', '$date', '$time','$CodTema','$CodTP','$Numgrupo','$CodCampus','$AnoAcad','$Numper')");
+        }
+    }
 }
 
 ?>
