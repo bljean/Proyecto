@@ -148,7 +148,7 @@ if(isset($_SESSION['loggedIN'])){
                                     <i class="glyphicon glyphicon-bell" style="align-items:flex-start"></i> NotiFicaciones</h3>
                             </div>
 
-                            <div class="panel-body"> test</div>
+                            <div class="panel-body tableNotificacionBody"> </div>
                         </div>
                     </div>
                 </div>
@@ -171,6 +171,7 @@ if(isset($_SESSION['loggedIN'])){
             diasemana();
             //contargrupoactivolunes();
             notificacion("admin");
+            getnotiData();
          
             $("#Logout").on('click', function () {
                 <?php 
@@ -192,9 +193,23 @@ if(isset($_SESSION['loggedIN'])){
             var channel = pusher.subscribe(''+ID+'');
             channel.bind('my-event', function(data) {
             alert(JSON.stringify(data));
-           
+            $(".tableNotificacionBody").html("");
+            getnotiData();
             });
             //final de notificaciones
+    }
+    function getnotiData() {
+            $.ajax({
+                url: 'php/ajax_vista-administrador.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    key: 'getnotiData',
+                }, success: function (response) {
+                    console.log(response);
+                    $(".tableNotificacionBody").append(response.body);
+                }
+            });
     }
     function diasemana(){
                 $.ajax({

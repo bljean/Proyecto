@@ -30,7 +30,31 @@ if($_POST['key'] == 'diasemana')
         );
         exit(json_encode($jsonArray));
         
-}  
+} 
+if($_POST['key'] == 'getnotiData'){
+    $sqlnotidata=$conn->query("SELECT mensaje,CodCampus,CodEdif,CodSalon,fecha,hora FROM notificacionesadmin ORDER BY fecha DESC,hora DESC limit 0,10 ");
+    $response ="";
+     if($sqlnotidata->num_rows>0){
+        while($data=$sqlnotidata->fetch_array()){
+            $mensaje=$data["mensaje"];
+            $CodCampus=$data["CodCampus"];
+            $CodEdif=$data["CodEdif"];
+            $CodSalon=$data["CodSalon"];
+            $fecha=$data["fecha"];
+            $hora=$data["hora"];
+            $response .='
+                
+            <li class="list-group-item">'.$mensaje.',(Sistema,'.$fecha.' '.$hora.')</li>
+                
+                ';
+            
+        }
+    }
+    $jsonArray = array(
+        'body'=> $response,
+    );
+    exit(json_encode($jsonArray));
+}
 }
 function getCountprofesoresDia($dia,$conn){
     $sqlGDia=$conn->query("SELECT CodTema, CodTP, NumGrupo,CodCampus,AnoAcad,NumPer FROM horariogrupoactivo WHERE DiaSem='$dia'");

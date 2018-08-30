@@ -47,7 +47,7 @@ if($_POST['key'] == 'getEstGroupData'){
 if($_POST['key'] == 'getExistingData'){
     
     $ID=$conn->real_escape_string($_POST['ID']);
-    $sql = $conn->query("SELECT mensaje,estado,autor,fecha,Hora FROM notificaciones  WHERE ID='$ID' ORDER BY fecha,Hora DESC ");
+    $sql = $conn->query("SELECT mensaje,estado,autor,fecha,Hora FROM notificaciones  WHERE ID='$ID' ORDER BY fecha DESC,hora DESC limit 0,10 ");
     if($sql->num_rows >0){
         $response ="";
         while($data= $sql->fetch_array()){

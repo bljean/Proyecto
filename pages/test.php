@@ -32,9 +32,9 @@ getSwipeInfo($message);
 //-------------------------------------------------------------
 //function
 function getSwipeInfo($text){
-list($id, $cardnumber, $name,$status,$DataTime) = explode('</td>', $text);
-echo "<br />\nid: $id;<br />\n cardnumber: $cardnumber;<br />\n name: $name;<br />\n status: $status;<br />\n datatime: $DataTime<br />\n";
-echo compareInfo($cardnumber,$status,$DataTime);
+    list($id, $cardnumber, $name,$status,$DataTime) = explode('</td>', $text);
+    echo "<br />\nid: $id;<br />\n cardnumber: $cardnumber;<br />\n name: $name;<br />\n status: $status;<br />\n datatime: $DataTime<br />\n";
+    echo compareInfo($cardnumber,$status,$DataTime);
 }
 function compareInfo($cardnumber,$Status,$DataTime){
     /*$user='root';
