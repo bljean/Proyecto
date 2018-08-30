@@ -40,6 +40,7 @@ def compare_faces(img, CoID, threshold=80):
 
 
 while p < 1:
+    time.sleep(1)
     ret, frame = cap.read()  # return a single frame in variable `frame`
     date = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     img_name = "{}/{}.png".format(path, date)

@@ -167,7 +167,7 @@ function openDoor(){
         $crawler = $client->submit($form);
     }
 function reconigtion($personid){
-       /* exec("python /xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/takePhoto.py $personid",$output);
+       exec("python /xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/takePhoto.py $personid",$output);
         if($output[0]=="1"){
             echo "Eres: $personid\n";
             openDoor(); 
@@ -176,8 +176,6 @@ function reconigtion($personid){
             echo "No eres:$personid\n";
             return 0;
         }
-        */
-        return 1;
     }    
 function connectBd(){
         $user='root';
