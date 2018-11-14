@@ -9,14 +9,14 @@ import struct ## new
 import zlib
 import datetime
 import time
-
+import subprocess
 
 def main():
     start_server()
 
 
 def start_server():
-    host = "127.0.0.1"
+    host = "10.0.0.2"
     port = 8888         # arbitrary non-privileged port
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,9 +61,10 @@ def client_thread(connection, ip, port, max_buffer_size = 4096):
         
 
 def receive_input(connection, max_buffer_size):
+    
     data = b""
     payload_size = struct.calcsize(">L")
-   
+   #receive frame
     while len(data) < payload_size:
         print("Recv: {}".format(len(data)))
         data += connection.recv(max_buffer_size)
@@ -77,16 +78,16 @@ def receive_input(connection, max_buffer_size):
         data += connection.recv(max_buffer_size)
     frame_data = data[:msg_size]
     data = data[msg_size:]
-    
+    #receive ID
     data += connection.recv(max_buffer_size)
     decoded_input = data.decode("utf8").rstrip()
-    print(data)
-    result = process_input(frame_data)
+    print(decoded_input)
+    result = process_input(frame_data,ID)
 
     return result
 
 
-def process_input(frame_data):
+def process_input(frame_data,ID):
     path = 'C:/xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/imgtaken'
     print("Processing the input received from client")
     frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
