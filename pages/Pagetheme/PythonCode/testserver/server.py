@@ -1,3 +1,4 @@
+# import the necessary packages
 import socket
 import sys
 import traceback
@@ -10,6 +11,7 @@ import zlib
 import datetime
 import time
 import subprocess
+import face_recognition
 
 def main():
     start_server()
@@ -82,6 +84,7 @@ def receive_input(connection, max_buffer_size):
     data += connection.recv(max_buffer_size)
     decoded_input = data.decode("utf8").rstrip()
     print(decoded_input)
+    ID = get_id(20131036)
     result = process_input(frame_data,ID)
 
     return result
@@ -95,7 +98,17 @@ def process_input(frame_data,ID):
     date = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     img_name = "{}/{}.png".format(path, date)
     cv2.imwrite(img_name, frame)
+
     return "complete"
+
+def get_id(carn):
+    proc = subprocess.Popen("/xampp/php/php.exe /xampp/htdocs/Proyecto/pages/buscarid.php " + carn, shell=True, stdout=subprocess.PIPE)
+    script_response = proc.stdout.read()
+    script_response = script_response.decode("utf8").rstrip()
+    print(script_response)
+    return script_response
+
+def reconocimiento(ID,image):
 
 if __name__ == "__main__":
     main()
