@@ -11,6 +11,7 @@ import zlib
 import datetime
 import time
 import subprocess
+import argparse
 import face_recognition
 
 def main():
@@ -50,15 +51,19 @@ def start_server():
 
 
 def client_thread(connection, ip, port, max_buffer_size = 4096):
-    is_active = True
-
-    while is_active:
-        client_input = receive_input(connection, max_buffer_size)
-        print(client_input)
+    
+    client_input = receive_input(connection, max_buffer_size)
+    connection.sendall(client_input.encode("utf8"))
+    print(client_input)
+    if connection.recv(max_buffer_size).decode("utf8")=="quit":
         print("Client is requesting to quit")
         connection.close()
         print("Connection " + ip + ":" + port + " closed")
-        is_active = False
+    else:
+        print("no llego nada pero la cerrare")
+        connection.close()
+        print("Connection " + ip + ":" + port + " closed")
+        
         
         
 
@@ -81,15 +86,16 @@ def receive_input(connection, max_buffer_size):
     frame_data = data[:msg_size]
     data = data[msg_size:]
     #receive ID
+    send="4"
+    connection.sendall(send.encode("utf8"))
     data += connection.recv(max_buffer_size)
     decoded_input = data.decode("utf8").rstrip()
     print(decoded_input)
-    ID = get_id(20131036)
-    if ID == "-1"
-        result= -1
+    ID = get_id(decoded_input)
+    if ID == "-1":
+        result= ID
     else:
         result = process_input(frame_data,ID)
-
     return result
 
 
@@ -101,7 +107,7 @@ def process_input(frame_data,ID):
     date = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     img_name = "{}/{}.png".format(path, date)
     cv2.imwrite(img_name, frame)
-    result=reconocimiento(ID,image)
+    result=reconocimiento(ID,img_name)
     return result
 
 def get_id(carn):
@@ -171,10 +177,14 @@ def reconocimiento(id,image):
         
         # update the list of names
         names.append(name)
-    if name == id:
-        return 1
+    print(names)    
+    if not names:
+        return "no faces in the image"
+    elif names[0] == id:
+        return "1"
     else:
-        return 0
+        return "0"
+    
 
 if __name__ == "__main__":
     main()

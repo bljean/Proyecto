@@ -36,9 +36,6 @@ import pickle
 import zlib
 import sys
 
-path='/home/pi/foto'
-cap = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.2/')
-
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
@@ -49,31 +46,40 @@ def end_read(signal,frame):
     GPIO.cleanup()
 # Capture the image and sending to the sever, using sockets, to recognize    
 def send_data(data2):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        client_socket.connect(('10.0.0.2', 8888))
-        connection = client_socket.makefile('wb')
-    except:
-        print("Connection error")
-        sys.exit()
-
     #cam = cv2.VideoCapture(0)
     cam= cv2.VideoCapture('rtsp://admin:admin123@192.168.1.2/')
+    if not cam.isOpened():
+        print("camera disconected")
+    else:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            client_socket.connect(('10.0.0.2', 8888))
+        except:
+            print("Connection error")
+            sys.exit()
+        #connection = client_socket.makefile('wb')    
+        cam.set(3, 800)
+        cam.set(4, 600)
 
-    cam.set(3, 800)
-    cam.set(4, 600)
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-
-    ret, frame = cam.read()
-    result, frame = cv2.imencode('.jpg', frame, encode_param)
-    data = pickle.dumps(frame, 0)
-    size = len(data)
-    client_socket.sendall(struct.pack(">L", size) + data)
-    str1 = ''.join(str(e) for e in data2)
-    #data3 = [x.encode('utf-8') for x in data2]
-    client_socket.sendall(str1.encode("utf8"))
+        ret, frame = cam.read()
+        result, frame = cv2.imencode('.jpg', frame, encode_param)
+        data = pickle.dumps(frame, 0)
+        size = len(data)
+        client_socket.sendall(struct.pack(">L", size) + data)
+        str1 = ''.join(str(e) for e in data2)
+        r=client_socket.recv(4096).decode("utf8")
+        print(r)
+        if r == "4":
+            client_socket.sendall(str1.encode("utf8"))
+        
+        r=client_socket.recv(4096).decode("utf8")
+        print(r)
+        menssage="quit"
+        client_socket.sendall(menssage.encode("utf8"))
     cam.release()
+    
 
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)

@@ -1,14 +1,24 @@
 <?php 
 //require '../vendor/autoload.php';
-//require '/xampp/htdocs/Proyecto/vendor/autoload.php';
+require '/xampp/htdocs/Proyecto/vendor/autoload.php';
+if($argv[1]!="presente"){
+    echo compareInfo($argv[1]);
+}else{
 
-echo $argv[1];
+}
 
 
 
 
 
 
+function connectBd(){
+    $user='root';
+    $pass='';
+    $db='proyectofinal';
+    $conn= new mysqli('localhost',$user, $pass, $db);
+    return $conn;
+}
 function compareInfo($cardN){
     $date = date('Y-m-d');
     $time= date('H:i:s');
@@ -21,25 +31,30 @@ function compareInfo($cardN){
         {
             if($sqlStudentName->num_rows > 0 AND $sqlDataTime->num_rows == 0)
             {
-                $index=1;       
-                swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
-                return("Card with this number exist :$cardN ,$data,$time \n");
+                while($data= $sqlStudentName->fetch_array()){
+                    $name=$data["nombre"];
+                    $apellido=$data["apellido"];
+                    $personid=$data["Matricula"];
+                }
+                //$index=1;       
+                //swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
+                return($personid);
             }
             if( $sqlWorkersName->num_rows > 0 AND $sqlDataTime->num_rows == 0)
             {
-                $index=1; 
-                swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
-                return("Card with this number exist :$cardN ,$data,$time \n");
+                while($data= $sqlWorkersName->fetch_array()){
+                    $name=$data["nombre"];
+                    $apellido=$data["apellido_1"];
+                    $personid=$data["NumCedula"];
+                }
+                //$index=1; 
+                //swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
+                return($personid);
             }
         }else{
-                if($sqlDataTime->num_rows == 0)
-                {
-                    $index=0;
-                    swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
-                    return("This card number do not exist: $cardN, $data,$time\n");
-                }
-            }
-        return("This report exist: $cardN, $data $time\n");
+            return("-1");
+        }
+        
     }
 function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$date,$time,$index){
     
@@ -171,5 +186,130 @@ function getProfesorGroup($numCedula,$cardN,$name,$apellido){
         }
         return  $sqlProfessorGrupo;
         }
+function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,$Precencia,$cardN,$name,$apellido,$estado,$numCedula,$nombreprofe,$apellidoprofe){
+            $codcampus = $GLOBALS['CodCampus'];
+            $codedif =$GLOBALS['CodEdif'];
+            $codsalon =$GLOBALS['CodSalon'];
+            $horasPresente=totalHorasAsistencia($horaini,$horafin,$time,$Precencia);
+            $sqlStudentattend = connectBd()->query( "SELECT * FROM asistencia WHERE ID='$matricula' AND Fecha='$date' AND Horaini='$horaini'");
+            if($Precencia=='R'){
+                if($sqlStudentattend->num_rows > 0){
+                    echo "ya esta precente";
+                    if($estado=='S'){
+                        if(reconigtion($numCedula)==1){
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else {
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                        }
+                    }else{
+                        if(reconigtion($matricula)==1){
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else{ 
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                        }
+                    }
+                 
+                }else {
+                    if($estado=='S'){
+                        if(reconigtion($numCedula)==1){
+                            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+                            $mensaje='Se ha generado la presencia de '.$nombreprofe.' '.$apellidoprofe.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else {
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                        }
+                    }else{
+                        if(reconigtion($matricula)==1){
+                            connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+                            $mensaje='Se ha generado la recuperacion de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$Codtema);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else{
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                        }
+                    }
+                } 
+            }else{
+                if($sqlStudentattend->num_rows > 0){
+                    echo "ya esta precente";
+                    if($estado=='S'){
+                        if(reconigtion($numCedula)==1){
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else {
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                        }
+                    }else{
+                        if(reconigtion($matricula)==1){
+                        insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                        }else {
+                            $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                            insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                        }
+                    }
+                }else {
+                    if($Precencia=='A' OR $Precencia=='PR' OR $Precencia=='FR'){
+                        //Ausensia, PorRecuperar,FalloRecuperacion.
+                        if($Precencia=='A'){
+                            $mensaje='Se ha generado la ausencia de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                        }
+                        if($Precencia=='PR'){
+                            $mensaje='Se ha generado la Por Recuperar de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                        }
+                        if($Precencia=='FR'){
+                            $mensaje='a Fallado la Recuperarcion de grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                        }
+                        notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                        connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$horafin','0','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+                    }else {
+                        //sustituto
+                        if($estado=='S'){
+                            //reconocimiento
+                            if(reconigtion($numCedula)==1){
+                                connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+                                $mensaje='Se ha generado la presencia de '.$nombreprofe.' '.$apellidoprofe.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                                notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                                notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                                insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+        
+                            }else{
+                                $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                                notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$numCedula);
+                                insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                            }
+                            //notificacion
+                           
+                        }else{
+                            //reconocimiento
+                            if(reconigtion($matricula)==1){
+                                connectBd()->query("INSERT INTO asistencia (ID,Fecha,Horaini,Horaentrada,Horafin,HorasPresente,Sal_CodCampus,Sal_CodEdif,Sal_CodSalon,Diasemana,Presencia,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer) VALUES('$matricula','$date','$horaini','$time','$horafin','$horasPresente','$codcampus','$codedif','$codsalon','$day','$Precencia','$NumGrupo','$Codtema','$CodTP','$CodCampus','$AnoAcad','$NumPer')");
+                                $mensaje='Se ha generado la presencia de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                                insertSwipeRecord($cardN,$matricula,$name,$apellido,'Permitido');
+                            }else {
+                                $mensaje='Se ha denegado el acceso de '.$name.' '.$apellido.', causa: reconocimiento facial, en el aula '.$CodCampus.'-'.$codedif.'-'.$codsalon.'  grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
+                                insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+                            }
+                            //notificacion
+                            notificargrupo($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula);
+                        }
+                       
+                    } 
+                }  
+            }
+                  
+}
 ?>
  
