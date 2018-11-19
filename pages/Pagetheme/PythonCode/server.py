@@ -52,7 +52,7 @@ def start_server():
 
 def client_thread(connection, ip, port, max_buffer_size = 4096):
     
-    client_input = receive_input(connection, max_buffer_size)
+    client_input = receive_input(connection, max_buffer_size,ip)
     connection.sendall(client_input.encode("utf8"))
     print(client_input)
     if connection.recv(max_buffer_size).decode("utf8")=="quit":
@@ -67,7 +67,7 @@ def client_thread(connection, ip, port, max_buffer_size = 4096):
         
         
 
-def receive_input(connection, max_buffer_size):
+def receive_input(connection, max_buffer_size,ip):
     
     data = b""
     payload_size = struct.calcsize(">L")
@@ -96,6 +96,9 @@ def receive_input(connection, max_buffer_size):
         result= ID
     else:
         result = process_input(frame_data,ID)
+        if result=="1":
+            print(decoded_input)
+            presente(decoded_input,ip)
     return result
 
 
@@ -116,7 +119,12 @@ def get_id(carn):
     script_response = script_response.decode("utf8").rstrip()
     print(script_response)
     return script_response
-
+def presente(carn,ip):
+    proc = subprocess.Popen("/xampp/php/php.exe /xampp/htdocs/Proyecto/pages/buscarid.php presente "+carn+" "+ip, shell=True, stdout=subprocess.PIPE)
+    script_response = proc.stdout.read()
+    script_response = script_response.decode("utf8").rstrip()
+    print(script_response)
+    return script_response
 def reconocimiento(id,image):
     encodings_name = "encodings/{}.pickle".format(id)
     image_location = image
