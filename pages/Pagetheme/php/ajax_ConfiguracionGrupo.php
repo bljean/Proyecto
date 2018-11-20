@@ -46,8 +46,20 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                 <td>'.$nombreprof.' '.$apellido.'</td>
                 <td>'.$AnoAcad.'/'.$Numper.'</td>
                 <td>
-                <div class="col-md-12">
+                <div class="col-md-6">
                 <input type="button" onclick="edit(\''.$CodCampus.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$Numgrupo.'\',\''.$AnoAcad.'\',\''.$Numper.'\')" value="Configuracion" class="btn btn-primary">
+                    </div>
+                    <div class="col-md-4">
+                <form method="POST" action="reporte.php">
+                        <input type="hidden" name="CodCampus" value="'.$CodCampus.'">
+                        <input type="hidden" name="CodTema" value="'.$CodTema.'">
+                        <input type="hidden" name="CodTP" value="'.$CodTP.'">
+                        <input type="hidden" name="Numgrupo" value="'.$Numgrupo.'">
+                        <input type="hidden" name="AnoAcad" value="'.$AnoAcad.'">
+                        <input type="hidden" name="Numper" value="'.$Numper.'">
+                        <input type="hidden" name="NumCreditos" value="'.$NumCreditos.'">    
+                        <input type="submit" value="Reportes"  class="btn btn-primary">
+                    </form>
                 </div> 
                 </td>
                 </tr>
