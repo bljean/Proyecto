@@ -213,7 +213,7 @@ function attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,
                 //Ausensia, PorRecuperar,FalloRecuperacion.
                 if($Precencia=='A'){
                     $mensaje='Se ha generado la ausencia de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
-                    incrementarA($CodCampus,$Codtema,$CodTP,$NumGrupo,$matricula,$horaini,$horafin);
+                    incrementarA($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$mensaje,$matricula,$horaini,$horafin);
                 }
                 if($Precencia=='PR'){
                     $mensaje='Se ha generado la Por Recuperar de '.$name.' '.$apellido.' en el grupo '.$CodCampus.'-'.$Codtema.'-'.$CodTP.'-'.$NumGrupo.' en la fecha '.$date.' a la hora'.$time.' ';
@@ -249,13 +249,13 @@ function incrementarA($CodCampus,$Codtema,$CodTP,$NumGrupo,$AnoAcad,$NumPer,$men
     $time2 = strtotime($horafin);
     $totalHoras = round(abs($time2 - $time1) / 3600,2);
     $whole = floor($totalHoras);
-    $sqlStudent=connectBd()->query("SELECT NumAusencias FROM grupoinsest WHERE grupoinsest.Matricula = $matricula AND grupoinsest.CodTema = '$Codtema' AND grupoinsest.CodTP ='$CodTP' AND grupoinsest.Numgrupo = $NumGrupo AND grupoinsest.CodCampus = '$CodCampus' AND grupoinsest.AnoAcad = $AnoAcad AND grupoinsest.NumPer = $NumPer")
+    $sqlStudent=connectBd()->query("SELECT NumAusencias FROM grupoinsest WHERE grupoinsest.Matricula = $matricula AND grupoinsest.CodTema = '$Codtema' AND grupoinsest.CodTP ='$CodTP' AND grupoinsest.Numgrupo = $NumGrupo AND grupoinsest.CodCampus = '$CodCampus' AND grupoinsest.AnoAcad = $AnoAcad AND grupoinsest.NumPer = $NumPer");
     if($sqlStudent->num_rows>0){
         while($data=$sqlStudent->fetch_array()){
             $NumAusencias=$data['NumAusencias'];
         }
     }
-    $NumAusencias+=$whole
+    $NumAusencias+=$whole;
     connectBd()->query("UPDATE grupoinsest SET NumAusencias = '$NumAusencias' WHERE grupoinsest.Matricula = $matricula AND grupoinsest.CodTema = '$Codtema' AND grupoinsest.CodTP ='$CodTP' AND grupoinsest.Numgrupo = $NumGrupo AND grupoinsest.CodCampus = '$CodCampus' AND grupoinsest.AnoAcad = $AnoAcad AND grupoinsest.NumPer = $NumPer");
 }
 function getHorausencia($Horafin){
