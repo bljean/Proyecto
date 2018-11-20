@@ -31,7 +31,7 @@ class Grupoactivo{
     // Get single estudiante
     public function read_single(){
         //Create query
-        $query='SELECT *  FROM '.$this->table.' WHERE CodTema = ? and CodTp = ? and NumGrupo = ? and CodCampus = ? and AnoAcad = ?and NumPer = ?and NumCredito = ? LIMIT 0,1';
+        $query='SELECT *  FROM '.$this->table.' WHERE CodTema = ? and CodTp = ? and NumGrupo = ? and CodCampus = ? and AnoAcad = ? and NumPer = ? and NumCredito = ? LIMIT 0,1';
         // Prepare statemnt
         $stmt = $this->conn->prepare($query);
         //Bind ID
