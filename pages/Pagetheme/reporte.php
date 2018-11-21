@@ -7,6 +7,8 @@ $Numgrupo= $_POST['Numgrupo'];
 $AnoAcad= $_POST['AnoAcad'];
 $Numper= $_POST['Numper'];
 $NumCreditos= $_POST['NumCreditos'];
+$nombreprof= $_POST['nombreprof'];
+$apellido= $_POST['apellido'];
 
 ?>
 <!DOCTYPE html>
@@ -30,8 +32,8 @@ $NumCreditos= $_POST['NumCreditos'];
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-                    aria-controls="navbar">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -49,7 +51,8 @@ $NumCreditos= $_POST['NumCreditos'];
                     </li>
                     <li>
                         <div class="dropdown create">
-                            <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true">
                                 Gestion de tarjetas
                                 <span class="caret"></span>
                             </button>
@@ -106,57 +109,63 @@ $NumCreditos= $_POST['NumCreditos'];
 
     <section id="main">
         <div class="container-fluid">
+            
             <div class="row">
                 <div class="col-md-12">
-                    <!-- Website Overview -->
                     <div class="panel panel-default">
                         <div class="panel-heading tabla-color-bg">
-                            <h3 class="panel-title">Grupos</h3>
+                            <h3 class="panel-title">Profesor</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="well dash-box">
-                                        <div class="panel-body">
-                                            <!--Add new and Edit -->
-                                            <div class="container-fluid">
-                                                <div id="tableManager" class="modal fade">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                           
-                                                        
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!--/Add new and Edit -->
-                                              
-                                                <!--Table Mysql -->
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <table class="table table-hover table-bordered" style="background-color:white ">
-                                                            <thead>
-                                                                <td>Grupo</td>
-                                                                <td>Nombre</td>
-                                                                <td>Ausencias</td>
-                                                                <td>Estatus</td>
-                                                            </thead>
-                                                            <tbody>
+                            <div class="well dash-box">
+                            <table class="table table-hover table-bordered tableprof" style="background-color:white  ">
+                                <thead>
+                                    <td>Nombre</td>
+                                    <td>Clases por recuperar</td>
+                                    <td>Clases recuperadas</td>
+                                </thead>
+                                <tbody class="bodyprof">
 
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!--/Table Mysql -->
-                                        </div>
-                                    </div>
-                                </div>
+                                </tbody>
+                                </table>
+                                
                             </div>
-
-                            <!-- Latest Users -->
                         </div>
+
+
                     </div>
                 </div>
+            </div>
+        
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading tabla-color-bg">
+                        <h3 class="panel-title">Estudiantes</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="well dash-box">
+                            <table class="table table-hover table-bordered tableest" style="background-color:white  ">
+                                <thead>
+                                    <td>Grupo</td>
+                                    <td>Nombre</td>
+                                    <td>Ausencias</td>
+                                    <td>Estatus</td>
+                                </thead>
+                                <tbody class="bodyest">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Latest Users -->
+                </div>
+            </div>
+        </div>
+        </div>
+
     </section>
     <!-- Modals -->
     <!-- Bootstrap core JavaScript
@@ -177,6 +186,8 @@ $NumCreditos= $_POST['NumCreditos'];
             var AnoAcad = "<?php echo $AnoAcad; ?>";
             var Numper = "<?php echo $Numper; ?>";
             var NumCreditos = "<?php echo $NumCreditos; ?>";
+            var nombreprof = "<?php echo $nombreprof; ?>";
+            var apellido = "<?php echo $apellido; ?>";
 
             $("#Logout").on('click', function () {
                 window.location = 'php/logout.php'
@@ -189,31 +200,30 @@ $NumCreditos= $_POST['NumCreditos'];
             });
             //notificacion("admin");
             //getExistingData(0, 50);
-            reporte(Numgrupo,CodTema,CodTP,CodCampus,AnoAcad,Numper,NumCreditos);
+            reporte(Numgrupo, CodTema, CodTP, CodCampus, AnoAcad, Numper, NumCreditos);
+            reporteprof(Numgrupo, CodTema, CodTP, CodCampus, AnoAcad, Numper,nombreprof,apellido);
 
-            
         });
         
-        function reporte(Numgrupo,CodTema,CodTP,CodCampus,AnoAcad,Numper,NumCreditos) {
+        function reporteprof(Numgrupo, CodTema, CodTP, CodCampus, AnoAcad, Numper,nombreprof,apellido){
             $.ajax({
                 url: 'php/ajax_reporte.php',
                 method: 'POST',
                 dataType: 'text',
                 data: {
-                    key: 'reporte',
+                    key: 'reporteprof',
                     Numgrupo: Numgrupo,
                     CodTema: CodTema,
                     CodTP: CodTP,
                     CodCampus: CodCampus,
                     AnoAcad: AnoAcad,
                     Numper: Numper,
-                    NumCreditos:NumCreditos,
+                    nombreprof:nombreprof,
+                    apellido:apellido,
                 }, success: function (response) {
-                    if (response != "reachedMax") {
-                        $('tbody').append(response);
-                    } else {
-                        
-                          $(".table").DataTable({
+                    console.log(response);
+                    $(".bodyprof").append(response);
+                    $(".tableprof").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -240,19 +250,72 @@ $NumCreditos= $_POST['NumCreditos'];
                             },
                             "lengthChange": false
                         });
-                        
-                    }
+
+                    
+
+                    
+
+                }
+            });
+
+        }
+
+        function reporte(Numgrupo, CodTema, CodTP, CodCampus, AnoAcad, Numper, NumCreditos) {
+            $.ajax({
+                url: 'php/ajax_reporte.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'reporte',
+                    Numgrupo: Numgrupo,
+                    CodTema: CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    Numper: Numper,
+                    NumCreditos: NumCreditos,
+                }, success: function (response) {
+                        $(".bodyest").append(response);
+                        $(".tableest").DataTable({
+                            "language": {
+                                "sProcessing": "Procesando...",
+                                "sLengthMenu": "Mostrar _MENU_ registros",
+                                "sZeroRecords": "No se encontraron resultados",
+                                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sSearch": "Buscar:",
+                                "sUrl": "",
+                                "sInfoThousands": ",",
+                                "sLoadingRecords": "Cargando...",
+                                "oPaginate": {
+                                    "sFirst": "Primero",
+                                    "sLast": "Último",
+                                    "sNext": "Siguiente",
+                                    "sPrevious": "Anterior"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                }
+                            },
+                            "lengthChange": false
+                        });
+
+                    
 
                 }
             });
         }
- 
 
-        
-        
-        
-        
-    
+
+
+
+
+
+
     </script>
 </body>
 

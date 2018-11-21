@@ -57,7 +57,9 @@ $conn= new mysqli('localhost',$user, $pass, $db);
                         <input type="hidden" name="Numgrupo" value="'.$Numgrupo.'">
                         <input type="hidden" name="AnoAcad" value="'.$AnoAcad.'">
                         <input type="hidden" name="Numper" value="'.$Numper.'">
-                        <input type="hidden" name="NumCreditos" value="'.$NumCreditos.'">    
+                        <input type="hidden" name="NumCreditos" value="'.$NumCreditos.'">
+                        <input type="hidden" name="nombreprof" value="'.$nombreprof.'">
+                        <input type="hidden" name="apellido" value="'.$apellido.'">
                         <input type="submit" value="Reportes"  class="btn btn-primary">
                     </form>
                 </div> 
