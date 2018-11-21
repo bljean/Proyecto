@@ -133,6 +133,38 @@ if(isset($_SESSION['loggedIN'])){
             </div>
           </div>
 
+           <div id="tableManagerreporte" class="modal fade">
+            <div class="modal-dialog" style="width:1250px;">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Reporte</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="well dash-box" style=" text-align: center;">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                         
+                        </div>
+                      </div>
+                      <table class="table table-striped table-hover tablereporte">
+                        <thead>
+                          <th>Nombre</th>
+                          <th>Ausencia</th>
+                          <th>Estatus</th>
+                          
+                        </thead>
+                        <tbody class="reporteest">
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- -->
           <div id="tablaconfigurar" class="modal fade">
             <div class="modal-dialog">
@@ -640,6 +672,66 @@ if(isset($_SESSION['loggedIN'])){
       getAsisData(0, 50, studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer, 1);
 
       $("#tableManager").modal('show');
+    }
+
+    function reporte(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer){
+      $.ajax({
+                url: 'php/ajax_misgruposdocentes.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'reporte',
+                    studentID:studentID,
+                    NumGrupo: NumGrupo,
+                    CodTema: CodTema,
+                    CodTP: CodTP,
+                    CodCampus: CodCampus,
+                    AnoAcad: AnoAcad,
+                    NumPer: NumPer,
+                }, success: function (response) {
+                  console.log(response)
+                  
+                  if (response != "reachedMax") {
+                     $(".reporteest").append(response);
+                    } else {
+                          dTable1 = $(".tablereporte").DataTable({
+                            "language": {
+                              "sProcessing": "Procesando...",
+                              "sLengthMenu": "Mostrar _MENU_ registros",
+                              "sZeroRecords": "No se encontraron resultados",
+                              "sEmptyTable": "Ningún dato disponible en esta tabla",
+                              "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                              "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                              "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                              "sInfoPostFix": "",
+                              "sSearch": "Buscar:",
+                              "sUrl": "",
+                              "sInfoThousands": ",",
+                              "sLoadingRecords": "Cargando...",
+                              "oPaginate": {
+                                "sFirst": "Primero",
+                                "sLast": "Último",
+                                "sNext": "Siguiente",
+                                "sPrevious": "Anterior"
+                              },
+                              "oAria": {
+                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                              }
+                            },
+                            "lengthChange": false
+                          });
+
+
+                  }
+                  
+
+                }
+            });
+           
+            $("#tableManagerreporte").modal('show'); 
+
+
     }
 
     function findDay(CodCampus,CodTema,CodTP,Numgrupo,AnoAcad,Numper){

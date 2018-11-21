@@ -27,7 +27,10 @@ if($_POST['key'] == 'getestgrupo'){
                     <td>'.$data["nombre"].''.$data["apellido"].'</td>
                     <td>
                     <input type="button" onclick="asistencia(\''.$data["Matricula"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\')" value="Asistencia" class="btn btn-primary" id="asistencia">
+                    <input type="button" onclick="reporte(\''.$data["Matricula"].'\',\''.$NumGrupo.'\',\''.$CodTema.'\',\''.$CodTP.'\',\''.$CodCampus.'\',\''.$AnoAcad.'\',\''.$NumPer.'\')" value="Reporte" class="btn btn-primary" >
                     </td>
+                    
+
                 </tr>
                 ';
             }
@@ -36,6 +39,63 @@ if($_POST['key'] == 'getestgrupo'){
         exit($response);
    
 }
+
+if($_POST['key'] == 'reporte'){
+
+    $studentID=$conn->real_escape_string($_POST['studentID']);
+    $NumGrupo=$conn->real_escape_string($_POST['NumGrupo']);
+    $CodTema=$conn->real_escape_string($_POST['CodTema']);
+    $CodTP=$conn->real_escape_string($_POST['CodTP']);
+    $CodCampus=$conn->real_escape_string($_POST['CodCampus']);
+    $AnoAcad=$conn->real_escape_string($_POST['AnoAcad']);
+    $NumPer=$conn->real_escape_string($_POST['NumPer']);
+    $sql = $conn->query("SELECT nombre, apellido FROM estudiante WHERE Matricula='$studentID'");
+    if($sql->num_rows >0){
+        $response ="";
+        while($data= $sql->fetch_array()){
+            $nombre   = $data["nombre"];
+            $apellido   = $data["apellido"];
+
+        }
+    }
+
+    $sql2 = $conn->query("SELECT NumCreditos FROM asignatura WHERE CodTema='$CodTema' AND CodTp='$CodTP'");
+    if($sql2->num_rows >0){
+       
+        while($data= $sql2->fetch_array()){
+            $NumCreditos   = $data["NumCreditos"];
+        }
+       
+    }
+
+    $sql1 = $conn->query("SELECT NumAusencias FROM grupoinsest WHERE CodTema='$CodTema' AND CodTP='$CodTP' AND CodCampus='$CodCampus'AND NumGrupo='$NumGrupo' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' and Matricula='$studentID'");
+    if($sql1->num_rows >0){
+        while($data= $sql1->fetch_array()){
+            $cantidadausencias   = $data["NumAusencias"];
+
+        }
+
+    }
+        if($cantidadausencias>$NumCreditos*3)
+            {
+                $status='FN';
+
+        }else{
+             $status='Normal';
+            }
+    
+            $response .='
+            <tr>
+                <td>'.$nombre.''.$apellido.'</td>
+                <td>'.$cantidadausencias.'</td>
+                <td>'.$status.'</td>
+            </tr>
+            ';
+    exit($response);  
+}
+
+
+
 
 if($_POST['key'] == 'asistente'){
     $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
@@ -93,6 +153,8 @@ if($_POST['key'] == 'inSustituto'){
     );
     exit(json_encode($jsonArray));
 }
+
+
 
 
 

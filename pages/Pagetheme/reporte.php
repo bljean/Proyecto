@@ -133,14 +133,14 @@ $NumCreditos= $_POST['NumCreditos'];
                                                 <!--Table Mysql -->
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <table class="table table-hover table-bordered" style="background-color:white reportet ">
+                                                        <table class="table table-hover table-bordered" style="background-color:white ">
                                                             <thead>
                                                                 <td>Grupo</td>
                                                                 <td>Nombre</td>
                                                                 <td>Ausencias</td>
                                                                 <td>Estatus</td>
                                                             </thead>
-                                                            <tbody class="reporte">
+                                                            <tbody>
 
                                                             </tbody>
                                                         </table>
@@ -210,10 +210,10 @@ $NumCreditos= $_POST['NumCreditos'];
                     NumCreditos:NumCreditos,
                 }, success: function (response) {
                     if (response != "reachedMax") {
-                        $(".reporte").append(response);
-                    
+                        $('tbody').append(response);
                     } else {
-                          dTable = $(".reportet").DataTable({
+                        
+                          $(".table").DataTable({
                             "language": {
                                 "sProcessing": "Procesando...",
                                 "sLengthMenu": "Mostrar _MENU_ registros",
