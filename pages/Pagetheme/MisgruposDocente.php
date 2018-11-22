@@ -675,6 +675,10 @@ if(isset($_SESSION['loggedIN'])){
     }
 
     function reporte(studentID, NumGrupo, CodTema, CodTP, CodCampus, AnoAcad, NumPer){
+      if (dataindex1 != 0) {
+        cleartable(dTable1);
+      }
+      dataindex1 = 1;
       $.ajax({
                 url: 'php/ajax_misgruposdocentes.php',
                 method: 'POST',
@@ -689,12 +693,8 @@ if(isset($_SESSION['loggedIN'])){
                     AnoAcad: AnoAcad,
                     NumPer: NumPer,
                 }, success: function (response) {
-                  console.log(response)
-                  
-                  if (response != "reachedMax") {
                      $(".reporteest").append(response);
-                    } else {
-                          dTable1 = $(".tablereporte").DataTable({
+                     dTable1= $(".tablereporte").DataTable({
                             "language": {
                               "sProcessing": "Procesando...",
                               "sLengthMenu": "Mostrar _MENU_ registros",
@@ -723,7 +723,7 @@ if(isset($_SESSION['loggedIN'])){
                           });
 
 
-                  }
+                  
                   
 
                 }

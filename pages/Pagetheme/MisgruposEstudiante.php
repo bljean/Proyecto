@@ -157,16 +157,26 @@ if(isset($_SESSION['loggedIN'])){
 
                         </tbody>
                       </table>
+                      <div class="row">
+                    <div class="col-md-12">
+                    <div class="panel"> 
+                    <div class="panel-body">
+                    <h5  style="text-align:left">Usted ha faltado </h5>
+                    </div>
+                    
+                    </div>
+                    </div>
+                    </div>
                     </div>
                   </div>
-                  <!--/table asistencias-->
-                   <!-- estadisticas-->
+                  
                   
                 </div>
               </div>
 
               <!-- Latest Users -->
             </div>
+
           </div>
         </div>
   </section>
@@ -303,7 +313,21 @@ if(isset($_SESSION['loggedIN'])){
                 }
             });
         }
+
+
+    
+    
+    
+
+
+    
+    
+    function report(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+
+
+    }
     function activeGroup(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer,privilegio){
+
         $.ajax({
                 url: 'php/ajax_Asistencias.php',
                 method: 'POST',
@@ -328,7 +352,7 @@ if(isset($_SESSION['loggedIN'])){
                   $(".tableAsisBody").html('');
                   cleartable( dTable);
                   getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
-                  
+                  report(studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                 }
             });
         }

@@ -48,8 +48,7 @@ $user='root';
             
             }
             exit($response);
-        }else
-            exit('reachedMax');
+        }
 
 
     }
