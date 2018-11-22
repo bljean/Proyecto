@@ -17,9 +17,14 @@ $pusher = new Pusher\Pusher(
     $options
 );
 if($argv[1]=="presente"){
-    $ip=$argv[3];
-    getsalon_ip();
-    getpPerson($argv[2]);
+    if (connectBd()->connect_error) {
+        exit("-1");
+    }else{
+        $ip=$argv[3];
+        getsalon_ip();
+        getpPerson($argv[2]);
+    }
+    
     
     //echo $argv[1]." ".$argv[2];
 }elseif($argv[1]=="test"){
@@ -28,7 +33,11 @@ if($argv[1]=="presente"){
     exit($CodCampus."-".$CodEdif."-".$CodSalon); 
 }
 else{
+    if (connectBd()->connect_error) {
+        exit("-1");
+    }else{
     compareInfo($argv[1]);
+    }
 }
 
 
