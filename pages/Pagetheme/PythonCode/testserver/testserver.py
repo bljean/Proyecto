@@ -51,56 +51,78 @@ def start_server():
 
 
 def client_thread(connection, ip, port, max_buffer_size = 4096):
+    is_active = True
     
-    client_input = receive_input(connection, max_buffer_size,ip)
-    connection.sendall(client_input.encode("utf8"))
-    print(client_input)
-    if connection.recv(max_buffer_size).decode("utf8")=="quit":
-        print("Client is requesting to quit")
-        connection.close()
-        print("Connection " + ip + ":" + port + " closed")
-    else:
-        print("no llego nada pero la cerrare")
-        connection.close()
-        print("Connection " + ip + ":" + port + " closed")
+    while is_active:
+        client_input = receive_input(connection, max_buffer_size,ip)
+        print(client_input)
+        connection.sendall(client_input.encode("utf8"))
+        
+        if connection.recv(max_buffer_size).decode("utf8")=="quit":
+            print("Client is requesting to quit")
+            connection.close()
+            print("Connection " + ip + ":" + port + " closed")
+            is_active = False
+        else:
+            print("Connection still alive")
+        
+        #connection.close()
+        #print("Connection " + ip + ":" + port + " closed")
         
         
         
 
 def receive_input(connection, max_buffer_size,ip):
-    
-    data = b""
-    payload_size = struct.calcsize(">L")
-#receive frame
-    while len(data) < payload_size:
-        print("Recv: {}".format(len(data)))
+    print("wating for client to send rfid or frame")
+    input_from_client= connection.recv(max_buffer_size).decode("utf8")
+    print(input_from_client)
+    if input_from_client =="frame":
+        send="sendframe"
+        connection.sendall(send.encode("utf8"))
+        #receive frame
+        data = b""
+        payload_size = struct.calcsize(">L")
+        
+        while len(data) < payload_size:
+            print("Recv: {}".format(len(data)))
+            data += connection.recv(max_buffer_size)
+        
+        print("Done Recv: {}".format(len(data)))
+        packed_msg_size = data[:payload_size]
+        data = data[payload_size:]
+        msg_size = struct.unpack(">L", packed_msg_size)[0]
+        print("msg_size: {}".format(msg_size))
+        while len(data) < msg_size:
+            data += connection.recv(max_buffer_size)
+        frame_data = data[:msg_size]
+        data = data[msg_size:]
+        #receive ID
+        send="4"
+        connection.sendall(send.encode("utf8"))
         data += connection.recv(max_buffer_size)
-    
-    print("Done Recv: {}".format(len(data)))
-    packed_msg_size = data[:payload_size]
-    data = data[payload_size:]
-    msg_size = struct.unpack(">L", packed_msg_size)[0]
-    print("msg_size: {}".format(msg_size))
-    while len(data) < msg_size:
-        data += connection.recv(max_buffer_size)
-    frame_data = data[:msg_size]
-    data = data[msg_size:]
-    #receive ID
-    send="4"
-    connection.sendall(send.encode("utf8"))
-    data += connection.recv(max_buffer_size)
-    decoded_input = data.decode("utf8").rstrip()
-#end receive
-    print(decoded_input)
-    ID = get_id(decoded_input)
-    if ID == "-1":
-        result= ID
-    else:
-        result = process_input(frame_data,ID)
-        if result=="1":
-            print(decoded_input)
-            #presente(decoded_input,ip)
-    return result
+        decoded_input = data.decode("utf8").rstrip()
+        #end receive
+        print("rfid: "+decoded_input)
+        ID = get_id(decoded_input)
+        print(ID)
+        if ID == "-1":
+            result= ID
+        else:
+            result = process_input(frame_data,ID)
+            if result=="1":
+                print(decoded_input)
+                presente(decoded_input,ip)
+        return result
+    elif input_from_client=="rfid":
+        send="sendrfid"
+        connection.sendall(send.encode("utf8"))
+
+        data = connection.recv(max_buffer_size)
+        decoded_input = data.decode("utf8").rstrip()
+        print(decoded_input)
+        result="presente"
+        presente(decoded_input,ip)
+        return result
 
 
 def process_input(frame_data,ID):

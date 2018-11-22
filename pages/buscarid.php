@@ -25,10 +25,10 @@ if($argv[1]=="presente"){
 }elseif($argv[1]=="test"){
     $ip=$argv[2];
     getsalon_ip();
-    echo $CodCampus."-".$CodEdif."-".$CodSalon;
+    exit($CodCampus."-".$CodEdif."-".$CodSalon); 
 }
 else{
-    echo compareInfo($argv[1]);
+    compareInfo($argv[1]);
 }
 
 
@@ -62,7 +62,7 @@ function compareInfo($cardN){
                 }
                 //$index=1;       
                 //swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
-                return($personid);
+                exit($personid);
             }
             if( $sqlWorkersName->num_rows > 0 AND $sqlDataTime->num_rows == 0)
             {
@@ -73,10 +73,10 @@ function compareInfo($cardN){
                 }
                 //$index=1; 
                 //swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$data,$time,$index);
-                return($personid);
+                exit($personid);
             }
         }else{
-            return("-1");
+            exit("-1");
         }
         
 }
@@ -95,18 +95,20 @@ function getpPerson($cardN){
                 $index=1;       
                 swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$index);
                 //return($personid);
+                exit("presente");
             }
             if( $sqlWorkersName->num_rows > 0)
             {
                 $index=1; 
                 swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$index);
                 //return($personid);
+                exit("presente");
             }
         }else{
             $index=0; 
             swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$index);
             $id="-1";
-            echo $id;
+            exit($id) ;
             //return($id);
         }
         
@@ -124,6 +126,7 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$index){
                 }
                 //echo "\n$personid\n";
                 getStudentGroup($personid,$cardN,$name,$apellido);
+               
             }
             if($sqlWorkersName->num_rows > 0){
                 while($data= $sqlWorkersName->fetch_array()){
@@ -133,12 +136,12 @@ function swipeRecord($cardN,$sqlStudentName,$sqlWorkersName,$index){
                 }
                 //echo "\n$personid\n";
                 getProfesorGroup($personid,$cardN,$name,$apellido);
-                
             }
             //reconigtion($personid);
             //connectBd()->query("INSERT INTO swipe (cardnumber,name, status, dataTime) VALUES('$cardN','$name $apellido','Permitido','$date $time')");
         } else if($index == 0){
             insertSwipeRecord($cardN,'1111111','N/A','N/A','Denegado');
+            
         }
 }
 function getStudentGroup($matricula,$cardN,$name,$apellido){
@@ -163,7 +166,6 @@ function getStudentGroup($matricula,$cardN,$name,$apellido){
                 attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'R',$cardN,$name,$apellido,'E','nada','nada','nada');
             }
         }elseif($sqlStudentGrupo->num_rows >0){
-            echo "presente";
             while($data= $sqlStudentGrupo->fetch_array()){
                 $horaini=$data["HoraInicio"];
                 $horafin=$data["Horafin"];
@@ -176,8 +178,8 @@ function getStudentGroup($matricula,$cardN,$name,$apellido){
             }
             attendEstRecord($matricula,$date,$horaini,$time,$horafin,$day,$Codtema,$CodTP,$CodCampus,$NumGrupo,$AnoAcad,$NumPer,'P',$cardN,$name,$apellido,'E','nada','nada','nada');
         }else {
-            echo"no-clases-".$codcampus."-".$codcampus."-".$codedif."-".$codsalon."-".$date."-".$time."-".$day."-".$matricula;
             insertSwipeRecord($cardN,$matricula,$name,$apellido,'Denegado');
+            //exit("no-clases-".$codcampus."-".$codcampus."-".$codedif."-".$codsalon."-".$date."-".$time."-".$day."-".$matricula);
         }
 }
 function getProfesorGroup($numCedula,$cardN,$name,$apellido){
