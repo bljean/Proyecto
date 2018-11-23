@@ -19,7 +19,7 @@ def main():
 
 
 def start_server():
-    host = "10.0.0.3"
+    host = "192.168.43.86"
     port = 8888         # arbitrary non-privileged port
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -137,6 +137,7 @@ def receive_input(connection, max_buffer_size,ip):
 
 def process_input(frame_data,ID):
     path = 'C:/xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/imgtaken'
+    path_to_save='C:/xampp/htdocs/Proyecto/pages/Pagetheme/PythonCode/dataset/dataset'
     print("Processing the input received from client")
     frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
     frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
@@ -144,6 +145,9 @@ def process_input(frame_data,ID):
     img_name = "{}/{}.png".format(path, date)
     cv2.imwrite(img_name, frame)
     result=reconocimiento(ID,img_name)
+    if result=='1':
+        img_name = "{}-{}/{}/{}.png".format(path_to_save, ID,ID,date)
+        cv2.imwrite(img_name, frame)
     return result
 
 def get_id(carn):

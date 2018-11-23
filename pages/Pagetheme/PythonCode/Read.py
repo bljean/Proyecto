@@ -36,12 +36,38 @@ import pickle
 import zlib
 import sys
 from collections import deque
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(21,GPIO.IN)
+GPIO.setup(21,GPIO.OUT)
+GPIO.setup(20,GPIO.IN)
+GPIO.setup(20,GPIO.OUT)
+GPIO.setup(16,GPIO.IN)
+GPIO.setup(16,GPIO.OUT)
 continue_reading = True
 #collections
 queue = deque()
-host="10.0.0.3"
+host="192.168.43.86"
 port=8888
 # Capture SIGINT for cleanup when the script is aborted
+def turn_led_on(led):
+    if led=="1":
+        GPIO.output(21,GPIO.HIGH)
+    elif led=="2":
+        GPIO.output(16,GPIO.HIGH)
+    elif led=="3":
+        GPIO.output(20,GPIO.HIGH)
+
+
+def turn_led_off(led):
+    if led=="1":
+        GPIO.output(21,GPIO.LOW)
+    elif led=="2":
+        GPIO.output(16,GPIO.LOW)
+    elif led=="3":
+        GPIO.output(20,GPIO.LOW)
+
+
 def end_read(signal,frame):
     global continue_reading
     print("Ctrl+C captured, ending read.")
@@ -50,12 +76,11 @@ def end_read(signal,frame):
 # Capture the image and sending to the sever, using sockets, to recognize    
 def prepare_send_data(data2):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.settimeout(1)
     cam= cv2.VideoCapture('rtsp://admin:admin123@192.168.1.2/')
     #cam = cv2.VideoCapture(0)
     if cam.isOpened() == False:
         print("camera disconected")
-        
+        '''
         try:
             print("testing the connection")
             client_socket.connect((host, port))
@@ -65,20 +90,24 @@ def prepare_send_data(data2):
             print(str1)
             queue.append(str1)
             return
-        print("Connection successfull")
+        '''
+        #print("Connection successfull")
         str1 = ''.join(str(e) for e in data2)
-        send_rfid(str1,client_socket)
-        menssage="quit"
-        client_socket.sendall(menssage.encode("utf8"))
+        queue.append(str1)
+        #send_rfid(str1,client_socket)
+        #menssage="quit"
+        #client_socket.sendall(menssage.encode("utf8"))
     else:
         try:
             print("testing the connection")
             client_socket.connect((host, port))
+            turn_led_off(3)
         except:
             print("Connection error")
             str1 = ''.join(str(e) for e in data2)
             print(str1)
             queue.append(str1)
+            turn_led_on(3)
             return
          #connection = client_socket.makefile('wb') 
         cam.set(3, 800)
@@ -140,6 +169,14 @@ def send_frame(data,data2,client_socket):
         client_socket.sendall(str1.encode("utf8"))
     r=client_socket.recv(4096).decode("utf8")
     print(r)
+    if r=="presente":
+        turn_led_on(1)
+        time.sleep(1)
+        turn_led_off(1)
+    else:
+        turn_led_on(2)
+        time.sleep(1)
+        turn_led_off(2)
     menssage="quit"
     client_socket.sendall(menssage.encode("utf8"))
 def send_rfid(str1,client_socket):
@@ -157,12 +194,13 @@ def send_rfid(str1,client_socket):
 def test_connection():
     if queue:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(1)
         try:
             print("testing the connection")
             client_socket.connect((host, port))
+            turn_led_off(3)
         except:
             print("Connection error")
+            turn_led_on(3)
             return
         index=1
         send_data(client_socket,index)
@@ -212,8 +250,7 @@ while continue_reading:
             print("Authentication error")
         prepare_send_data(uid)
         print(queue)
-    test_connection()
-    time.sleep(2)
+        test_connection()
         
     
 
