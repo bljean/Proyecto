@@ -53,7 +53,7 @@ def send_data(data2):
     else:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            client_socket.connect(('10.0.0.2', 8888))
+            client_socket.connect(('10.0.0.3', 8888))
         except:
             print("Connection error")
             sys.exit()

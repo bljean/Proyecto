@@ -56,15 +56,22 @@ def client_thread(connection, ip, port, max_buffer_size = 4096):
     while is_active:
         client_input = receive_input(connection, max_buffer_size,ip)
         print(client_input)
-        connection.sendall(client_input.encode("utf8"))
-        
-        if connection.recv(max_buffer_size).decode("utf8")=="quit":
-            print("Client is requesting to quit")
+        if client_input != "camera_notified":
+            connection.sendall(client_input.encode("utf8"))
+            if connection.recv(max_buffer_size).decode("utf8")=="quit":
+                print("Client is requesting to quit")
+                connection.close()
+                print("Connection " + ip + ":" + port + " closed")
+                is_active = False
+            else:
+                print("Connection still alive")
+        else:
             connection.close()
             print("Connection " + ip + ":" + port + " closed")
-            is_active = False
-        else:
-            print("Connection still alive")
+        
+        
+        
+        
         
         #connection.close()
         #print("Connection " + ip + ":" + port + " closed")
@@ -73,7 +80,7 @@ def client_thread(connection, ip, port, max_buffer_size = 4096):
         
 
 def receive_input(connection, max_buffer_size,ip):
-    print("wating for client to send rfid or frame")
+    print("wating for client to send rfid or frame or camera_disconected")
     input_from_client= connection.recv(max_buffer_size).decode("utf8")
     print(input_from_client)
     if input_from_client =="frame":
@@ -123,8 +130,8 @@ def receive_input(connection, max_buffer_size,ip):
         result="presente"
         presente(decoded_input,ip)
         return result
-    elif input_from_client=="testconnection":
-        result="connection_alive"
+    elif input_from_client=="camera":
+        result="camera_notified"
         return result
 
 

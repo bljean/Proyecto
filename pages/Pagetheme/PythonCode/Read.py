@@ -37,7 +37,10 @@ import zlib
 import sys
 from collections import deque
 continue_reading = True
-
+#collections
+queue = deque()
+host="10.0.0.3"
+port=8888
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
     global continue_reading
@@ -47,20 +50,36 @@ def end_read(signal,frame):
 # Capture the image and sending to the sever, using sockets, to recognize    
 def prepare_send_data(data2):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #cam= cv2.VideoCapture('rtsp://admin:admin123@192.168.1.2/')
-    try:
-        client_socket.connect(('10.0.0.3', 8888))
-    except:
-        print("Connection error")
-        str1 = ''.join(str(e) for e in data2)
-        #print(str1)
-        queue.append(str1)
-        return
-    cam = cv2.VideoCapture(0)
-    if not cam.isOpened():
+    client_socket.settimeout(1)
+    cam= cv2.VideoCapture('rtsp://admin:admin123@192.168.1.2/')
+    #cam = cv2.VideoCapture(0)
+    if cam.isOpened() == False:
         print("camera disconected")
-        cam.release()
+        
+        try:
+            print("testing the connection")
+            client_socket.connect((host, port))
+        except:
+            print("Connection error")
+            str1 = ''.join(str(e) for e in data2)
+            print(str1)
+            queue.append(str1)
+            return
+        print("Connection successfull")
+        str1 = ''.join(str(e) for e in data2)
+        send_rfid(str1,client_socket)
+        menssage="quit"
+        client_socket.sendall(menssage.encode("utf8"))
     else:
+        try:
+            print("testing the connection")
+            client_socket.connect((host, port))
+        except:
+            print("Connection error")
+            str1 = ''.join(str(e) for e in data2)
+            print(str1)
+            queue.append(str1)
+            return
          #connection = client_socket.makefile('wb') 
         cam.set(3, 800)
         cam.set(4, 600)
@@ -138,8 +157,10 @@ def send_rfid(str1,client_socket):
 def test_connection():
     if queue:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.settimeout(1)
         try:
-            client_socket.connect(('10.0.0.3', 8888))
+            print("testing the connection")
+            client_socket.connect((host, port))
         except:
             print("Connection error")
             return
@@ -158,6 +179,7 @@ print("Press Ctrl-C to stop.")
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
+    
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
     # If a card is found
@@ -189,5 +211,9 @@ while continue_reading:
         else:
             print("Authentication error")
         prepare_send_data(uid)
+        print(queue)
     test_connection()
+    time.sleep(2)
+        
+    
 

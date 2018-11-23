@@ -19,7 +19,7 @@ def main():
 
 
 def start_server():
-    host = "10.0.0.2"
+    host = "10.0.0.3"
     port = 8888         # arbitrary non-privileged port
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
