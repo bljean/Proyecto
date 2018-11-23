@@ -89,7 +89,7 @@ $user='root';
         }
        
         $suma = $cont + $cont1;
-/*
+        /*
         $suma = intval($cont) + intval($cont1);
         $suma1=strval($suma);
         $suma2=strval($cont2); */
@@ -108,6 +108,56 @@ $user='root';
 
     }
 
+
+    if($_POST['key'] == 'reportest'){
+        $studentID = $conn->real_escape_string($_POST['studentID']);
+        $NumGrupo = $conn->real_escape_string($_POST['NumGrupo']);
+        $CodTema = $conn->real_escape_string($_POST['CodTema']);
+        $CodTP = $conn->real_escape_string($_POST['CodTP']);
+        $CodCampus = $conn->real_escape_string($_POST['CodCampus']);
+        $AnoAcad = $conn->real_escape_string($_POST['AnoAcad']);
+        $NumPer = $conn->real_escape_string($_POST['NumPer']);
+        
+
+        $sql = $conn->query("SELECT NumAusencias FROM grupoinsest WHERE Matricula='$studentID' AND CodTema='$CodTema' AND CodTP='$CodTP' AND Numgrupo='$NumGrupo' AND CodCampus='$CodCampus' AND AnoAcad='$AnoAcad' AND NumPer='$NumPer' ");
+        if($sql->num_rows >0){
+            $response ="";
+            while($data= $sql->fetch_array()){
+            $cantidadausencias   = $data["NumAusencias"];
+            }
+        }
+
+        $sql1 = $conn->query("SELECT NumCreditos FROM asignatura WHERE CodTema='$CodTema' AND CodTp='$CodTP' ");
+        if($sql1->num_rows >0){
+            while($data1= $sql1->fetch_array()){
+                $NumCreditos   = $data1["NumCreditos"];
+            
+            
+            }
+        }
+         if($cantidadausencias>$NumCreditos*3)
+                {
+                    $status='FN';
+
+                }else{
+                    $status='Normal';
+                }
+            
+            $cantidadtotal=$NumCreditos*3+1; 
+
+                $response .='
+                
+                <li class="list-group-item">Ausencia: '.$cantidadausencias.'/ '.$cantidadtotal.'<br> condicion Academica : ('.$status.') </li>
+                    
+                    ';       
+        
+        $jsonArray = array(
+            'body'=> $response,
+        );
+        exit(json_encode($jsonArray));
+
+
+    }
 
 }
 

@@ -159,11 +159,11 @@ if(isset($_SESSION['loggedIN'])){
                       </table>
                       <div class="row">
                     <div class="col-md-12">
-                    <div class="panel"> 
-                    <div class="panel-body">
-                    <h5  style="text-align:left">Usted ha faltado </h5>
+                    <div class="card"> 
+                    <div class="card-body ">
+                    <ul class="list-group list-group-flush reporteestudiante" style="text-align: left">   
+                      </ul>
                     </div>
-                    
                     </div>
                     </div>
                     </div>
@@ -323,6 +323,25 @@ if(isset($_SESSION['loggedIN'])){
     
     
     function report(studentID,NumGrupo,CodTema,CodTP,CodCampus,AnoAcad,NumPer){
+            $.ajax({
+                    url: 'php/ajax_reporte.php',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        key: 'reportest',
+                        studentID: studentID,
+                        NumGrupo: NumGrupo,
+                        CodTema:CodTema,
+                        CodTP: CodTP,
+                        CodCampus: CodCampus,
+                        AnoAcad: AnoAcad,
+                        NumPer: NumPer,
+                    }, success: function (response) {
+                        console.log(response);
+                        $(".reporteestudiante").append(response.body);
+                    }
+                });
+
 
 
     }
@@ -352,6 +371,7 @@ if(isset($_SESSION['loggedIN'])){
                   $(".tableAsisBody").html('');
                   cleartable( dTable);
                   getAsisData(0, 50,studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer,privilegio);
+                  $(".reporteestudiante").html("");
                   report(studentID,response.NumGrupo,response.CodTema,response.CodTP,response.CodCampus,response.AnoAcad,response.NumPer);
                 }
             });
