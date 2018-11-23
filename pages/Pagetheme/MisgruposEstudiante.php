@@ -160,8 +160,8 @@ if(isset($_SESSION['loggedIN'])){
                       <div class="row">
                     <div class="col-md-12">
                     <div class="card"> 
-                    <div class="card-body ">
-                    <ul class="list-group list-group-flush reporteestudiante" style="text-align: left">   
+                    <div class="card-body  ">
+                    <ul class="list-group font-italic list-group-flush reporteestudiante" style="text-align: left">   
                       </ul>
                     </div>
                     </div>

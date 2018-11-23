@@ -147,7 +147,7 @@ $user='root';
 
                 $response .='
                 
-                <li class="list-group-item">Ausencia: '.$cantidadausencias.'/ '.$cantidadtotal.'<br> condicion Academica : ('.$status.') </li>
+                <li class="list-group-item ">Ausencia: '.$cantidadausencias.'/ '.$cantidadtotal.'<br> condicion Academica : ('.$status.') </li>
                     
                     ';       
         
